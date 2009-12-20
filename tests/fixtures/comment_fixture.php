@@ -1,6 +1,4 @@
 <?php
-/* SVN FILE: $Id: comment_fixture.php 1202 2009-09-23 19:48:51Z niles $ */
-/* Comment Fixure generated on: 2008-12-22 16:12:19 : 1229981959*/
 class CommentFixture extends CakeTestFixture {
 /**
  * Model name
@@ -9,6 +7,7 @@ class CommentFixture extends CakeTestFixture {
  * @access public
  */
 	public $name = 'Comment';
+
 /**
  * Table name
  *
@@ -16,6 +15,7 @@ class CommentFixture extends CakeTestFixture {
  * @access public
  */
 	public $table = 'comments';
+
 /**
  * Fields definition
  *
@@ -47,6 +47,7 @@ class CommentFixture extends CakeTestFixture {
 			'COMMENT_SLUG' => array('column' => 'slug', 'unique' => 0)
 		)
 	);
+
 /**
  * record set
  *
@@ -73,8 +74,7 @@ class CommentFixture extends CakeTestFixture {
 			'author_email' => 'example@example.com',
 			'author_url' => 'http://example.com',
 			'is_spam' => 'clean',
-			'comment_type' => 'comment',
-		),
+			'comment_type' => 'comment'),
 		array(
 			'id'  => '2',
 			'user_id'  => null,

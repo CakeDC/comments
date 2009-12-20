@@ -1,7 +1,5 @@
 <?php
-
-/* SVN FILE: $Id: 001_initialize_comments_schema.php 1591 2009-11-02 22:42:20Z burzum $ */
-class M4a9bc72d1ac4476fbccb00e4beba7b47 {
+class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 /**
  * Migration description
  *
@@ -9,6 +7,7 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 {
  * @access public
  */
 	public $description = '';
+
 /**
  * Dependency array. Define what minimum version required for other part of db schema
  *
@@ -18,6 +17,7 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 {
  * @access public
  */
 	public $dependendOf = array();
+
 /**
  * Shell object
  *
@@ -25,6 +25,7 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 {
  * @access public
  */
 	public $Shell;
+
 /**
  * Migration array
  * 
@@ -68,6 +69,7 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 {
 				'users' => 'comment_count'),
 		)
 	);
+
 /**
  * before migration callback
  *
@@ -77,6 +79,7 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 {
 	public function before($direction) {
 		return true;
 	}
+
 /**
  * after migration callback
  *
@@ -86,8 +89,6 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 {
 	public function after($direction) {
 		return true;
 	}
-	
-	
-}
 
+}
 ?>

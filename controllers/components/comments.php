@@ -1,8 +1,5 @@
 <?php
-/* SVN FILE: $Id: comments.php 1470 2009-10-23 14:11:35Z skie $ */
 class NoMethodException extends Exception {}
-
-
 /**
 	most of component methods possible to override in controller
 	for it need to create method with prefix _comments
@@ -48,6 +45,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public $components = array('Cookie', 'Session', 'Auth', 'Utils.Utils');
+
 /**
  * Enabled
  *
@@ -55,6 +53,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public $enabled = true;
+
 /**
  * Controller
  *
@@ -62,6 +61,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public $controller = null;
+
 /**
  * Name of actions this component should use
  *
@@ -71,6 +71,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public $actionNames = array('view', 'comments');
+
 /**
  * Actions used for deleting of some model record, which doesn't use SoftDelete
  * (so we want comments delete directly)
@@ -84,24 +85,28 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public $deleteActions = array();
+
 /**
  * Name of 'commentable' model
  *
  * Customizable in beforeFilter(), or default controller's model name is used
  */
 	public $modelName = null;
+
 /**
  * Name of association for comments
  *
  * Customizable in beforeFilter()
  */
 	public $assocName = 'Comment';
+
 /**
  * Name of user model associated to comment
  *
  * Customizable in beforeFilter()
  */
 	public $userModel = 'UserModel';
+
 /**
  * Flag if this component should permanently unbind association to Comment model in order to not
  * query model for not necessary data in Controller::view() action
@@ -109,11 +114,13 @@ class CommentsComponent extends Object {
  * Customizable in beforeFilter()
  */
 	public $unbindAssoc = false;
+
 /**
  * Parameters passed to view
  *
  */
 	public $commentParams = array();
+
 /**
  * Name of view variable which contains model data for view() action
  *
@@ -122,24 +129,28 @@ class CommentsComponent extends Object {
  * Customizable in beforeFilter(), or default Inflector::variable($this->modelName)
  */
 	public $viewVariable = null;
+
 /**
  * Name of view variable for comments data
  *
  * Customizable in beforeFilter()
  */
 	public $viewComments = 'commentsData';
+
 /**
  * Flag to allow anonymous user make comments
  *
  * Customizable in beforeFilter()
  */
 	public $allowAnonymousComment = false;
+
 /**
  * Flag to allow anonymous user make comments
  *
  * Customizable in beforeFilter()
  */
 	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type');
+
 /**
  * Callback
  */
@@ -152,14 +163,20 @@ class CommentsComponent extends Object {
 			$controller->{$this->modelName}->Behaviors->attach('Comments.Commentable');
 		}
 	}
+
 /**
  * Callback
+ *
+ * @param object Controller
+ * @return void
+ * @access public
  */
 	public function startup(&$controller) {
 		$this->Auth = $this->controller->Auth;
 		if ($this->Auth->user()) {
 			$controller->set('isAuthorized', ($this->Auth->user('id') != ''));
 		}
+
 		if (in_array($controller->action, $this->deleteActions)) {
 			$controller->{$this->modelName}->{$this->assocName}->softDelete(false);
 		} elseif ($this->unbindAssoc) {
@@ -171,8 +188,12 @@ class CommentsComponent extends Object {
 			}
 		}
 	}
+
 /**
  * Callback
+ *
+ * @return void
+ * @access public
  */
 	public function beforeRender() {
 		try {
@@ -190,6 +211,9 @@ class CommentsComponent extends Object {
 	}
 /**
  * Determine used type of display (flat/threaded/tree)
+ *
+ * @return string Type of comment display
+ * @access public
  */
 	public function callback_initType() {
 		$types = array('flat', 'threaded', 'tree');
@@ -212,6 +236,7 @@ class CommentsComponent extends Object {
 		}
 		return 'flat';
 	}
+
 /**
  * Non view action process method
  *
@@ -247,10 +272,13 @@ class CommentsComponent extends Object {
 			}
 		}
 	}
+
 /**
  * Handle controllers action like list/add related comments
  *
  * @param string $displayType
+ * @return void
+ * @access public
  */
 	public function callback_view($displayType) {
 		if (!isset($this->controller->{$this->modelName}) || !isset($this->controller->{$this->modelName}->{$this->assocName})) {
@@ -275,6 +303,7 @@ class CommentsComponent extends Object {
 
 		$this->controller->set($this->viewComments, $data);
 	}
+
 /**
  * Tree representaion. Paginable.
  *
@@ -297,6 +326,7 @@ class CommentsComponent extends Object {
 		}
 		return array_merge($parents, $data);
 	}
+
 /**
  * Flat representaion. Paginable
  *
@@ -308,6 +338,7 @@ class CommentsComponent extends Object {
 		$conditions = $this->_prepareModel($options);
 		return $this->controller->paginate($this->assocName, $conditions);
 	}
+
 /**
  * Threaded method. Non paginable. Whole data fetched.
  *
@@ -318,10 +349,19 @@ class CommentsComponent extends Object {
 	public function callback_fetchDataThreaded($options) {
 		$Comment =& $this->controller->{$this->modelName}->Comment;
 		$conditions = $this->_prepareModel($options);
-		$fields = array('Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved', 'Comment.title', 'Comment.body', 'Comment.slug', 'Comment.created', $this->modelName . '.id', $this->userModel . '.id', $this->userModel . '.' . $Comment->{$this->userModel}->displayField, $this->userModel . '.slug');
-		$order = array('Comment.parent_id' => 'asc', 'Comment.created' => 'asc');
+		$fields = array(
+			'Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved', 
+			'Comment.title', 'Comment.body', 'Comment.slug', 'Comment.created', 
+			$this->modelName . '.id', 
+			$this->userModel . '.id',
+			$this->userModel . '.' . $Comment->{$this->userModel}->displayField, 
+			$this->userModel . '.slug');
+		$order = array(
+			'Comment.parent_id' => 'asc',
+			'Comment.created' => 'asc');
 		return $Comment->find('threaded', compact('conditions', 'fields', 'order'));
 	}
+
 /**
  * Default method. Flat method called.
  *
@@ -332,6 +372,7 @@ class CommentsComponent extends Object {
 	public function callback_fetchData($options) {
 		return $this->_fetchDataFlat($options);
 	}
+
 /**
  * Prepare model association to fetch data
  *
@@ -351,6 +392,7 @@ class CommentsComponent extends Object {
 /**
  * Prepare passed parameters
  *
+ * @return void
  * @access protected
  */
 	public function callback_prepareParams() {
@@ -365,6 +407,7 @@ class CommentsComponent extends Object {
 			}
 		}
 	}
+
 /**
  * Handle adding comments
  *
@@ -404,6 +447,7 @@ class CommentsComponent extends Object {
 			}
 		}
 	}
+
 /**
  * Handle approval of comments
  *
@@ -421,11 +465,13 @@ class CommentsComponent extends Object {
 			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.', true));
 		}
 	}
+
 /**
  * Deletes comments
  *
  * @param string $modelId
  * @param string $commentId
+ * @return void
  * @access public
  */
 	public function callback_delete($modelId, $commentId) {
@@ -436,9 +482,11 @@ class CommentsComponent extends Object {
 		}
 		$this->redirect();
 	}
+
 /**
- * Flash message.
- * Special behavior for ajax queries
+ * Flash message - Special behavior for ajax queries
+ *
+ * @return void
  * @access public
  */
 	public function flash($message) {
@@ -449,10 +497,12 @@ class CommentsComponent extends Object {
 			$this->Session->setFlash($message);
 		}
 	}
+
 /**
  * Redirect
  *
  * @param array $urlBase
+ * @return void
  * @access public
  */
 	public function redirect($urlBase = array()) {
@@ -473,6 +523,7 @@ class CommentsComponent extends Object {
 			$this->controller->set('ajaxMode', true);
 		}
 	}
+
 /**
  * Call action from commponent or overriden action from controller.
  *
@@ -492,9 +543,11 @@ class CommentsComponent extends Object {
 			throw new NoMethodException();
 		}
 	}
+
 /**
  * Generate permalink to page
  *
+ * @return string URL to the comment
  * @access public
  */
 	public function permalink() {
@@ -516,5 +569,6 @@ class CommentsComponent extends Object {
 		}
 		return Router::url($params, true);
 	}
+
 }
 ?>

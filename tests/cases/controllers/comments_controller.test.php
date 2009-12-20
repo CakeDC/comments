@@ -1,6 +1,5 @@
 <?php
-/* SVN FILE: $Id: comments_controller.test.php 1035 2009-08-31 19:33:02Z skie $ */
-App::import('Controller', 'Comments');
+App::import('Controller', 'Comments.Comments');
 
 class TestComments extends CommentsController {
 	var $autoRender = false;

@@ -1,39 +1,4 @@
 <?php
-/* SVN FILE: $Id: comments_controller.php 1627 2009-11-05 14:54:05Z burzum $ */
-/**
- * Short description for file.
- *
- * Long description for file
- *
- * PHP versions 4 and 5
- *
- * Converge Application Platform
- *
- * Copyright 2007-2008, Cake Development Corporation
- * 							1785 E. Sahara Avenue, Suite 490-423
- * 							Las Vegas, Nevada 89104
- *
- * You may obtain a copy of the License at:
- * License page: http://projects.cakedc.com/licenses/TBD  TBD
- * Copyright page: http://converge.cakedc.com/copyright/
- *
- * @filesource
- * @copyright		Copyright 2007-2008, Cake Development Corporation
- * @link				http://converge.cakedc.com/ Converge Application Platform
- * @package			converge.plugins
- * @subpackage		converge.plugins.Comments.controllers
- * @since			Converge v 1.0.0.0
- * @version			$Revision: 1627 $
- * @modifiedby		$LastChangedBy: burzum $
- * @lastmodified	$Date: 2009-11-05 08:54:05 -0600 (Thu, 05 Nov 2009) $
- * @license			http://projects.cakedc.com/licenses/TBD  TBD
- */
-/**
- * Short description for class.
- *
- * @package		converge
- * @subpackage	converge.controllers
- */
 class CommentsController extends CommentsAppController {
 /**
  * Name
@@ -42,6 +7,7 @@ class CommentsController extends CommentsAppController {
  * @access public
  */
 	public $name = 'Comments';
+
 /**
  * Components
  *
@@ -49,6 +15,7 @@ class CommentsController extends CommentsAppController {
  * @access public
  */
 	public $components = array('RequestHandler');
+
 /**
  * Helpers
  *
@@ -87,7 +54,12 @@ class CommentsController extends CommentsAppController {
  */
 	public function admin_index($type = 'spam') {
 		$this->Comment->recursive = 0;
-		$this->Comment->bindModel(array('belongsTo' => array('UserModel' => array('className' => 'Users.User', 'foreignKey' => 'user_id'))));
+		$this->Comment->bindModel(array(
+			'belongsTo' => array(
+				'UserModel' => array(
+					'className' => 'Users.User',
+					'foreignKey' => 'user_id'))));
+
 		if ($type == 'spam') {
 			$conditions = array('Comment.is_spam' => array('spam', 'manualspam'));
 		} elseif ($type == 'clean') {
@@ -95,6 +67,7 @@ class CommentsController extends CommentsAppController {
 		} elseif (is_null($type)) {
 			$conditions = array();
 		}
+
 		$this->paginate['Comment'] = array(
 			'contain' => array('UserModel'),
 			'conditions' => $conditions);
@@ -113,6 +86,7 @@ class CommentsController extends CommentsAppController {
 			$this->Session->setFlash(__d('comments', 'Wrong comment id', true));
 			$this->redirect(array('action' => 'index'));
 		}
+
 		$comment['Comment']['is_spam'] = 'spammanual';
 		if ($this->Comment->save($comment)) {
 			$Entry = ClassRegistry::init('Blogs.Entry');
@@ -121,6 +95,7 @@ class CommentsController extends CommentsAppController {
 		} else {
 			$this->Session->setFlash(__d('comments', 'Error appear during save.', true));
 		}
+
 		$this->redirect(array('action' => 'index'));
 	}
 
@@ -214,5 +189,6 @@ class CommentsController extends CommentsAppController {
 		$this->viewPath = 'elements/comments';
 		$this->render('comment');
 	}
+
 }
 ?>

@@ -25,11 +25,13 @@ class CommentTestCase extends CakeTestCase {
  */
 	public function startTest() {
 		$this->Comment = ClassRegistry::init('Comments.Comment');
+		$this->Comment->bindModel(array(
+			'belongsTo' => array(
+				'Article' => array(
+					'foreignKey' => 'foreign_key'))));
 	}
 
 /**
- * 
- *
  * @return void
  * @access public
  */
@@ -37,6 +39,7 @@ class CommentTestCase extends CakeTestCase {
 		unset($this->Comment);
 		ClassRegistry::flush(); 
 	}
+
 /**
  * 
  */
@@ -47,16 +50,15 @@ class CommentTestCase extends CakeTestCase {
 /**
  * 
  */
-	
 	public function testCommentFind() {
-		$results = $this->Comment->recursive = -1;
+		$this->Comment->recursive = -1;
 		$results = $this->Comment->find('first');
 		$this->assertTrue(!empty($results));
 		$expected = array('Comment' => array(
-			'id'  => '493d5b4d-c008-4a3b-9581-403a4a35e6b2',
+			'id'  => '1',
 			'user_id'  => null,
-			'model'  => 'Entry',
-			'foreign_key'  => 'a12cc22a-d022-11dd-8f06-00e018bfb339', //blogs.test entry
+			'model'  => 'Article',
+			'foreign_key'  => '1',
 			'parent_id'  => '0',
 			'approved'  => 1,
 			'name'  => null,
@@ -74,6 +76,42 @@ class CommentTestCase extends CakeTestCase {
 			'comment_type' => 'comment',
 		));
 		$this->assertEqual($results, $expected);
+	}
+
+/**
+ * testBeforeSave
+ *
+ * @return void
+ * @access public
+ */
+	public function testBeforeSave() {
+		Configure::write('Config.language', 'eng');
+		$this->assertTrue($this->Comment->beforeSave());
+		$this->assertEqual($this->Comment->data['Comment']['language'], 'eng');
+	}
+
+/**
+ * testAfterSave
+ *
+ * @return void
+ * @access public
+ */
+	public function testAfterSave() {
+		
+	}
+
+/**
+ * testChangeCount
+ *
+ * @return void
+ * @access public
+ */
+	public function testChangeCount() {
+		$before = $this->Comment->Article->findById(1);
+		$this->assertTrue($this->Comment->changeCount(1, 'up'));
+		$after = $this->Comment->Article->findById(1);
+		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] + 1);
+		$this->assertFalse($this->Comment->changeCount(0, 'up'));
 	}
 
 }

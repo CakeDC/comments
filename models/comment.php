@@ -16,20 +16,18 @@ class Comment extends CommentsAppModel {
  */
 	public $actsAs = array(
 		'Utils.Sluggable' => array(
-			'label' => 'title',
-			'separator' => '_',
-			'length' => '255'),
+			'label' => 'title'),
 		'Tree');
 
 /**
- * Additional associations will be registered via callbacks
+ * belongsTo Associations
  *
  * @var array $belongsTo
  * @access public
  */
 	/*
 	public $belongsTo = array(
-		'UserModel' => array('className' => 'Users.User',
+		'User' => array('className' => 'Users.User',
 			'foreignKey' => 'user_id',
 			'conditions' => '',
 			'fields' => '',
@@ -68,7 +66,7 @@ class Comment extends CommentsAppModel {
  * @access public
  */
 	public function beforeSave() {
-		if (!isset($this->data[$this->alias]['language'])) {#
+		if (!isset($this->data[$this->alias]['language'])) {
 			$this->data[$this->alias]['language'] = Configure::read('Config.language');
 		}
 		return true;
@@ -118,20 +116,25 @@ class Comment extends CommentsAppModel {
  * @return null
  */
 	public function changeCount($id, $direction) {
-		$comment = $this->find('first', array('recursive' => -1, 'conditions' => array('id' => $id)));
+		$comment = $this->find('first', array(
+			'recursive' => -1,
+			'conditions' => array('id' => $id)));
+
 		if (!isset($comment['Comment']['model'])) {
-			return;
+			return false;
 		}
 
 		$Model = ClassRegistry::init($comment['Comment']['model']);
 		if (empty($Model)) {
-			return;
+			return false;
 		}
 
-		//$Model->id = $comment['Comment']['foreign_key'];
 		$sign = ($direction == 'up') ? '+' : '-';
 		$Model->recursive = -1;
-		$Model->updateAll(array('comments' => "comments $sign 1"), array('id' => $comment['Comment']['foreign_key']));
+		return $Model->updateAll(
+			array('comments' => "comments $sign 1"),
+			array('id' => $comment['Comment']['foreign_key']));
 	}
+
 }
 ?>

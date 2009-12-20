@@ -31,5 +31,4 @@ class ArticleFixture extends CakeTestFixture {
 		array('title' => 'Second Article', 'comments' => 0));
 
 }
-
 ?>
