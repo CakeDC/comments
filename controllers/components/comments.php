@@ -213,6 +213,7 @@ class CommentsComponent extends Object {
 		} catch (NoActionException $exception) {
 		}
 	}
+
 /**
  * Determine used type of display (flat/threaded/tree)
  *
@@ -255,7 +256,6 @@ class CommentsComponent extends Object {
 		}
 
 		$primaryKey = $this->Controller->{$this->modelName}->primaryKey;
-
 		if (empty($this->Controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey])) {
 			throw new Exception('CommentsComponent: missing view variable ' . $this->viewVariable . ' or value for primary key ' . $primaryKey . ' of model ' . $this->modelName);
 		}

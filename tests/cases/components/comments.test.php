@@ -27,13 +27,14 @@ class ArticlesTestController extends Controller {
  * @var array
  * @access public
  */
-	public $components = array('Comments.Comments', 'Cookie');
+	public $components = array('Comments.Comments', 'Cookie', 'Auth');
 
 /**
  * 
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
+		$this->Comments->userModel = 'User';
 	}
 
 /**
@@ -106,7 +107,8 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testStartup() {
-		
+		//$this->Controller->Comments->deleteActions = array('delete_comment');
+		$this->Controller->Comments->startup($this->Controller);
 	}
 
 /**
@@ -116,7 +118,15 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforeRender() {
-		
+		$this->Controller->action = 'view';
+		$this->__setupControllerData();
+		$this->Controller->Comments->beforeRender();
+		$this->assertTrue(is_array($this->Controller->viewVars['commentParams']));
+		$this->assertEqual($this->Controller->viewVars['commentParams'], array(
+			'displayType' => 'flat',
+			'viewComments' => 'commentsData',
+			'modelName' => 'Article',
+			'userModel' => 'User'));
 	}
 
 /**
@@ -147,7 +157,20 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_view() {
-		
+		$this->__setupControllerData();
+
+		$this->Controller->Comments->callback_view('flat');
+		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
+
+		$this->Controller->viewVars = null;
+		$this->expectException('Exception');
+		$this->Controller->Comments->callback_view('flat');
+
+		$this->Controller->Article->unbindModel(
+			array('hasMany' => array('Article')));
+
+		$this->expectException('Exception');
+		$this->Controller->Comments->callback_view('flat');
 	}
 
 /**
@@ -157,7 +180,8 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_fetchDataTree() {
-		
+		//$this->__setupControllerData();
+		//$result = $this->Controller->Comments->callback_fetchDataTree(array());
 	}
 
 /**
@@ -265,5 +289,16 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertEqual($this->Controller->Comments->permalink(), 'http://' . env('HTTP_HOST') . '/articles/view/testnamed:test');
 	}
 
+	protected function __setupControllerData() {
+		$this->Controller->params = array(
+			'url' => array());
+		$this->Controller->Comments->userModel = 'User';
+		$this->Controller->Article->Comment->bindModel(array(
+			'belongsTo' => array('User')));
+		$this->Controller->Article->id = 1;
+		$this->Controller->viewVars['article'] = array(
+			'Article' => array(
+				'id' => 1));
+	}
 }
 ?>
