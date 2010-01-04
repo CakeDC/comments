@@ -185,7 +185,7 @@ class CommentableTest extends CakeTestCase {
  * @access public
  */
 	public function testCommentBeforeFind() {
-		$result = $this->Model->commentBeforeFind(array('userModel' => 'User'));
+		$result = $this->Model->commentBeforeFind(array('userModel' => 'User', 'id' => '1'));
 		$this->assertIsA($result, 'array');
 		//debug($result);
 	}

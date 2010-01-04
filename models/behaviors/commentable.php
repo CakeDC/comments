@@ -244,7 +244,7 @@ class CommentableBehavior extends ModelBehavior {
 		$model->Comment->belongsTo[$model->alias]['fields'] = array('id');
 		$model->Comment->belongsTo[$userModel]['fields'] = array('id', $model->Comment->{$userModel}->displayField, 'slug');
 		$conditions = array(
-			$model->alias . '.' . $model->primaryKey => $id,
+			$model->alias . '.' . $model->primaryKey => $options['id'],
 			'Comment.approved' => 1);
 
 		if ($isAdmin) {
