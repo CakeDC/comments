@@ -1,5 +1,4 @@
 <?php
-class NoMethodException extends Exception {}
 /**
 	most of component methods possible to override in controller
 	for it need to create method with prefix _comments
@@ -152,13 +151,18 @@ class CommentsComponent extends Object {
 	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type');
 
 /**
- * Callback
+ * Initialize Callback
+ *
+ * @param object
+ * @return void
+ * @access public
  */
-	public function initialize(&$controller) {
-		$this->controller =& $controller;
+	public function initialize(Controller $controller) {
+		$this->Controller = $controller;
 		$this->modelName = $controller->modelClass;
 		$this->viewVariable = Inflector::variable($this->modelName);
 		$controller->helpers = array_merge($controller->helpers, array('Comments.CommentWidget'));
+
 		if (!$controller->{$this->modelName}->Behaviors->attached('Commentable')) {
 			$controller->{$this->modelName}->Behaviors->attach('Comments.Commentable');
 		}
@@ -171,8 +175,8 @@ class CommentsComponent extends Object {
  * @return void
  * @access public
  */
-	public function startup(&$controller) {
-		$this->Auth = $this->controller->Auth;
+	public function startup(Controller $controller) {
+		$this->Auth = $this->Controller->Auth;
 		if ($this->Auth->user()) {
 			$controller->set('isAuthorized', ($this->Auth->user('id') != ''));
 		}
@@ -197,15 +201,15 @@ class CommentsComponent extends Object {
  */
 	public function beforeRender() {
 		try {
-			if ($this->enabled && in_array($this->controller->action, $this->actionNames)) {
+			if ($this->enabled && in_array($this->Controller->action, $this->actionNames)) {
 				$type = $this->_call('initType');
 				$this->commentParams = array_merge($this->commentParams, array('displayType' => $type));
 				$this->_call('view', array($type));
 				$this->_call('prepareParams');
-				$this->controller->set('commentParams', $this->commentParams);
+				$this->Controller->set('commentParams', $this->commentParams);
 			}
 		} catch (BlackHoleException $exception) {
-			return $this->controller->blackHole($exception->getMessage());
+			return $this->Controller->blackHole($exception->getMessage());
 		} catch (NoActionException $exception) {
 		}
 	}
@@ -219,13 +223,14 @@ class CommentsComponent extends Object {
 		$types = array('flat', 'threaded', 'tree');
 		$param = 'Comments.' . $this->modelName;
 
-		if (!empty($this->controller->passedArgs['comment_view_type'])) {
-			$type = $this->controller->passedArgs['comment_view_type'];
+		if (!empty($this->Controller->passedArgs['comment_view_type'])) {
+			$type = $this->Controller->passedArgs['comment_view_type'];
 			if (in_array($type, $types)) {
 				$this->Cookie->write($param, $type, true, '+2 weeks');
 				return $type;
 			}
 		}
+
 		$type = $this->Cookie->read($param);
 		if ($type) {
 			if (in_array($type, $types)) {
@@ -238,42 +243,6 @@ class CommentsComponent extends Object {
 	}
 
 /**
- * Non view action process method
- *
- * @param array
- * @return boolean
- * @access protected
- */
-	protected function _processActions($options) {
-		extract($options);
-		if (isset($this->controller->passedArgs['comment'])) {
-			if ($this->allowAnonymousComment || $this->Auth->user()) {
-				if (isset($this->controller->passedArgs['comment_action'])) {
-					$commentAction = $this->controller->passedArgs['comment_action'];
-					$isAdmin = (bool) $this->Auth->user('admin');
-					if (!$isAdmin) {
-						if (in_array($commentAction, array('delete'))) {
-							call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->controller->passedArgs['comment']);
-							return;
-						} else {
-							return $this->controller->blackHole("CommentsComponent: comment_Action '$commentAction' is for admins only");
-						}
-					}
-					if (!in_array($commentAction, array('toggle_approve', 'delete'))) {
-						return $this->controller->blackHole("CommentsComponent: unsupported comment_Action '$commentAction'");
-					}
-					call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->controller->passedArgs['comment']);
-				} else {
-					Configure::write('Comment.action', 'add');
-					$this->_call('add', array($id, $this->controller->passedArgs['comment'], $displayType));
-				}
-			} else {
-				return $this->controller->blackHole('CommentsComponent: user should be logged in for working with comments');
-			}
-		}
-	}
-
-/**
  * Handle controllers action like list/add related comments
  *
  * @param string $displayType
@@ -281,27 +250,27 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_view($displayType) {
-		if (!isset($this->controller->{$this->modelName}) || !isset($this->controller->{$this->modelName}->{$this->assocName})) {
+		if (!isset($this->Controller->{$this->modelName}) || !isset($this->Controller->{$this->modelName}->{$this->assocName})) {
 			throw new Exception('CommentsComponent: model '.$this->modelName.' or association '.$this->assocName.' doesn\'t exist');
 		}
 
-		$primaryKey = $this->controller->{$this->modelName}->primaryKey;
+		$primaryKey = $this->Controller->{$this->modelName}->primaryKey;
 
-		if (empty($this->controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey])) {
+		if (empty($this->Controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey])) {
 			throw new Exception('CommentsComponent: missing view variable ' . $this->viewVariable . ' or value for primary key ' . $primaryKey . ' of model ' . $this->modelName);
 		}
 
-		$id = $this->controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey];
+		$id = $this->Controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey];
 		$options = compact('displayType', 'id');
 		$this->_processActions($options);
 
 		try {
 			$data = $this->_call('fetchData' . Inflector::camelize($displayType), array($options));
-		} catch (NoMethodException $exception) {
+		} catch (BadMethodCallException $exception) {
 			$data = $this->_call('fetchData', array($options));
 		}
 
-		$this->controller->set($this->viewComments, $data);
+		$this->Controller->set($this->viewComments, $data);
 	}
 
 /**
@@ -315,14 +284,14 @@ class CommentsComponent extends Object {
 		$conditions = $this->_prepareModel($options);
 		$order = array('Comment.lft' => 'asc');
 		$limit = 10;
-		$this->controller->paginate['Comment'] = compact('order', 'conditions', 'limit');
-		$data = $this->controller->paginate('Comment');
+		$this->Controller->paginate['Comment'] = compact('order', 'conditions', 'limit');
+		$data = $this->Controller->paginate('Comment');
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
 			$rec = $data[0]['Comment'];
 			$conditions[] = array('Comment.lft <' => $rec['lft']);
 			$conditions[] = array('Comment.rght >' => $rec['rght']);
-			$parents = $this->controller->{$this->modelName}->Comment->find('all', compact('conditions', 'order'));
+			$parents = $this->Controller->{$this->modelName}->Comment->find('all', compact('conditions', 'order'));
 		}
 		return array_merge($parents, $data);
 	}
@@ -336,18 +305,18 @@ class CommentsComponent extends Object {
  */
 	public function callback_fetchDataFlat($options) {
 		$conditions = $this->_prepareModel($options);
-		return $this->controller->paginate($this->assocName, $conditions);
+		return $this->Controller->paginate($this->assocName, $conditions);
 	}
 
 /**
- * Threaded method. Non paginable. Whole data fetched.
+ * Threaded method - non paginable, whole data is fetched
  *
  * @param array $options
  * @return array
  * @access public
  */
 	public function callback_fetchDataThreaded($options) {
-		$Comment =& $this->controller->{$this->modelName}->Comment;
+		$Comment =& $this->Controller->{$this->modelName}->Comment;
 		$conditions = $this->_prepareModel($options);
 		$fields = array(
 			'Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved', 
@@ -384,9 +353,8 @@ class CommentsComponent extends Object {
 		$params = array(
 			'isAdmin' => $this->Auth->user('admin') == true,
 			'userModel' => $this->userModel,
-			'userData' => $this->Auth->user(),
-		);
-		return $this->controller->{$this->modelName}->commentBeforeFind(array_merge($params, $options));
+			'userData' => $this->Auth->user());
+		return $this->Controller->{$this->modelName}->commentBeforeFind(array_merge($params, $options));
 	}
 
 /**
@@ -402,8 +370,8 @@ class CommentsComponent extends Object {
 			'userModel' => $this->userModel));
 		$allowedParams = array('comment', 'comment_action');
 		foreach ($allowedParams as $param) {
-			if (isset($this->controller->passedArgs[$param])) {
-				$this->commentParams[$param] = $this->controller->passedArgs[$param];
+			if (isset($this->Controller->passedArgs[$param])) {
+				$this->commentParams[$param] = $this->Controller->passedArgs[$param];
 			}
 		}
 	}
@@ -417,27 +385,27 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_add($modelId, $commentId, $displayType, $data = array()) {
-		if (!empty($this->controller->data)) {
-			if (!empty($this->controller->data['Comment']['title'])) {
-				$data['Comment']['title'] = $this->Utils->cleanHtml($this->controller->data['Comment']['title']);
+		if (!empty($this->Controller->data)) {
+			if (!empty($this->Controller->data['Comment']['title'])) {
+				$data['Comment']['title'] = $this->Utils->cleanHtml($this->Controller->data['Comment']['title']);
 			}
-			$data['Comment']['body'] = $this->Utils->cleanHtml($this->controller->data['Comment']['body']);
+			$data['Comment']['body'] = $this->Utils->cleanHtml($this->Controller->data['Comment']['body']);
 			$modelName = $this->modelName;
 			$options = array(
 				'userId' => $this->Auth->user('id'),
 				'modelId' => $modelId,
-				'modelName' => $this->controller->{$this->modelName}->name,
-				'defaultTitle' => $this->controller->defaultTitle,
+				'modelName' => $this->Controller->{$this->modelName}->name,
+				'defaultTitle' => $this->Controller->defaultTitle,
 				'data' => $data,
-				'permalink' => $this->controller->{$this->modelName}->permalink($modelId));
-			$result = $this->controller->{$this->modelName}->commentAdd($commentId, $options);
+				'permalink' => $this->Controller->{$this->modelName}->permalink($modelId));
+			$result = $this->Controller->{$this->modelName}->commentAdd($commentId, $options);
 
 			if (!is_null($result)) {
 				if ($result) {
 					try {
 						$options['commentId'] = $result;
 						$this->_call('afterAdd', array($options));
-					} catch (NoMethodException $exception) {
+					} catch (BadMethodCallException $exception) {
 					}
 					$this->flash(__d('comments', 'The Comment has been saved.', true));
 					$this->redirect(array('#' => 'comment' . $result));
@@ -456,10 +424,10 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-		if (!($this->controller->passedArgs['comment_Action'] == 'toggle_approve' && $this->controller->Auth->user('admin') == true)) {
+		if (!($this->Controller->passedArgs['comment_Action'] == 'toggle_approve' && $this->Controller->Auth->user('admin') == true)) {
 			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation', true));
 		}
-		if ($this->controller->{$this->modelName}->commentToggleApprove($commentId)) {
+		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
 			$this->flash(__d('comments', 'The Comment has been deleted.', true));
 		} else {
 			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.', true));
@@ -475,7 +443,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_delete($modelId, $commentId) {
-		if ($this->controller->{$this->modelName}->commentDelete($commentId)) {
+		if ($this->Controller->{$this->modelName}->commentDelete($commentId)) {
 			$this->flash(__d('comments', 'The Comment has been deleted.', true));
 		} else {
 			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.', true));
@@ -490,9 +458,9 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function flash($message) {
-		$isAjax = $this->controller->params['isAjax'];
+		$isAjax = $this->Controller->params['isAjax'];
 		if ($isAjax) {
-			$this->controller->set('messageTxt',$message);
+			$this->Controller->set('messageTxt',$message);
 		} else {
 			$this->Session->setFlash($message);
 		}
@@ -506,22 +474,50 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function redirect($urlBase = array()) {
-		$isAjax = $this->controller->params['isAjax'];
+		$isAjax = $this->Controller->params['isAjax'];
 		$url = array();
-		foreach ($this->controller->passedArgs as $key => $value) {
+		foreach ($this->Controller->passedArgs as $key => $value) {
 			if (is_numeric($key)) {
 				$url[] = $value;
 			}
 		}
 		$url = array_merge($url, $urlBase);
 		if ($isAjax) {
-			$this->controller->set('redirect', $url);
+			$this->Controller->set('redirect', $url);
 		} else {
-			$this->controller->redirect($url);
+			$this->Controller->redirect($url);
 		}
 		if ($isAjax) {
-			$this->controller->set('ajaxMode', true);
+			$this->Controller->set('ajaxMode', true);
 		}
+	}
+
+/**
+ * Generate permalink to page
+ *
+ * @return string URL to the comment
+ * @access public
+ */
+	public function permalink() {
+		$params = array();
+		foreach (array('admin', 'controller', 'action', 'plugin') as $name) {
+			if (isset($this->Controller->params['name'])) {
+				$params[$name] = $this->Controller->params['name'];
+			}
+		}
+
+		if (isset($this->Controller->params['pass'])) {
+			$params = array_merge($params, $this->Controller->params['pass']);
+		}
+
+		if (isset($this->Controller->params['named'])) {
+			foreach ($this->Controller->params['named'] as $k => $v) {
+				if (!in_array($k, $this->_supportNamedParams)) {
+					$params[$k] = $v;
+				}
+			}
+		}
+		return Router::url($params, true);
 	}
 
 /**
@@ -540,34 +536,44 @@ class CommentsComponent extends Object {
 		} elseif (method_exists($this, $localMethodName)) {
 			return call_user_func_array(array(&$this, $localMethodName), $args);
 		} else {
-			throw new NoMethodException();
+			throw new BadMethodCallException();
 		}
 	}
 
 /**
- * Generate permalink to page
+ * Non view action process method
  *
- * @return string URL to the comment
- * @access public
+ * @param array
+ * @return boolean
+ * @access protected
  */
-	public function permalink() {
-		$params = array();
-		foreach (array('admin', 'controller', 'action', 'plugin') as $name) {
-			if (isset($this->controller->params['name'])) {
-				$params[$name] = $this->controller->params['name'];
-			}
-		}
-		if (isset($this->controller->params['pass'])) {
-			$params = array_merge($params, $this->controller->params['pass']);
-		}
-		if (isset($this->controller->params['named'])) {
-			foreach ($this->controller->params['named'] as $k => $v) {
-				if (!in_array($k, $this->_supportNamedParams)) {
-					$params[$k] = $v;
+	protected function _processActions($options) {
+		extract($options);
+		if (isset($this->Controller->passedArgs['comment'])) {
+			if ($this->allowAnonymousComment || $this->Auth->user()) {
+				if (isset($this->Controller->passedArgs['comment_action'])) {
+					$commentAction = $this->Controller->passedArgs['comment_action'];
+					$isAdmin = (bool) $this->Auth->user('admin');
+					if (!$isAdmin) {
+						if (in_array($commentAction, array('delete'))) {
+							call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
+							return;
+						} else {
+							return $this->Controller->blackHole("CommentsComponent: comment_Action '$commentAction' is for admins only");
+						}
+					}
+					if (!in_array($commentAction, array('toggle_approve', 'delete'))) {
+						return $this->Controller->blackHole("CommentsComponent: unsupported comment_Action '$commentAction'");
+					}
+					call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
+				} else {
+					Configure::write('Comment.action', 'add');
+					$this->_call('add', array($id, $this->Controller->passedArgs['comment'], $displayType));
 				}
+			} else {
+				return $this->Controller->blackHole('CommentsComponent: user should be logged in for working with comments');
 			}
 		}
-		return Router::url($params, true);
 	}
 
 }
