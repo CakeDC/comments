@@ -481,6 +481,7 @@ class CommentsComponent extends Object {
 				$url[] = $value;
 			}
 		}
+
 		$url = array_merge($url, $urlBase);
 		if ($isAjax) {
 			$this->Controller->set('redirect', $url);

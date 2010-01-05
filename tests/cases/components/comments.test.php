@@ -180,8 +180,12 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_fetchDataTree() {
-		//$this->__setupControllerData();
-		//$result = $this->Controller->Comments->callback_fetchDataTree(array());
+		$this->__setupControllerData();
+		$result = $this->Controller->Comments->callback_fetchDataTree(array(
+			'id' => 1));
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($result[0]['Comment']['model'], 'Article');
+		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -191,7 +195,12 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_fetchDataFlat() {
-		
+		$this->__setupControllerData();
+		$result = $this->Controller->Comments->callback_fetchDataFlat(array(
+			'id' => 1));
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($result[0]['Comment']['model'], 'Article');
+		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -201,7 +210,12 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_fetchDataThreaded() {
-		
+		$this->__setupControllerData();
+		$result = $this->Controller->Comments->callback_fetchDataThreaded(array(
+			'id' => 1));
+		$this->assertTrue(!empty($result));
+		$this->assertTrue(is_array($result[0]['children']));
+		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -261,7 +275,15 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testFlash() {
-		
+		$message = 'Test Message';
+
+		$this->Controller->params['isAjax'] = false;
+		$this->Controller->Comments->flash($message);
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), $message);
+
+		$this->Controller->params['isAjax'] = true;
+		$this->Controller->Comments->flash('Test Message');
+		$this->assertEqual($this->Controller->viewVars['messageTxt'], $message);
 	}
 
 /**
@@ -271,7 +293,16 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testRedirect() {
-		
+		$url = array('controller' => 'tests', 'action' => 'index');
+
+		$this->Controller->params['isAjax'] = false;
+		$this->Controller->Comments->redirect($url);
+		$this->assertEqual($this->Controller->redirectUrl, $url);
+
+		$this->Controller->params['isAjax'] = true;
+		$this->Controller->Comments->redirect($url);
+		$this->assertEqual($this->Controller->viewVars['redirect'], $url);
+		$this->assertEqual($this->Controller->viewVars['ajaxMode'], true);
 	}
 
 /**
