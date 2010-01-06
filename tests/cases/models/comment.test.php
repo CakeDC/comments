@@ -1,6 +1,6 @@
 <?php
 App::import('Core', 'ModelBehavior');
-Mock::generatePartial('ModelBehavior', 'AntispamableBehavior', array('isSpam'));
+Mock::generatePartial('ModelBehavior', 'AntispamableBehavior', array('isSpam', 'setSpam', 'setHam'));
 
 /**
  * 
@@ -136,6 +136,46 @@ class CommentTestCase extends CakeTestCase {
 		$this->assertTrue($this->Comment->changeCount(1, 'down'));
 		$after = $this->Comment->Article->findById(1);
 		$this->assertEqual($after['Article']['comments'], $before['Article']['comments']);
+	}
+	
+/**
+ * Test markAsSpam method
+ * 
+ * @return void
+ */
+	public function testMarkAsSpam() {
+		$this->Comment->Behaviors->attach('Antispamable');
+		$Antispamable = $this->Comment->Behaviors->Antispamable;
+		
+		$this->assertFalse($this->Comment->markAsSpam('invalid'));
+		
+		$before = $this->Comment->Article->findById(1);
+		$this->Comment->id = 1;
+		$this->assertTrue($this->Comment->markAsSpam());
+		$after = $this->Comment->Article->findById(1);
+		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] - 1);
+		$this->assertEqual($this->Comment->field('is_spam'), 'spammanual');
+		$Antispamable->expectOnce('setSpam');
+	}
+	
+/**
+ * Test markAsSpam method
+ * 
+ * @return void
+ */
+	public function testMarkAsHam() {
+		$this->Comment->Behaviors->attach('Antispamable');
+		$Antispamable = $this->Comment->Behaviors->Antispamable;
+		
+		$this->assertFalse($this->Comment->markAsHam('invalid'));
+		
+		$before = $this->Comment->Article->findById(2);
+		$this->Comment->id = 3;
+		$this->assertTrue($this->Comment->markAsHam());
+		$after = $this->Comment->Article->findById(2);
+		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] + 1);
+		$this->assertEqual($this->Comment->field('is_spam'), 'ham');
+		$Antispamable->expectOnce('setHam');
 	}
 
 }
