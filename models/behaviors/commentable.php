@@ -100,7 +100,14 @@ class CommentableBehavior extends ModelBehavior {
  */
 	public function commentDelete(&$model, $commentId = null) {
 		$model->Comment->recursive = -1;
-		return $model->Comment->delete($commentId);
+		$model->Comment->id = $commentId;
+		$fk = $model->Comment->field('foreign_key');
+		
+		$success = $model->Comment->delete($commentId);
+		if ($success) {
+			$model->changeCommentCount($fk, 'down');
+		}
+		return $success;
 	}
 
 /**
@@ -243,9 +250,10 @@ class CommentableBehavior extends ModelBehavior {
 
 		$model->Comment->belongsTo[$model->alias]['fields'] = array('id');
 		$model->Comment->belongsTo[$userModel]['fields'] = array('id', $model->Comment->{$userModel}->displayField, 'slug');
-		$conditions = array(
-			$model->alias . '.' . $model->primaryKey => $id,
-			'Comment.approved' => 1);
+		$conditions = array('Comment.approved' => 1);
+		if (isset($id)) {
+			$conditions[$model->alias . '.' . $model->primaryKey] = $id;
+		}
 
 		if ($isAdmin) {
 			unset($conditions['Comment.approved']);
