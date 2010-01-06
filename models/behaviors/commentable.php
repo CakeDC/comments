@@ -99,15 +99,7 @@ class CommentableBehavior extends ModelBehavior {
  * @access public
  */
 	public function commentDelete(&$model, $commentId = null) {
-		$model->Comment->recursive = -1;
-		$model->Comment->id = $commentId;
-		$fk = $model->Comment->field('foreign_key');
-		
-		$success = $model->Comment->delete($commentId);
-		if ($success) {
-			$model->changeCommentCount($fk, 'down');
-		}
-		return $success;
+		return $model->Comment->delete($commentId);
 	}
 
 /**
