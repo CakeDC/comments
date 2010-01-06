@@ -30,25 +30,12 @@ class CommentsController extends CommentsAppController {
  * @var array
  * @access public
  */
-	public $uses = array('Comment');
-
-/**
- * beforeFilter callback
- *
- * @access public
- * @todo figure out what to do with the account_type, it's different than in the main site.
- */
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->Auth->allow('view', 'requestForUser');
-		if ($this->Auth->user('account_type') !== '9999') {
-			$this->Auth->deny('admin_index', 'admin_spam', 'admin_ham', 'admin_delete', 'admin_edit');
-		}
-	}
+	public $uses = array('Comments.Comment');
 
 /**
  * Admin index action
  *
+ * @TODO either hardcode spam/ham possible values (remove option from Commentable) or find a way to use these values here
  * @param string
  * @access public
  */
@@ -75,7 +62,7 @@ class CommentsController extends CommentsAppController {
 	}
 
 /**
- * Admin mark mail as spam action
+ * Admin mark comment as spam
  *
  * @param string UUID
  * @access public
@@ -84,13 +71,14 @@ class CommentsController extends CommentsAppController {
 		$comment = $this->Comment->read(null, $id);
 		if (!isset($comment['Comment']['id'])) {
 			$this->Session->setFlash(__d('comments', 'Wrong comment id', true));
-			$this->redirect(array('action' => 'index'));
+			return $this->redirect(array('action' => 'index'));
 		}
 
 		$comment['Comment']['is_spam'] = 'spammanual';
 		if ($this->Comment->save($comment)) {
-			$Entry = ClassRegistry::init('Blogs.Entry');
-			$this->Comment->setSpam(null, array('permalink' => $Entry->permalink($comment['Comment']['foreign_key'])));
+			// TODO Decrement the model count and notice antispamable behavior if enabled
+			/*$Entry = ClassRegistry::init('Blogs.Entry');
+			$this->Comment->setSpam(null, array('permalink' => $Entry->permalink($comment['Comment']['foreign_key'])));*/
 			$this->Session->setFlash(__d('comments', 'Antispam system informed about spam message.', true));
 		} else {
 			$this->Session->setFlash(__d('comments', 'Error appear during save.', true));
@@ -100,7 +88,7 @@ class CommentsController extends CommentsAppController {
 	}
 
 /**
- * Admin mark mail as ham action
+ * Admin mark comment as ham
  *
  * @param string UUID
  * @access public
@@ -109,15 +97,18 @@ class CommentsController extends CommentsAppController {
 		$comment = $this->Comment->read(null, $id);
 		if (!isset($comment['Comment']['id'])) {
 			$this->Session->setFlash(__d('comments', 'Wrong comment id',true));
-			$this->redirect(array('action' => 'index'));
+			return $this->redirect(array('action' => 'index'));
 		}
+		
 		$comment['Comment']['is_spam'] = 'ham';
 		if ($this->Comment->save($comment)) {
-			$this->Comment->setHam(null, array('permalink' => Entry::permalink($modelId)));
+			// TODO Increment the model count and notice antispamable behavior if enabled
+			//$this->Comment->setHam(null, array('permalink' => Entry::permalink($modelId)));
 			$this->Session->setFlash(__d('comments', 'Antispam system informed about ham message.', true));
 		} else {
 			$this->Session->setFlash(__d('comments', 'Error appear during save.', true));
 		}
+		
 		$this->redirect(array('action' => 'index'));
 	}
 
@@ -128,11 +119,13 @@ class CommentsController extends CommentsAppController {
  * @access public
  */
 	public function admin_view($id = null) {
-		if (!$id) {
+		$this->Comment->id = $id;
+		$comment = $this->Comment->read(null, $id);
+		if (empty($comment)) {
 			$this->Session->setFlash(__d('comments', 'Invalid Comment.', true));
-			$this->redirect(array('action'=>'index'));
+			return $this->redirect(array('action'=>'index'));
 		}
-		$this->set('comment', $this->Comment->read(null, $id));
+		$this->set('comment', $comment);
 	}
 
 /**
@@ -142,43 +135,38 @@ class CommentsController extends CommentsAppController {
  * @access public
  */
 	public function admin_delete($id = null) {
-		if (!$id) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists()) {
 			$this->Session->setFlash(__d('comments', 'Invalid id for Comment', true));
-			$this->redirect(array('action'=>'index'));
-		}
-		if ($this->Comment->delete($id)) {
+		} elseif ($this->Comment->delete()) {
+			// TODO Decrement model count
 			$this->Session->setFlash(__d('comments', 'Comment deleted', true));
-			$this->redirect(array('action'=>'index'));
+		} else {
+			$this->Session->setFlash(__d('comments', 'Impossible to delete the Comment. Please try again.', true));
 		}
+		$this->redirect(array('action'=>'index'));
 	}
 
 /**
  * Request comments 
  *
+ * @todo Return only "clean" comments?
+ * @todo Return also related models: find a way to automatically bind related models to comments
  * @param string user UUID
  * @return void
  * @access public
  */
 	public function requestForUser($userId = null, $amount = 5) {
-		if (!$this->RequestHandler->isAjax() && !$this->isRequestedAction()) {
-			$this->cakeError('404');
+		if (!$this->RequestHandler->isAjax() && !$this->_isRequestedAction()) {
+			return $this->cakeError('404');
 		}
 
 		$conditions = array('Comment.user_id' => $userId);
 		if (!empty($this->params['named']['model'])) {
-			$conditions['conditions']['Comment.model'] = $this->params['named']['model'];
+			$conditions['Comment.model'] = $this->params['named']['model'];
 		}
 
-		$this->Comment->bindModel(array(
-			'belongsTo' => array(
-				'Answer' => array(
-					'className' => 'Qanda.Answer',
-					'foreignKey' => 'foreign_key'))));
-
 		$this->paginate = array(
-			'contain' => array(
-				'Question',
-				'Answer.Question'),
 			'conditions' => $conditions,
 			'order' => 'Comment.created DESC',
 			'limit' => $amount);
@@ -190,5 +178,13 @@ class CommentsController extends CommentsAppController {
 		$this->render('comment');
 	}
 
+/**
+ * Returns true if the action was called with requestAction()
+ *
+ * @return boolean
+ */
+	protected function _isRequestedAction() {
+		return array_key_exists('requested', $this->params);
+	}
 }
 ?>
