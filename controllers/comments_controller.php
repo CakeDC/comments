@@ -68,22 +68,14 @@ class CommentsController extends CommentsAppController {
  * @access public
  */
 	public function admin_spam($id) {
-		$comment = $this->Comment->read(null, $id);
-		if (!isset($comment['Comment']['id'])) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists(true)) {
 			$this->Session->setFlash(__d('comments', 'Wrong comment id', true));
-			return $this->redirect(array('action' => 'index'));
-		}
-
-		$comment['Comment']['is_spam'] = 'spammanual';
-		if ($this->Comment->save($comment)) {
-			// TODO Decrement the model count and notice antispamable behavior if enabled
-			/*$Entry = ClassRegistry::init('Blogs.Entry');
-			$this->Comment->setSpam(null, array('permalink' => $Entry->permalink($comment['Comment']['foreign_key'])));*/
+		} elseif ($this->Comment->markAsSpam()) {
 			$this->Session->setFlash(__d('comments', 'Antispam system informed about spam message.', true));
 		} else {
 			$this->Session->setFlash(__d('comments', 'Error appear during save.', true));
 		}
-
 		$this->redirect(array('action' => 'index'));
 	}
 
@@ -94,21 +86,14 @@ class CommentsController extends CommentsAppController {
  * @access public
  */
 	public function admin_ham($id) {
-		$comment = $this->Comment->read(null, $id);
-		if (!isset($comment['Comment']['id'])) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists(true)) {
 			$this->Session->setFlash(__d('comments', 'Wrong comment id',true));
-			return $this->redirect(array('action' => 'index'));
-		}
-		
-		$comment['Comment']['is_spam'] = 'ham';
-		if ($this->Comment->save($comment)) {
-			// TODO Increment the model count and notice antispamable behavior if enabled
-			//$this->Comment->setHam(null, array('permalink' => Entry::permalink($modelId)));
+		} elseif ($this->Comment->markAsHam()) {
 			$this->Session->setFlash(__d('comments', 'Antispam system informed about ham message.', true));
 		} else {
 			$this->Session->setFlash(__d('comments', 'Error appear during save.', true));
 		}
-		
 		$this->redirect(array('action' => 'index'));
 	}
 
@@ -136,7 +121,7 @@ class CommentsController extends CommentsAppController {
  */
 	public function admin_delete($id = null) {
 		$this->Comment->id = $id;
-		if (!$this->Comment->exists()) {
+		if (!$this->Comment->exists(true)) {
 			$this->Session->setFlash(__d('comments', 'Invalid id for Comment', true));
 		} elseif ($this->Comment->delete()) {
 			// TODO Decrement model count

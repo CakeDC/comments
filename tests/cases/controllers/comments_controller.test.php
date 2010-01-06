@@ -127,6 +127,8 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments->admin_spam(1);
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Antispam system informed about spam message.');
+		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 1);
+		$this->assertEqual($commentFlag['Comment']['is_spam'], 'spammanual');
 		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
 		$this->assertEqual($newCount, $oldCount - 1);
 		$this->Comments->Session->delete('Message.flash.message');
@@ -148,6 +150,8 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments->admin_ham(3);
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Antispam system informed about ham message.');
+		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 3);
+		$this->assertEqual($commentFlag['Comment']['is_spam'], 'ham');
 		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));
 		$this->assertEqual($newCount, $oldCount + 1);
 		$this->Comments->Session->delete('Message.flash.message');
