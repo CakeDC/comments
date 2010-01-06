@@ -178,6 +178,29 @@ class Comment extends CommentsAppModel {
 	}
 	
 /**
+ * Overrides AppModel::delete() method
+ * Automatically decrement comment count of related model
+ * 
+ * (non-PHPdoc)
+ * @see cake/libs/model/Model#delete($id, $cascade)
+ */
+	public function delete($id = null, $cascade = true) {
+		$success = false;
+		if (is_null($id)) {
+			$id = $this->id;
+		}
+		
+		if ($this->changeCount($id, 'down')) {
+			if (parent::delete($id, $cascade)) {
+				$success = true;
+			} else {
+				$this->changeCount($id, 'up');
+			}
+		}
+		return $success;
+	}
+	
+/**
  * Update the comment spam type
  * 
  * @param string $id Comment id

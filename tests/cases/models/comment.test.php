@@ -177,6 +177,22 @@ class CommentTestCase extends CakeTestCase {
 		$this->assertEqual($this->Comment->field('is_spam'), 'ham');
 		$Antispamable->expectOnce('setHam');
 	}
+	
+/**
+ * Test delete method
+ * 
+ * @return void
+ */
+	public function testDelete() {
+		$this->assertFalse($this->Comment->delete('invalid'));
+		
+		$before = $this->Comment->Article->findById(1);
+		$this->Comment->id = 1;
+		$this->assertTrue($this->Comment->delete());
+		$after = $this->Comment->Article->findById(1);
+		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] - 1);
+		$this->assertFalse($this->Comment->exists(true));
+	}
 
 }
 ?>

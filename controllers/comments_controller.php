@@ -124,7 +124,6 @@ class CommentsController extends CommentsAppController {
 		if (!$this->Comment->exists(true)) {
 			$this->Session->setFlash(__d('comments', 'Invalid id for Comment', true));
 		} elseif ($this->Comment->delete()) {
-			// TODO Decrement model count
 			$this->Session->setFlash(__d('comments', 'Comment deleted', true));
 		} else {
 			$this->Session->setFlash(__d('comments', 'Impossible to delete the Comment. Please try again.', true));
