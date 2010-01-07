@@ -108,33 +108,138 @@ class Comment extends CommentsAppModel {
 /**
  * Increment or decrement the comment count cache on the associated model
  * 
- * @todo find why core creates wrong query for entries in the commented section
- * 
  * @param mixed $id The id to change count of.
  * @param string $direction 'up' or 'down'
  * @access public
- * @return null
+ * @return boolean Success of the update
  */
 	public function changeCount($id, $direction) {
+		$success = false;
+		$associated = $this->__getCommentedRow($id);
+		
+		if ($associated !== false){
+			$sign = ($direction == 'up') ? '+' : '-';
+			$associated['Model']->recursive = -1;
+			$success = $associated['Model']->updateAll(
+				array('comments' => "comments $sign 1"),
+				array('id' => $associated['id']));
+		}
+		return $success;
+	}
+
+/**
+ * Mark a comment as a spam
+ * 
+ * @param string $id Id of the comment to mark as spam, optionnal [defaut: $this->id]
+ * @return boolean Success / Fail
+ */
+	public function markAsSpam($id = null) {
+		$success = false;
+		if (is_null($id)) {
+			$id = $this->id;
+		}
+		
+		if ($this->changeCount($id, 'down')) {
+			if ($this->__updateSpamType($id, 'spammanual')) {
+				if ($this->Behaviors->enabled('Antispamable')) {
+					$this->setSpam(null, array('permalink' => $this->permalink));
+				}
+				$success = true;
+			} else {
+				$this->changeCount($id, 'up');
+			}
+		}
+		return $success;
+	}
+	
+/**
+ * Mark a comment as a ham
+ * 
+ * @param string $id Id of the comment to mark as ham
+ * @return boolean Success / Fail
+ */
+	public function markAsHam($id = null) {
+		$success = false;
+		if (is_null($id)) {
+			$id = $this->id;
+		}
+		
+		if ($this->changeCount($id, 'up')) {
+			if ($this->__updateSpamType($id, 'ham')) {
+				if ($this->Behaviors->enabled('Antispamable')) {
+					$this->setHam(null, array('permalink' => $this->permalink));
+				}
+				$success = true;
+			} else {
+				$this->changeCount($id, 'down');
+			}
+		}
+		return $success;
+	}
+	
+/**
+ * Overrides AppModel::delete() method
+ * Automatically decrement comment count of related model
+ * 
+ * (non-PHPdoc)
+ * @see cake/libs/model/Model#delete($id, $cascade)
+ */
+	public function delete($id = null, $cascade = true) {
+		$success = false;
+		if (is_null($id)) {
+			$id = $this->id;
+		}
+		
+		if ($this->changeCount($id, 'down')) {
+			if (parent::delete($id, $cascade)) {
+				$success = true;
+			} else {
+				$this->changeCount($id, 'up');
+			}
+		}
+		return $success;
+	}
+	
+/**
+ * Update the comment spam type
+ * 
+ * @param string $id Comment id
+ * @param string $newType New spam type for the comment (valid values: cf $isSpamValues)
+ * @return boolean Success of the update
+ */
+	private function __updateSpamType($id, $newType) {
+		$success = false;
+		if (in_array($newType, $this->isSpamValues)) {
+			$success = $this->updateAll(
+				array($this->escapeField('is_spam') => "'$newType'"),
+				array($this->escapeField() => $id));
+		}
+		return $success;
+	}
+	
+/**
+ * Get the row related to a comment
+ * 
+ * @param string $id Comment id
+ * @return mixed False if an error occured, an array with the following keys otherwise:
+ * 	- Model: Associated model object
+ *  - id: Id of the related row 
+ */
+	private function __getCommentedRow($id) {
+		$result = false;
 		$comment = $this->find('first', array(
 			'recursive' => -1,
 			'conditions' => array('id' => $id)));
-
-		if (!isset($comment['Comment']['model'])) {
-			return false;
+		
+		if (isset($comment['Comment']['model'])) {
+			$Model = ClassRegistry::init($comment['Comment']['model']);
+			if (!empty($Model)) {
+				$result = array(
+					'Model' => $Model,
+					'id' => $comment['Comment']['foreign_key']);
+			}
 		}
-
-		$Model = ClassRegistry::init($comment['Comment']['model']);
-		if (empty($Model)) {
-			return false;
-		}
-
-		$sign = ($direction == 'up') ? '+' : '-';
-		$Model->recursive = -1;
-		return $Model->updateAll(
-			array('comments' => "comments $sign 1"),
-			array('id' => $comment['Comment']['foreign_key']));
+		return $result;
 	}
-
 }
 ?>

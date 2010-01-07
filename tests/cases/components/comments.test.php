@@ -27,13 +27,14 @@ class ArticlesTestController extends Controller {
  * @var array
  * @access public
  */
-	public $components = array('Comments.Comments');
+	public $components = array('Comments.Comments', 'Cookie', 'Auth');
 
 /**
  * 
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
+		$this->Comments->userModel = 'User';
 	}
 
 /**
@@ -54,7 +55,10 @@ class CommentsComponentTest extends CakeTestCase {
  * @access public
  */
 	public $fixtures = array(
-		'plugin.utils.article');
+		'plugin.comments.comment',
+		'plugin.comments.user',
+		'plugin.comments.article');
+
 /**
  * setUp method
  *
@@ -64,6 +68,8 @@ class CommentsComponentTest extends CakeTestCase {
 	function startTest() {
 		$this->Controller = new ArticlesTestController();
 		$this->Controller->constructClasses();
+		$this->Controller->Component->init($this->Controller);
+		$this->Controller->Component->initialize($this->Controller);
 	}
 
 /**
@@ -78,24 +84,252 @@ class CommentsComponentTest extends CakeTestCase {
 	}
 
 /**
- * testPermalink method
+ * testInitialize
  *
- * @todo finish it
+ * @access public
+ * @return void
+ */
+	public function testInitialize() {
+		$this->Controller = new ArticlesTestController();
+		$this->Controller->constructClasses();
+		$this->Controller->Component->init($this->Controller);
+		$this->Controller->Component->initialize($this->Controller);
+		$this->assertEqual($this->Controller->helpers, array(
+			'Html', 'Form', 'Comments.CommentWidget'));
+		$this->assertTrue($this->Controller->Article->Behaviors->attached('Commentable'));
+		$this->assertEqual($this->Controller->Comments->modelName, 'Article');
+	}
+
+/**
+ * testInitialize
+ *
+ * @access public
+ * @return void
+ */
+	public function testStartup() {
+		//$this->Controller->Comments->deleteActions = array('delete_comment');
+		$this->Controller->Comments->startup($this->Controller);
+	}
+
+/**
+ * testBeforeRender
+ *
+ * @access public
+ * @return void
+ */
+	public function testBeforeRender() {
+		$this->Controller->action = 'view';
+		$this->__setupControllerData();
+		$this->Controller->Comments->beforeRender();
+		$this->assertTrue(is_array($this->Controller->viewVars['commentParams']));
+		$this->assertEqual($this->Controller->viewVars['commentParams'], array(
+			'displayType' => 'flat',
+			'viewComments' => 'commentsData',
+			'modelName' => 'Article',
+			'userModel' => 'User'));
+	}
+
+/**
+ * testCallback_initType
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_initType() {
+		$this->Controller->Cookie->delete('Comments.Article');
+		$this->Controller->passedArgs['comment_view_type'] = 'invalid_type';
+		$this->assertEqual($this->Controller->Comments->callback_initType(), 'flat');
+
+		$this->Controller->passedArgs['comment_view_type'] = 'tree';
+		$this->assertEqual($this->Controller->Comments->callback_initType(), 'tree');
+
+		unset($this->Controller->passedArgs['comment_view_type']);
+		$this->assertEqual($this->Controller->Comments->callback_initType(), 'tree');
+
+		$this->Controller->Cookie->write('Comments.Article', 'invalid_type');
+		$this->assertEqual($this->Controller->Comments->callback_initType(), 'flat');
+	}
+
+/**
+ * testCallback_view
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_view() {
+		$this->__setupControllerData();
+
+		$this->Controller->Comments->callback_view('flat');
+		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
+
+		$this->Controller->viewVars = null;
+		$this->expectException('Exception');
+		$this->Controller->Comments->callback_view('flat');
+
+		$this->Controller->Article->unbindModel(
+			array('hasMany' => array('Article')));
+
+		$this->expectException('Exception');
+		$this->Controller->Comments->callback_view('flat');
+	}
+
+/**
+ * testCallback_fetchDataTree
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_fetchDataTree() {
+		$this->__setupControllerData();
+		$result = $this->Controller->Comments->callback_fetchDataTree(array(
+			'id' => 1));
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($result[0]['Comment']['model'], 'Article');
+		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
+	}
+
+/**
+ * testCallback_fetchDataFlat
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_fetchDataFlat() {
+		$this->__setupControllerData();
+		$result = $this->Controller->Comments->callback_fetchDataFlat(array(
+			'id' => 1));
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($result[0]['Comment']['model'], 'Article');
+		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
+	}
+
+/**
+ * testCallback_fetchDataThreaded
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_fetchDataThreaded() {
+		$this->__setupControllerData();
+		$result = $this->Controller->Comments->callback_fetchDataThreaded(array(
+			'id' => 1));
+		$this->assertTrue(!empty($result));
+		$this->assertTrue(is_array($result[0]['children']));
+		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
+	}
+
+/**
+ * testCallback_fetchData
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_fetchData() {
+		
+	}
+
+/**
+ * testCallback_fetchDataThreaded
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_prepareParams() {
+		
+	}
+
+/**
+ * testCallback_add
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_add() {
+		
+	}
+
+/**
+ * testCallback_add
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_toggleApprove() {
+		
+	}
+
+/**
+ * testCallback_delete
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_delete() {
+		
+	}
+
+/**
+ * testFlash
+ *
+ * @access public
+ * @return void
+ */
+	public function testFlash() {
+		$message = 'Test Message';
+
+		$this->Controller->params['isAjax'] = false;
+		$this->Controller->Comments->flash($message);
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), $message);
+
+		$this->Controller->params['isAjax'] = true;
+		$this->Controller->Comments->flash('Test Message');
+		$this->assertEqual($this->Controller->viewVars['messageTxt'], $message);
+	}
+
+/**
+ * testFlash
+ *
+ * @access public
+ * @return void
+ */
+	public function testRedirect() {
+		$url = array('controller' => 'tests', 'action' => 'index');
+
+		$this->Controller->params['isAjax'] = false;
+		$this->Controller->Comments->redirect($url);
+		$this->assertEqual($this->Controller->redirectUrl, $url);
+
+		$this->Controller->params['isAjax'] = true;
+		$this->Controller->Comments->redirect($url);
+		$this->assertEqual($this->Controller->viewVars['redirect'], $url);
+		$this->assertEqual($this->Controller->viewVars['ajaxMode'], true);
+	}
+
+/**
+ * testFlash
+ *
  * @access public
  * @return void
  */
 	public function testPermalink() {
-		/*
 		$this->Controller->params = array(
-			'pass' => array(
-				1),
 			'named' => array(
-				'controller' => 'Article',
-				'action' => 'view'));
-		$result = $this->Controller->Comments->permalink();
-		$this->assertEqual($result, 'http://' . env('HTTP_HOST') . '/');
-		*/
+				'controller' => 'articles',
+				'action' => 'view',
+				'testnamed' => 'test'));
+		$this->assertEqual($this->Controller->Comments->permalink(), 'http://' . env('HTTP_HOST') . '/articles/view/testnamed:test');
 	}
 
+	protected function __setupControllerData() {
+		$this->Controller->params = array(
+			'url' => array());
+		$this->Controller->Comments->userModel = 'User';
+		$this->Controller->Article->Comment->bindModel(array(
+			'belongsTo' => array('User')));
+		$this->Controller->Article->id = 1;
+		$this->Controller->viewVars['article'] = array(
+			'Article' => array(
+				'id' => 1));
+	}
 }
 ?>
