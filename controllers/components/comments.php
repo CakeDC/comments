@@ -251,7 +251,8 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_view($displayType) {
-		if (!isset($this->Controller->{$this->modelName}) || !isset($this->Controller->{$this->modelName}->{$this->assocName})) {
+		if (!isset($this->Controller->{$this->modelName}) || 
+			(!array_key_exists($this->assocName, array_merge($this->Controller->{$this->modelName}->hasOne, $this->Controller->{$this->modelName}->hasMany)))) {
 			throw new Exception('CommentsComponent: model '.$this->modelName.' or association '.$this->assocName.' doesn\'t exist');
 		}
 
@@ -339,7 +340,7 @@ class CommentsComponent extends Object {
  * @return array
  */
 	public function callback_fetchData($options) {
-		return $this->_fetchDataFlat($options);
+		return $this->callback_fetchDataFlat($options);
 	}
 
 /**

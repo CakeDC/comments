@@ -101,14 +101,30 @@ class CommentsComponentTest extends CakeTestCase {
 	}
 
 /**
- * testInitialize
+ * testStartup
  *
  * @access public
  * @return void
  */
 	public function testStartup() {
-		//$this->Controller->Comments->deleteActions = array('delete_comment');
+		// TODO Is it still implemented? Fix or remove it
+		/*$this->Controller->Comments->deleteActions = array('delete_comment');
+		$this->Controller->action = 'delete_comment';
+		$this->Controller->Comments->startup($this->Controller);*/
+		
+		$this->assertTrue(isset($this->Controller->Article->hasMany['Comment']));
+		$this->Controller->Comments->unbindAssoc = true;
 		$this->Controller->Comments->startup($this->Controller);
+		$this->assertFalse(isset($this->Controller->Article->hasMany['Comment']));
+		
+		$User = ClassRegistry::init('User');
+		$this->Controller->Session->write('Auth', $User->find('first'));
+		$this->assertFalse(isset($this->Controller->viewVars['isAuthorized']));
+		$this->Controller->Comments->unbindAssoc = false;
+		$this->Controller->Comments->startup($this->Controller);
+		$this->assertTrue($this->Controller->viewVars['isAuthorized']);
+		$this->Controller->Session->delete('Auth');
+		unset($User);
 	}
 
 /**
@@ -158,19 +174,33 @@ class CommentsComponentTest extends CakeTestCase {
  */
 	public function testCallback_view() {
 		$this->__setupControllerData();
-
 		$this->Controller->Comments->callback_view('flat');
 		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
+		$dataFlat = $this->Controller->viewVars['commentsData'];
+		
+		$this->__setupControllerData();
+		$this->Controller->Comments->callback_view('non-existing-type');
+		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
+		$this->assertEqual($this->Controller->viewVars['commentsData'], $dataFlat);
 
+		$this->__setupControllerData();
 		$this->Controller->viewVars = null;
-		$this->expectException('Exception');
-		$this->Controller->Comments->callback_view('flat');
+		try {
+			$this->Controller->Comments->callback_view('flat');
+			$this->fail();
+		} catch(Exception $e) {
+			$this->pass();
+		}
 
+		$this->__setupControllerData();
 		$this->Controller->Article->unbindModel(
-			array('hasMany' => array('Article')));
-
-		$this->expectException('Exception');
-		$this->Controller->Comments->callback_view('flat');
+			array('hasMany' => array('Comment')));
+		try {
+			$this->Controller->Comments->callback_view('flat');
+			$this->fail();
+		} catch(Exception $e) {
+			$this->pass();
+		}
 	}
 
 /**
