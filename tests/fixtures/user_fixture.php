@@ -39,6 +39,7 @@ class UserFixture extends CakeTestFixture {
 			'public_session_key' => array('type'=>'text', 'null' => true, 'default' => NULL),
 			'private_session_key' => array('type'=>'text', 'null' => true, 'default' => NULL),
 			'last_activity' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
+			'is_admin' => array('type'=>'boolean', 'null' => true, 'default' => '0'),
 			'created' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
 			'modified' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
 			'indexes' => array(
@@ -70,6 +71,7 @@ class UserFixture extends CakeTestFixture {
 			'public_session_key'  => '',
 			'private_session_key'  => '',
 			'last_activity'  => '2008-03-25 02:45:46',
+			'is_admin' => 1,
 			'created'  => '2008-03-25 02:45:46',
 			'modified'  => '2008-03-25 02:45:46'
 		),
@@ -91,6 +93,7 @@ class UserFixture extends CakeTestFixture {
 			'public_session_key'  => '',
 			'private_session_key'  => '',
 			'last_activity'  => '2008-03-25 02:45:46',
+			'is_admin' => 0,
 			'created'  => '2008-03-25 02:45:46',
 			'modified'  => '2008-03-25 02:45:46'
 		),
@@ -112,6 +115,7 @@ class UserFixture extends CakeTestFixture {
 			'public_session_key'  => '',
 			'private_session_key'  => '',
 			'last_activity'  => '2008-03-25 02:45:46',
+			'is_admin' => 0,
 			'created'  => '2008-03-25 02:45:46',
 			'modified'  => '2008-03-25 02:45:46'
 		),
@@ -133,6 +137,7 @@ class UserFixture extends CakeTestFixture {
 			'public_session_key'  => '',
 			'private_session_key'  => '',
 			'last_activity'  => '2008-03-25 02:45:46',
+			'is_admin' => 0,
 			'created'  => '2008-03-25 02:45:46',
 			'modified'  => '2008-03-25 02:45:46'
 		)

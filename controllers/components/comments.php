@@ -352,7 +352,7 @@ class CommentsComponent extends Object {
  */
 	protected function _prepareModel($options) {
 		$params = array(
-			'isAdmin' => $this->Auth->user('admin') == true,
+			'isAdmin' => $this->Auth->user('is_admin') == true,
 			'userModel' => $this->userModel,
 			'userData' => $this->Auth->user());
 		return $this->Controller->{$this->modelName}->commentBeforeFind(array_merge($params, $options));
@@ -431,7 +431,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-		if (!($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('admin') == true)) {
+		if (!($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
 			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation', true));
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
@@ -561,7 +561,7 @@ class CommentsComponent extends Object {
 			if ($this->allowAnonymousComment || $this->Auth->user()) {
 				if (isset($this->Controller->passedArgs['comment_action'])) {
 					$commentAction = $this->Controller->passedArgs['comment_action'];
-					$isAdmin = (bool) $this->Auth->user('admin');
+					$isAdmin = (bool) $this->Auth->user('is_admin');
 					if (!$isAdmin) {
 						if (in_array($commentAction, array('delete'))) {
 							call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
