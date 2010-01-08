@@ -431,7 +431,8 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-		if (!($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
+		if (!isset($this->Controller->passedArgs['comment_action']) 
+			|| !($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
 			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation', true));
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
@@ -573,7 +574,8 @@ class CommentsComponent extends Object {
 					if (!in_array($commentAction, array('toggle_approve', 'delete'))) {
 						return $this->Controller->blackHole("CommentsComponent: unsupported comment_Action '$commentAction'");
 					}
-					call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
+					//call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
+					$this->_call(Inflector::variable($commentAction), array($id, $this->Controller->passedArgs['comment']));
 				} else {
 					Configure::write('Comment.action', 'add');
 					$this->_call('add', array($id, $this->Controller->passedArgs['comment'], $displayType));

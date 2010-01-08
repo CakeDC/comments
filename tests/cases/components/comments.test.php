@@ -30,6 +30,12 @@ class ArticlesTestController extends Controller {
 	public $components = array('Comments.Comments', 'Cookie', 'Auth');
 
 /**
+ * Redirect url
+ * @var mixed
+ */
+	public $redirectUrl = null;
+	
+/**
  * 
  */
 	public function beforeFilter() {
@@ -337,7 +343,56 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_toggleApprove() {
+		$this->__setupControllerData();
+		$this->Controller->Article->id = 1;
+		$oldCount = $this->Controller->Article->field('comments');
 		
+		try {
+			$this->Controller->Comments->callback_toggleApprove(1, 1);
+			$this->fail();
+		} catch (BlackHoleException $e) {
+			$this->pass();
+		}
+		
+		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
+		try {
+			$this->Controller->Comments->callback_toggleApprove(1, 1);
+			$this->fail();
+		} catch (BlackHoleException $e) {
+			$this->pass();
+		}
+		
+		$User = ClassRegistry::init('User');
+		$this->Controller->Session->write('Auth', $User->find('first'));
+		
+		$this->Controller->Comments->callback_toggleApprove(1, 1);
+		$comment = $this->Controller->Article->Comment->findById(1);
+		$this->assertEqual($comment['Comment']['approved'], 0);
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
+		$this->assertNull($this->Controller->redirectUrl);
+		
+		$this->Controller->Comments->callback_toggleApprove(1, 'unexisting-id');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment status update. Try later.');
+		$this->assertNull($this->Controller->redirectUrl);
+		
+		// Call this action from when in the view callback, thanks to _processActions
+		// TODO This test displays weird errors in callback_fetchDataFlat() action. Find the reason
+		/*$this->__setupControllerData();
+		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
+		$this->Controller->passedArgs['comment'] = 1;
+		debug('----------------------');
+		$this->Controller->Comments->callback_view('flat');
+		$comment = $this->Controller->Article->Comment->findById(1);
+		$this->assertEqual($comment['Comment']['approved'], 1);
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount);
+		$this->assertNull($this->Controller->redirectUrl);
+		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));*/
+		
+		$this->Controller->Session->delete('Message.flash.message');
+		$this->Controller->Session->delete('Auth');
+		unset($User);
 	}
 
 /**
@@ -347,7 +402,22 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_delete() {
+		$this->__setupControllerData();
+		$this->Controller->Article->id = 1;
+		$oldCount = $this->Controller->Article->field('comments');
 		
+		$this->Controller->Comments->callback_delete(1, 1);
+		$comment = $this->Controller->Article->Comment->findById(1);
+		$this->assertFalse($comment);
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been deleted.');
+		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
+		$this->assertEqual($this->Controller->redirectUrl, array());
+		
+		$this->Controller->Comments->callback_delete(1, 'unexisting-id');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment deleting. Try later.');
+		$this->assertEqual($this->Controller->redirectUrl, array());
+		
+		$this->Controller->Session->delete('Message.flash.message');
 	}
 
 /**
@@ -402,6 +472,11 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertEqual($this->Controller->Comments->permalink(), 'http://' . env('HTTP_HOST') . '/articles/view/testnamed:test');
 	}
 
+/**
+ * Setup fake controller data
+ * 
+ * @return void
+ */
 	protected function __setupControllerData() {
 		$this->Controller->params = array(
 			'url' => array());
