@@ -255,7 +255,13 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_fetchData() {
-		
+		$this->__setupControllerData();
+		$result = $this->Controller->Comments->callback_fetchData(array(
+			'id' => 1));
+		// The behavior must be the same than callback_fetchDataFlat as it is just an alias
+		$this->assertTrue(!empty($result));
+		$this->assertEqual($result[0]['Comment']['model'], 'Article');
+		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -265,7 +271,21 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_prepareParams() {
+		$this->assertEqual($this->Controller->Comments->commentParams, array());
+		$this->Controller->Comments->callback_prepareParams();
+		$expected = array(
+			'viewComments' => 'commentsData',
+			'modelName' => 'Article',
+			'userModel' => 'UserModel'); 
+		$this->assertEqual($this->Controller->Comments->commentParams, $expected);
 		
+		$this->__setupControllerData();
+		$this->Controller->passedArgs['comment_action'] = 'view'; 
+		$this->Controller->Comments->callback_prepareParams();
+		$expected = array_merge($expected, array(
+			'userModel' => 'User',
+			'comment_action' => 'view'));
+		$this->assertEqual($this->Controller->Comments->commentParams, $expected);
 	}
 
 /**
@@ -275,7 +295,39 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testCallback_add() {
+		$data = array(
+			'Comment' => array(
+				'title' => 'My first comment <script>XSS</script>',
+				'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')
+		);
+		$this->__setupControllerData();
+		$this->Controller->data = $data;
+		$User = ClassRegistry::init('User');
+		$this->Controller->Session->write('Auth', $User->find('first'));
+		$this->Controller->Article->id = 1;
+		$oldCount = $this->Controller->Article->field('comments');
 		
+		$this->Controller->Comments->callback_add(1, 1, 'flat');
+		$created = $this->Controller->Article->Comment->find('first', array('order' => 'created DESC'));
+		$expected = array(
+			'user_id' => '47ea303a-3b2c-4251-b313-4816c0a800fa',
+			'model' => 'Article',
+			'foreign_key' => 1,
+			'parent_id' => 1,
+			'approved' => 1,
+			'title' => 'My first comment XSS',
+			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+		);
+		$this->assertTrue(is_array($created));
+		$this->assertNotEqual($created['Comment']['id'], 3);
+		$this->assertEqual(array_intersect($created['Comment'], $expected), $expected);
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been saved.');
+		$this->assertEqual($this->Controller->redirectUrl, array('#' => 'comment' . $created['Comment']['id']));
+		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
+		
+		$this->Controller->Session->delete('Message.flash.message');
+		$this->Controller->Session->delete('Auth');
+		unset($User);
 	}
 
 /**

@@ -380,6 +380,8 @@ class CommentsComponent extends Object {
 /**
  * Handle adding comments
  *
+ * TODO Remove the unused $displayType param or make use of it
+ * TODO L397 Can the $permalink have an empty value?
  * @param integer $modelId
  * @param integer $commentId Parent comment id
  * @param string $displayType
@@ -392,13 +394,17 @@ class CommentsComponent extends Object {
 			}
 			$data['Comment']['body'] = $this->Utils->cleanHtml($this->Controller->data['Comment']['body']);
 			$modelName = $this->modelName;
+			$permalink = '';
+			if (method_exists($this->Controller->{$this->modelName}, 'permalink')) {
+				$premalink = $this->Controller->{$this->modelName}->permalink($modelId);
+			}
 			$options = array(
 				'userId' => $this->Auth->user('id'),
 				'modelId' => $modelId,
 				'modelName' => $this->Controller->{$this->modelName}->name,
-				'defaultTitle' => $this->Controller->defaultTitle,
+				'defaultTitle' => isset($this->Controller->defaultTitle) ? $this->Controller->defaultTitle : '',
 				'data' => $data,
-				'permalink' => $this->Controller->{$this->modelName}->permalink($modelId));
+				'permalink' => $permalink);
 			$result = $this->Controller->{$this->modelName}->commentAdd($commentId, $options);
 
 			if (!is_null($result)) {
@@ -425,13 +431,13 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-		if (!($this->Controller->passedArgs['comment_Action'] == 'toggle_approve' && $this->Controller->Auth->user('admin') == true)) {
+		if (!($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('admin') == true)) {
 			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation', true));
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
-			$this->flash(__d('comments', 'The Comment has been deleted.', true));
+			$this->flash(__d('comments', 'The Comment status has been updated.', true));
 		} else {
-			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.', true));
+			$this->flash(__d('comments', 'Error appear during comment status update. Try later.', true));
 		}
 	}
 
@@ -459,7 +465,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function flash($message) {
-		$isAjax = $this->Controller->params['isAjax'];
+		$isAjax = isset($this->Controller->params['isAjax']) ? $this->Controller->params['isAjax'] : false;
 		if ($isAjax) {
 			$this->Controller->set('messageTxt',$message);
 		} else {
@@ -475,7 +481,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function redirect($urlBase = array()) {
-		$isAjax = $this->Controller->params['isAjax'];
+		$isAjax = isset($this->Controller->params['isAjax']) ? $this->Controller->params['isAjax'] : false;
 		$url = array();
 		foreach ($this->Controller->passedArgs as $key => $value) {
 			if (is_numeric($key)) {
