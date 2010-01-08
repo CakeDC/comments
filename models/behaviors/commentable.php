@@ -170,7 +170,7 @@ class CommentableBehavior extends ModelBehavior {
 					// $data['Comment.'][$spamField];
 				// }
 
-				if (!empty($data['Comment']['approved']) && $data['Comment']['approved']) {
+				if (!isset($data['Comment']['approved']) || $data['Comment']['approved'] == true) {
 					$this->changeCommentCount($model, $modelId);
 				}
 				return $id;

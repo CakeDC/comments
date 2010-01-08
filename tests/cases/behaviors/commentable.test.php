@@ -130,19 +130,20 @@ class CommentableTest extends CakeTestCase {
 		$oldCount = $this->Model->field('comments');
 		$this->assertTrue(is_numeric($oldCount));
 		
+		// Testing adding a comment (approved by default)
 		$options['data'] = array('Comment' => $options['data']);
 		$result = $this->Model->commentAdd(0, $options);
 		$this->assertTrue(is_string($result));
 		$this->Model->Comment->id = $result;
 		$this->assertEqual($this->Model->Comment->field('title'), $options['data']['Comment']['title']);
-		$this->assertEqual($this->Model->field('comments'), $oldCount);
+		$this->assertEqual($this->Model->field('comments'), ++$oldCount);
 		
-		// Test adding approved comment
-		$options['data']['Comment']['approved'] = true;
+		// Test adding non approved comment
+		$options['data']['Comment']['approved'] = 0;
 		$result = $this->Model->commentAdd(0, $options);
 		$this->assertTrue(is_string($result));
 		$this->Model->id = $options['modelId'];
-		$this->assertEqual($this->Model->field('comments'), $oldCount + 1);
+		$this->assertEqual($this->Model->field('comments'), $oldCount);
 		
 		// Test adding spam comment
 		$options['data'] = array_merge($options['data'], array(
