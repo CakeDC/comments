@@ -34,7 +34,7 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
  */ 
 	public $migration = array(
 		'up' => array(
-			'create_tables' => array(
+			'create_table' => array(
 				'comments' => array(
 					'id' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),
 					'parent_id' => array('type'=>'string', 'null' => true, 'default' => NULL, 'length' => 36),
@@ -59,14 +59,14 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 					'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 				),
 			),
-			'add_fields' => array(
+			'create_field' => array(
 				'users' => array(
 					'comment_count' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10))),
 		),
 		'down' => array(
-			'drop_tables' => array('comments'),
-			'drop_fields' => array(
-				'users' => 'comment_count'),
+			'drop_table' => array('comments'),
+			'drop_field' => array(
+				'users' => array('comment_count')),
 		)
 	);
 
