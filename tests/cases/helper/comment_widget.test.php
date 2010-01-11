@@ -200,41 +200,88 @@ class CommentWidgetHelperTest extends CakeTestCase {
 /**
  * Test prepareUrl method
  * 
- * @TODO Code me!
  * @return void
  */
 	public function testPrepareUrl() {
+		$expected = $url = array(
+			'controller' => 'articles',
+			'action' => 'view',
+			'my-first-article');
+		$this->assertEqual($this->CommentWidget->prepareUrl($url), $expected);
 		
+		$this->CommentWidget->options(array(
+			'target' => 'placeholder',
+			'ajaxAction' => 'add'));
+		$expected['action'] = 'add';
+		$this->assertEqual($this->CommentWidget->prepareUrl($url), $expected);
+		
+		$this->CommentWidget->options(array(
+			'target' => 'placeholder',
+			'ajaxAction' => array(
+				'controller' => 'comments',
+				'action' => 'add')));
+		$expected = array(
+			'controller' => 'comments',
+			'action' => 'add',
+			'my-first-article');
+		$this->assertEqual($this->CommentWidget->prepareUrl($url), $expected);
 	}
 	
 /**
  * Test allowAnonymousComment method
  * 
- * @TODO Code me!
  * @return void
  */
 	public function testAllowAnonymousComment() {
-		
+		$this->assertFalse($this->CommentWidget->allowAnonymousComment());
+		$this->CommentWidget->options(array('allowAnonymousComment' => true));
+		$this->assertTrue($this->CommentWidget->allowAnonymousComment());
 	}
 	
 /**
  * Test element method
  * 
- * @TODO Code me!
  * @return void
  */
 	public function testElement() {
+		$this->__mockView();
+		$this->CommentWidget->options(array('theme' => 'flat'));
+		$countElementCall = 0;
 		
-	}
-
-/**
- * Test treeCallback method
- * 
- * @TODO Code me!
- * @return void
- */
-	public function testTreeCallback() {
+		$expectedParams = array(
+			'comments/flat/view',
+			array(
+				'target' => false,
+				'ajaxAction' => false,
+				'displayUrlToComment' => false,
+				'urlToComment' => '',
+				'allowAnonymousComment'  => false,
+				'url' => null,
+				'viewInstance' => null,
+				'theme' => 'flat')
+		);
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$expected = 'Comment element content';
+		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
+		$this->assertEqual($this->CommentWidget->element('view'), $expected);
 		
+		// Test missing element in project elements path. The helper must try to search the element from the comments plugin
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$this->View->setReturnValueAt($countElementCall++, 'element', 'Not Found: /path/to/project/views/elements/comments/flat/view.ctp');
+		$expectedParams[1]['plugin'] = 'comments';
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
+		$this->assertEqual($this->CommentWidget->element('view'), $expected);
+		unset($expectedParams[1]['plugin']);
+		
+		// Test params: they must be passed to the element "as is". Note that the theme has not effect on the element being fetched
+		$expectedParams[1]['target'] = 'wrapper'; 
+		$expectedParams[1]['theme'] = 'threaded';
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
+		$this->assertEqual($this->CommentWidget->element('view', array('target' => 'wrapper', 'theme' => 'threaded')), $expected);
+		
+		$this->View->expectCallCount('element', $countElementCall);
 	}
 
 /**
@@ -247,5 +294,18 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		ClassRegistry::flush();
 	}
 
+/**
+ * Mock the view object, update the CR and the testCase attribute with the mock object
+ * 
+ * @return void
+ */
+	private function __mockView() {
+		if (!class_exists('MockView')) {
+			Mock::generate('View');
+		}
+		$this->View = new MockView();
+		ClassRegistry::removeObject('view');
+		ClassRegistry::addObject('view', $this->View);
+	}
 }
 ?>
