@@ -171,11 +171,80 @@ class CommentWidgetHelperTest extends CakeTestCase {
 /**
  * Test display method
  * 
- * @TODO Code me!
  * @return void
  */
 	public function testDisplay() {
+		$this->CommentWidget->enabled = false;
+		$this->assertEqual($this->CommentWidget->display(), '');
+
+		$this->CommentWidget->enabled = true;
+		$this->__mockView();
+		$countElementCall = 0;
+		$initialParams = $this->CommentWidget->globalParams; 
+		$Article = ClassRegistry::init('Article');
+		Configure::write('Routing.admin', 'admin'); // TODO Find a 1.3 equivalent
 		
+		// Test a basic display call
+		$currArticle = $Article->findById(1);
+		$this->View->passedArgs = array(
+			'foo' => 'bar',
+			'article-slug');
+		$this->View->viewVars = array(
+			'article' => $currArticle,
+			'commentParams' => array(
+				'viewComments' => 'commentsData',
+				'modelName' => 'Article',
+				'userModel' => 'User'),
+		);
+		$expectedParams = array(
+			'comments/flat/main', 
+			array_merge(
+				$initialParams,
+				array(
+					'viewRecord' => $currArticle['Article']),
+				$this->View->viewVars['commentParams'],
+				array(
+					'url' => array('article-slug'),
+					'allowAddByAuth' => false,
+					'allowAddByModel' => 1,
+					'adminRoute' => 'admin',
+					'isAddMode' => false,
+					'theme' => 'flat')
+				)
+		);
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$expected = 'Here are your comments!';
+		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
+		$result = $this->CommentWidget->display();
+		$this->assertEqual($result, $expected);
+		
+		// Test a display call with options
+		$expectedParams[0] = 'comments/threaded_custom/main';
+		$expectedParams[1] = array_merge($expectedParams[1], array(
+			'theme' => 'threaded_custom',
+			'displayType' => 'threaded', 
+			'subtheme' => 'custom'));
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
+		$options = array(
+			'displayType' => 'threaded',
+			'subtheme' => 'custom');
+		$result = $this->CommentWidget->display($options);
+		$this->assertEqual($result, $expected);
+		
+		// Test other cases
+		$this->CommentWidget->initialize();
+		$this->View->params['userslug'] = 'example-user';
+		unset($this->View->viewVars['article']);
+		$expectedParams[1] = array_merge($expectedParams[1], array(
+			'url' => array('example-user', 'article-slug'),
+			'viewRecord' => array()));
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
+		$result = $this->CommentWidget->display($options);
+		$this->assertEqual($result, $expected);
+		
+		$this->View->expectCallCount('element', $countElementCall);
 	}
 
 /**

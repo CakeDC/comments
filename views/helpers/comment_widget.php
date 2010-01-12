@@ -84,7 +84,7 @@ class CommentWidgetHelper extends AppHelper {
  *    If your comments type is 'flat' and you use `'theme' => 'mytheme'` in your params. 
  *   `elements/comments/flat_mytheme` is the directory the helper will look for your elements in.
  *
- *
+ * @TODO Check if the $adminRoute value is used somewher. Either remove it or find a 1.3 equivalent.
  * @param array $params Parameters for the comment rendering
  * @return string Rendered elements.
  */
@@ -104,7 +104,7 @@ class CommentWidgetHelper extends AppHelper {
 				$theme = 'flat';
 			}
 
-			$url = array();
+			$url = $this->globalParams['url'] = array();
 			if (isset($View->params['userslug'])) {
 				$url[] = $View->params['userslug'];
 			}
@@ -117,10 +117,9 @@ class CommentWidgetHelper extends AppHelper {
 			}
 
 			$model = $params['modelName'];
+			$viewRecord = $this->globalParams['viewRecord'] = array();
 			if (isset($View->viewVars[Inflector::variable($model)][$model])) {
 				$viewRecord = $View->viewVars[Inflector::variable($model)][$model];
-			} else {
-				$viewRecord = array();
 			}
 
 			if (isset($viewRecord['allow_comments'])) {
