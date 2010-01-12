@@ -136,6 +136,11 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->assertFalse($this->CommentWidget->enabled);
 		
 		$this->View->viewVars['commentParams'] = array(
+			'displayType' => 'flat');
+		$this->CommentWidget->beforeRender();
+		$this->assertFalse($this->CommentWidget->enabled);
+		
+		$this->View->viewVars['commentParams'] = array(
 			'displayType' => 'flat',
 			'viewComments' => 'commentsData');
 		$this->CommentWidget->beforeRender();
