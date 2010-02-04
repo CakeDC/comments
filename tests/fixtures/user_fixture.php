@@ -23,7 +23,6 @@ class UserFixture extends CakeTestFixture {
 	public $fields = array(
 			'id' => array('type'=>'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
 			'account_type' => array('type' => 'string', 'null' => false, 'length' => 8),
-//			'account_type' => array('type'=>'float', 'null' => false, 'default' => '1', 'length' => 4),
 			'url' => array('type'=>'string', 'null' => false, 'key' => 'unique'),
 			'slug' => array('type'=>'string', 'null' => false),
 			'username' => array('type'=>'string', 'null' => false),

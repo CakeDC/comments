@@ -21,7 +21,7 @@
  * component is fetching them separately (needed different result from model in dependency of
  * used displayType).
  *
- * Needs Router::connectNamed(array('comment', 'comment_view', 'comment_Action)) in config/routes.php.
+ * Needs Router::connectNamed(array('comment', 'comment_view', 'comment_action)) in config/routes.php.
  *
  * It is also usable to define (in controller, to not fetch unnecessary data
  * in used Controller::paginate() method):

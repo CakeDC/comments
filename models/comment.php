@@ -20,20 +20,19 @@ class Comment extends CommentsAppModel {
 		'Tree');
 
 /**
- * belongsTo Associations
+ * belongsTo Associations. 
+ * The reason why for alias used UserModel instead of User next: if you will need to attach comments to the User model it allow you to do it.
  *
  * @var array $belongsTo
  * @access public
  */
-	/*
 	public $belongsTo = array(
-		'User' => array('className' => 'Users.User',
+		'UserModel' => array('className' => 'Users.User',
 			'foreignKey' => 'user_id',
 			'conditions' => '',
 			'fields' => '',
 			'counterCache' => true,
 			'order' => ''));
-	*/
 /**
  * Is spam field possible values
  *

@@ -1,4 +1,4 @@
-<?php
+	<?php
 /* SVN FILE: $Id: comment_widget.php 1159 2009-09-17 21:01:45Z mark_story $ */
 class CommentWidgetHelper extends AppHelper {
 /**
@@ -7,7 +7,7 @@ class CommentWidgetHelper extends AppHelper {
  * @var array
  * @access public
  */
-	public $helpers = array('Html', 'Jquery');
+	public $helpers = array('Html', 'Js' => array('Jquery'));
 /**
  * Flag if this widget is properly configured
  *

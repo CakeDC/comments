@@ -9,6 +9,13 @@ class Article extends CakeTestModel {
 	public $name = 'Article';
 }
 
+class User extends CakeTestModel {
+/**
+ * 
+ */
+	public $name = 'User';
+}
+
 class ArticlesTestController extends Controller {
 
 /**
@@ -27,7 +34,7 @@ class ArticlesTestController extends Controller {
  * @var array
  * @access public
  */
-	public $components = array('Comments.Comments', 'Cookie', 'Auth');
+	public $components = array('Session', 'Comments.Comments', 'Cookie', 'Auth');
 
 /**
  * Redirect url
@@ -40,7 +47,7 @@ class ArticlesTestController extends Controller {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Comments->userModel = 'User';
+		$this->Comments->userModel = 'UserModel';
 	}
 
 /**
@@ -101,7 +108,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Component->init($this->Controller);
 		$this->Controller->Component->initialize($this->Controller);
 		$this->assertEqual($this->Controller->helpers, array(
-			'Html', 'Form', 'Comments.CommentWidget'));
+			'Session', 'Html', 'Form', 'Comments.CommentWidget'));
 		$this->assertTrue($this->Controller->Article->Behaviors->attached('Commentable'));
 		$this->assertEqual($this->Controller->Comments->modelName, 'Article');
 	}
@@ -124,8 +131,10 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertFalse(isset($this->Controller->Article->hasMany['Comment']));
 		
 		$User = ClassRegistry::init('User');
-		$this->Controller->Session->write('Auth', $User->find('first'));
-		$this->assertFalse(isset($this->Controller->viewVars['isAuthorized']));
+
+		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+
+		//$this->assertFalse(isset($this->Controller->viewVars['isAuthorized']));
 		$this->Controller->Comments->unbindAssoc = false;
 		$this->Controller->Comments->startup($this->Controller);
 		$this->assertTrue($this->Controller->viewVars['isAuthorized']);
@@ -309,24 +318,31 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->__setupControllerData();
 		$this->Controller->data = $data;
 		$User = ClassRegistry::init('User');
-		$this->Controller->Session->write('Auth', $User->find('first'));
+		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
 		$this->Controller->Article->id = 1;
 		$oldCount = $this->Controller->Article->field('comments');
 		
 		$this->Controller->Comments->callback_add(1, 1, 'flat');
 		$created = $this->Controller->Article->Comment->find('first', array('order' => 'created DESC'));
 		$expected = array(
-			'user_id' => '47ea303a-3b2c-4251-b313-4816c0a800fa',
-			'model' => 'Article',
-			'foreign_key' => 1,
-			'parent_id' => 1,
 			'approved' => 1,
+			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+			'foreign_key' => 1,
+			'model' => 'Article',
+			'parent_id' => 1,
 			'title' => 'My first comment XSS',
-			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+			'user_id' => '47ea303a-3b2c-4251-b313-4816c0a800fa',
 		);
+		$result = array();
+		foreach ($created['Comment'] as $key => $value) {
+			if (isset($expected[$key])) {
+				$result[$key] = $value;
+			}
+		}
 		$this->assertTrue(is_array($created));
 		$this->assertNotEqual($created['Comment']['id'], 3);
-		$this->assertEqual(array_intersect($created['Comment'], $expected), $expected);
+		ksort($result);
+		$this->assertEqual($result, $expected);
 		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been saved.');
 		$this->assertEqual($this->Controller->redirectUrl, array('#' => 'comment' . $created['Comment']['id']));
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
@@ -363,7 +379,7 @@ class CommentsComponentTest extends CakeTestCase {
 		}
 		
 		$User = ClassRegistry::init('User');
-		$this->Controller->Session->write('Auth', $User->find('first'));
+		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
 		
 		$this->Controller->Comments->callback_toggleApprove(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
@@ -378,7 +394,8 @@ class CommentsComponentTest extends CakeTestCase {
 		
 		// Call this action from when in the view callback, thanks to _processActions
 		// TODO This test displays weird errors in callback_fetchDataFlat() action. Find the reason
-		/*$this->__setupControllerData();
+		/*
+		$this->__setupControllerData();
 		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
 		$this->Controller->passedArgs['comment'] = 1;
 		debug('----------------------');
@@ -388,7 +405,9 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount);
 		$this->assertNull($this->Controller->redirectUrl);
-		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));*/
+		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
+		
+		*/
 		
 		$this->Controller->Session->delete('Message.flash.message');
 		$this->Controller->Session->delete('Auth');
