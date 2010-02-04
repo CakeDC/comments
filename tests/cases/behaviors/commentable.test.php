@@ -1,35 +1,39 @@
 <?php
 App::import('model', 'Comments.Comment');
 
-class Article extends CakeTestModel {
+if (!class_exists('Article')) {
+	class Article extends CakeTestModel {
 
-/**
- * 
- */
-	public $actsAs = array(
-		'Comments.Commentable' => array(
-			'commentModel' => 'Comments.Comment'));
-/**
- * 
- */
-	public $useTable = 'articles';
+	/**
+	 * 
+	 */
+		public $actsAs = array(
+			'Comments.Commentable' => array(
+				'commentModel' => 'Comments.Comment'));
+	/**
+	 * 
+	 */
+		public $useTable = 'articles';
 
-/**
- * 
- */
-	public $name = 'Article';
+	/**
+	 * 
+	 */
+		public $name = 'Article';
+	}
 }
 
-class User extends CakeTestModel {
-/**
- * 
- */
-	public $useTable = 'users';
+if (!class_exists('User')) {
+	class User extends CakeTestModel {
+	/**
+	 * 
+	 */
+		public $useTable = 'users';
 
-/**
- * 
- */
-	public $name = 'User';
+	/**
+	 * 
+	 */
+		public $name = 'User';
+	}
 }
 
 /**

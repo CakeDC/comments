@@ -2,61 +2,68 @@
 App::import('Controller', 'Controller', false);
 App::import('Component', 'Comments.Comments');
 
-class Article extends CakeTestModel {
-/**
- * 
- */
-	public $name = 'Article';
+if (!class_exists('Article')) {
+	class Article extends CakeTestModel {
+	/**
+	 * 
+	 */
+		public $name = 'Article';
+	}
 }
 
-class User extends CakeTestModel {
-/**
- * 
- */
-	public $name = 'User';
+
+if (!class_exists('User')) {
+	class User extends CakeTestModel {
+	/**
+	 * 
+	 */
+		public $name = 'User';
+	}
 }
 
-class ArticlesTestController extends Controller {
+if (!class_exists('ArticlesTestController')) {
+	class ArticlesTestController extends Controller {
 
-/**
- * @var string
- * @access public
- */
-	public $name = 'ArticlesTest';
+	/**
+	 * @var string
+	 * @access public
+	 */
+		public $name = 'ArticlesTest';
 
-/**
- * @var array
- * @access public
- */
-	public $uses = array('Article');
+	/**
+	 * @var array
+	 * @access public
+	 */
+		public $uses = array('Article');
 
-/**
- * @var array
- * @access public
- */
-	public $components = array('Session', 'Comments.Comments', 'Cookie', 'Auth');
+	/**
+	 * @var array
+	 * @access public
+	 */
+		public $components = array('Session', 'Comments.Comments', 'Cookie', 'Auth');
 
-/**
- * Redirect url
- * @var mixed
- */
-	public $redirectUrl = null;
-	
-/**
- * 
- */
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->Comments->userModel = 'UserModel';
+	/**
+	 * Redirect url
+	 * @var mixed
+	 */
+		public $redirectUrl = null;
+		
+	/**
+	 * 
+	 */
+		public function beforeFilter() {
+			parent::beforeFilter();
+			$this->Comments->userModel = 'UserModel';
+		}
+
+	/**
+	 * 
+	 */
+		public function redirect($url, $status = NULL, $exit = true) {
+			$this->redirectUrl = $url;
+		}
+
 	}
-
-/**
- * 
- */
-	public function redirect($url, $status = NULL, $exit = true) {
-		$this->redirectUrl = $url;
-	}
-
 }
 
 

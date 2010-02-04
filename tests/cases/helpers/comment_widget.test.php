@@ -5,43 +5,46 @@ App::import('Component', array('Comments.Comments'));
 
 Mock::generatePartial('AppHelper', 'JqueryHelper', array('link'));
 
-class Article extends CakeTestModel {
-/**
- * Name
- * @var string
- */
-	public $name = 'Article';
+if (!class_exists('Article')) {
+	class Article extends CakeTestModel {
+	/**
+	 * 
+	 */
+		public $name = 'Article';
+	}
 }
 
-class ArticlesTestController extends Controller {
+if (!class_exists('ArticlesTestController')) {
+	class ArticlesTestController extends Controller {
 
-/**
- * @var string
- * @access public
- */
-	public $name = 'ArticlesTest';
+	/**
+	 * @var string
+	 * @access public
+	 */
+		public $name = 'ArticlesTest';
 
-/**
- * @var array
- * @access public
- */
-	public $uses = array('Article');
+	/**
+	 * @var array
+	 * @access public
+	 */
+		public $uses = array('Article');
 
-/**
- * @var array
- * @access public
- */
-	public $components = array('Comments.Comments');
+	/**
+	 * @var array
+	 * @access public
+	 */
+		public $components = array('Comments.Comments');
 
-/**
- * Overrides Controller::redirect() to log the redirected url
- * (non-PHPdoc)
- * @see cake/libs/controller/Controller#redirect($url, $status, $exit)
- */
-	public function redirect($url, $status = NULL, $exit = true) {
-		$this->redirectUrl = $url;
+	/**
+	 * Overrides Controller::redirect() to log the redirected url
+	 * (non-PHPdoc)
+	 * @see cake/libs/controller/Controller#redirect($url, $status, $exit)
+	 */
+		public function redirect($url, $status = NULL, $exit = true) {
+			$this->redirectUrl = $url;
+		}
+
 	}
-
 }
 
 class CommentWidgetHelperTest extends CakeTestCase {

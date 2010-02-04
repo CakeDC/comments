@@ -2,7 +2,15 @@
 App::import('Controller', 'Comments.Comments');
 App::import('Model', 'Comments.Comment');
 
-class User extends AppModel { }
+if (!class_exists('User')) {
+	class User extends CakeTestModel {
+	/**
+	 * 
+	 */
+		public $name = 'User';
+	}
+}
+
 class TestCommentsController extends CommentsController {
 /**
  * Auto render
