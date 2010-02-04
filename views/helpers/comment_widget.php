@@ -144,9 +144,9 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @access public
  */
-	public function link($title, $url='', $options=array()) {
+	public function link($title, $url='', $options = array()) {
 		if ($this->globalParams['target']) {
-			return $this->Jquery->link($title, $this->prepareUrl($url), am($options, array('update' => $this->globalParams['target'])));
+			return $this->Js->link($title, $this->prepareUrl($url), am($options, array('update' => $this->globalParams['target'])));
 		} else {
 			return $this->Html->link($title, $url, $options);
 		}

@@ -115,7 +115,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Component->init($this->Controller);
 		$this->Controller->Component->initialize($this->Controller);
 		$this->assertEqual($this->Controller->helpers, array(
-			'Session', 'Html', 'Form', 'Comments.CommentWidget'));
+			'Session', 'Html', 'Form', 'Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
 		$this->assertTrue($this->Controller->Article->Behaviors->attached('Commentable'));
 		$this->assertEqual($this->Controller->Comments->modelName, 'Article');
 	}

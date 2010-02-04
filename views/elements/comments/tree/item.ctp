@@ -1,4 +1,3 @@
-<?php /* SVN FILE: $Id: item.ctp 1061 2009-09-03 17:19:42Z renan.saddam $ */ ?>
 <?php
 	$_actionLinks = array();
 	if (!empty($displayUrlToComment)) {
@@ -15,7 +14,7 @@
 			}
 		}
 	}
-	//$_userLink = $html->link($comment[$userModel]['username'], array('controller'=> 'users', 'action'=>'profile', $comment[$userModel]['slug']));
+
 	$_userLink = $comment[$userModel]['username'];
 ?>
 <div class="comment">

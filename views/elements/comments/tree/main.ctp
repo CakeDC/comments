@@ -1,4 +1,3 @@
-<?php /* SVN FILE: $Id: main.ctp 1061 2009-09-03 17:19:42Z renan.saddam $ */ ?>
 <div class="comments">
 	<a name="comments"></a>
 	<h3><?php __d('comments', 'Comments'); ?>:</h3>

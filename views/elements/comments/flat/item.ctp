@@ -15,7 +15,6 @@
 		}
 	}
 
-	//$_userLink = $html->link($comment[$userModel]['username'], array('controller'=> 'users', 'action'=>'profile', $comment[$userModel]['slug']));
 	$_userLink = $comment[$userModel]['username'];
 
 ?>

@@ -1,4 +1,3 @@
-<?php /* SVN FILE: $Id: main.ctp 1061 2009-09-03 17:19:42Z renan.saddam $ */ ?>
 <?php
 
 if ($allowAddByAuth):
@@ -8,7 +7,7 @@ if ($allowAddByAuth):
 		echo $commentWidget->element('form', array('comment' => (!empty($comment) ? $comment : 0)));
 	else:
 		if (empty($this->params[$adminRoute]) && $allowAddByAuth):
-			echo $commentWidget->link(__d('comments', 'ADD COMMENT', true), am($url, array('comment' => 0)));
+			echo $commentWidget->link(__d('comments', 'Add comment', true), am($url, array('comment' => 0)));
 		endif;
 	endif;
 else: ?>
