@@ -1,4 +1,4 @@
-	<?php
+<?php
 /* SVN FILE: $Id: comment_widget.php 1159 2009-09-17 21:01:45Z mark_story $ */
 class CommentWidgetHelper extends AppHelper {
 /**

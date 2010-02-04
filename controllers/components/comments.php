@@ -43,7 +43,7 @@ class CommentsComponent extends Object {
  * @var array $components
  * @access public
  */
-	public $components = array('Cookie', 'Session', 'Auth', 'Utils.Utils');
+	public $components = array('Cookie', 'Session', 'Auth');
 
 /**
  * Enabled
@@ -161,7 +161,7 @@ class CommentsComponent extends Object {
 		$this->Controller = $controller;
 		$this->modelName = $controller->modelClass;
 		$this->viewVariable = Inflector::variable($this->modelName);
-		$controller->helpers = array_merge($controller->helpers, array('Comments.CommentWidget'));
+		$controller->helpers = array_merge($controller->helpers, array('Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
 
 		if (!$controller->{$this->modelName}->Behaviors->attached('Commentable')) {
 			$controller->{$this->modelName}->Behaviors->attach('Comments.Commentable');
@@ -390,9 +390,9 @@ class CommentsComponent extends Object {
 	public function callback_add($modelId, $commentId, $displayType, $data = array()) {
 		if (!empty($this->Controller->data)) {
 			if (!empty($this->Controller->data['Comment']['title'])) {
-				$data['Comment']['title'] = $this->Utils->cleanHtml($this->Controller->data['Comment']['title']);
+				$data['Comment']['title'] = $this->cleanHtml($this->Controller->data['Comment']['title']);
 			}
-			$data['Comment']['body'] = $this->Utils->cleanHtml($this->Controller->data['Comment']['body']);
+			$data['Comment']['body'] = $this->cleanHtml($this->Controller->data['Comment']['body']);
 			$modelName = $this->modelName;
 			$permalink = '';
 			if (method_exists($this->Controller->{$this->modelName}, 'permalink')) {
@@ -574,7 +574,6 @@ class CommentsComponent extends Object {
 					if (!in_array($commentAction, array('toggle_approve', 'delete'))) {
 						return $this->Controller->blackHole("CommentsComponent: unsupported comment_Action '$commentAction'");
 					}
-					//call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
 					$this->_call(Inflector::variable($commentAction), array($id, $this->Controller->passedArgs['comment']));
 				} else {
 					Configure::write('Comment.action', 'add');
@@ -584,6 +583,20 @@ class CommentsComponent extends Object {
 				return $this->Controller->blackHole('CommentsComponent: user should be logged in for working with comments');
 			}
 		}
+	}
+
+/**
+ * Wrapping method to clean incoming html contents
+ * 
+ * @param string $text
+ * @param string $settings
+ * @return string
+ * @access public
+ */
+	function cleanHtml($text, $settings = 'full') {
+		App::import('Helper', 'Comments.Cleaner');
+		$cleaner = & new CleanerHelper();
+		return $cleaner->clean($text, $settings);
 	}
 
 }

@@ -8,7 +8,8 @@
     }
 	if ($target) {
 		$_url['action'] = r(Configure::read('Routing.admin') . '_', '', 'comments');
-		echo $jquery->form(null, array('url' => $commentWidget->prepareUrl(am($_url, array('comment' => $comment, '#' => 'comment' . $comment))), 'target' => $target));
+		$ajaxUrl = $commentWidget->prepareUrl(am($_url, array('comment' => $comment, '#' => 'comment' . $comment)));
+		echo $form->create(null, array('url' => $ajaxUrl, 'target' => $target));
 	} else {
 		echo $form->create(null, array('url' => am($_url, array('comment' => $comment, '#' => 'comment' . $comment))));
 	}
@@ -24,5 +25,12 @@
 	echo $form->input('Other.comment', array('type' => 'hidden'));
 	echo $form->input('Other.submit', array('type' => 'hidden'));
 
-    echo $form->end('Submit');
+	if ($target) {
+		echo $js->submit(__('Submit', true), array(
+			'update' => $target,
+			));
+	} else {
+		echo $form->submit(__('Submit', true));
+	}
+    echo $form->end();
 ?>

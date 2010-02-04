@@ -15,7 +15,7 @@ class Comment extends CommentsAppModel {
  * @access public
  */
 	public $actsAs = array(
-		'Utils.Sluggable' => array(
+		'Comments.Sluggable' => array(
 			'label' => 'title'),
 		'Tree');
 
