@@ -3,7 +3,7 @@ App::import('Core', array('ClassRegistry', 'Controller', 'View', 'Model', 'Secur
 App::import('Helper', array('Comments.CommentWidget', 'Html', 'Form', 'Session'));
 App::import('Component', array('Comments.Comments'));
 
-Mock::generatePartial('AppHelper', 'JqueryHelper', array('link'));
+Mock::generatePartial('AppHelper', 'JsHelper', array('link'));
 
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
@@ -79,10 +79,10 @@ class CommentWidgetHelperTest extends CakeTestCase {
 	public $View = null;
 	
 /**
- * Mock object for Jquery helper
- * @var JqueryHelper
+ * Mock object for Js helper
+ * @var JsHelper
  */
-	public $Jquery = null;
+	public $Js = null;
 	
 /**
  * Start test method
@@ -95,8 +95,8 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->CommentWidget = new CommentWidgetHelper();
 		$this->CommentWidget->Form = new FormHelper();
 		$this->CommentWidget->Html = new HtmlHelper();
-		$this->Jquery = new JqueryHelper();
-		$this->CommentWidget->Jquery = $this->Jquery;
+		$this->Js = new JsHelper();
+		$this->CommentWidget->Js = $this->Js;
 		$this->CommentWidget->params['action'] = 'view';
 		
 		$this->Controller = ClassRegistry::init('ArticlesTestController');
@@ -264,12 +264,12 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->assertTags($result, $expected);
 		
 		$this->CommentWidget->options(array('target' => 'wrapper')); 
-		$this->Jquery->expectOnce('link', array(
+		$this->Js->expectOnce('link', array(
 			'Foobar',
 			'/foo',
 			array('class' => 'bar', 'update' => 'wrapper'))
 		);
-		$this->Jquery->setReturnValueAt(0, 'link', '/ajaxFoo');
+		$this->Js->setReturnValueAt(0, 'link', '/ajaxFoo');
 		$result = $this->CommentWidget->link('Foobar', '/foo', array('class' => 'bar'));
 		$this->assertEqual($result, '/ajaxFoo');
 	}
