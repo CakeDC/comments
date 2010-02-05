@@ -1,5 +1,5 @@
 <?php
-/* SVN FILE: $Id: comment_widget.php 1159 2009-09-17 21:01:45Z mark_story $ */
+
 class CommentWidgetHelper extends AppHelper {
 /**
  * Helpers
@@ -8,6 +8,7 @@ class CommentWidgetHelper extends AppHelper {
  * @access public
  */
 	public $helpers = array('Html', 'Js' => array('Jquery'));
+
 /**
  * Flag if this widget is properly configured
  *
@@ -15,6 +16,7 @@ class CommentWidgetHelper extends AppHelper {
  * @access public
  */
 	public $enabled = true;
+
 /**
  * Helper options
  *
@@ -28,8 +30,10 @@ class CommentWidgetHelper extends AppHelper {
 		'urlToComment' => '',
 		'allowAnonymousComment'  => false,
 		'url' => null,
+		'ajaxOptions' => array(),
 		'viewInstance' => null
 	);
+
 /**
  * List of settings needed to be not empty in $this->params['Comments']
  *
@@ -37,6 +41,7 @@ class CommentWidgetHelper extends AppHelper {
  * @access protected
  */
 	protected $__passedParams = array('displayType', 'viewComments');
+
 /**
  * Global widget parameters
  *
@@ -44,14 +49,22 @@ class CommentWidgetHelper extends AppHelper {
  * @access public
  */
 	public $globalParams = array();
+	
 /**
+ * Initialize callback
  * 
+ * @access public
+ * @return void
  */
 	public function initialize() {
 		$this->options(array());
 	}
+	
 /**
- * Callback
+ * Before render Callback
+ *
+ * @access public
+ * @return void
  */
 	public function beforeRender() {
 		parent::beforeRender();
@@ -67,12 +80,30 @@ class CommentWidgetHelper extends AppHelper {
 			}
 		}
 	}
+
 /**
  * Setup options
+ *
+ * @param array $data
+ * @access public
+ * @return void
  */
 	public function options($data) {
 		$this->globalParams = array_merge(array_merge($this->globalParams, $this->options), (array)$data);
+		if (!empty($this->globalParams['target']) && empty($this->globalParams['ajaxOptions'])) {
+			$this->globalParams['ajaxOptions'] = array(
+				'update' => $this->globalParams['target'],
+				'evalScripts' => true,
+				'before' => 
+					$this->Js->get($this->globalParams['target'] . ' .comments')->effect('fadeOut', array('buffer' => false)) .
+					$this->Js->get('#busy-indicator')->effect('show', array('buffer' => false)),
+				'complete' => 
+					$this->Js->get($this->globalParams['target'] . ' .comments')->effect('fadeIn', array('buffer' => false)) .
+					$this->Js->get('#busy-indicator')->effect('hide', array('buffer' => false)),
+			);
+		}
 	}
+
 /**
  * Display comments
  *
@@ -84,12 +115,10 @@ class CommentWidgetHelper extends AppHelper {
  *    If your comments type is 'flat' and you use `'theme' => 'mytheme'` in your params. 
  *   `elements/comments/flat_mytheme` is the directory the helper will look for your elements in.
  *
- * @TODO Check if the $adminRoute value is used somewher. Either remove it or find a 1.3 equivalent.
  * @param array $params Parameters for the comment rendering
  * @return string Rendered elements.
  */
 	public function display($params = array()) {
-		//$this->options(array());
 		$result = '';
 		if ($this->enabled) {
 			$View = $this->__view();
@@ -130,7 +159,7 @@ class CommentWidgetHelper extends AppHelper {
 			$isAddMode = (isset($params['comment']) && !isset($params['comment_action']));
 			$adminRoute = Configure::read('Routing.admin');
 
-			$allowAddByAuth = ($this->allowAnonymousComment() || !empty($View->viewVars['isAuthorized']));
+			$allowAddByAuth = ($this->globalParams['allowAnonymousComment'] || !empty($View->viewVars['isAuthorized']));
 
 			$params = array_merge($params, compact('url', 'allowAddByAuth', 'allowAddByModel', 'adminRoute', 'isAddMode', 'viewRecord', 'theme'));
 
@@ -139,22 +168,30 @@ class CommentWidgetHelper extends AppHelper {
 		}
 		return $result;
 	}
+
 /**
- * Description
+ * Link method used to add additional options in ajax mode
  *
+ * @param string $title
+ * @param mixed $url
+ * @param array $options
  * @access public
+ * @return string, url
  */
 	public function link($title, $url='', $options = array()) {
 		if ($this->globalParams['target']) {
-			return $this->Js->link($title, $this->prepareUrl($url), am($options, array('update' => $this->globalParams['target'])));
+			return $this->Js->link($title, $this->prepareUrl($url), array_merge($options, $this->globalParams['ajaxOptions']));
 		} else {
 			return $this->Html->link($title, $url, $options);
 		}
 	}
+
 /**
- * Description
+ * Modify url in case of ajax request. Set ajaxAction that supposed to be stored in same controller.
  *
+ * @param array $url
  * @access public
+ * @return array, generated url
  */
 	public function prepareUrl(&$url) {
 		if ($this->globalParams['target']) {
@@ -166,19 +203,14 @@ class CommentWidgetHelper extends AppHelper {
 		}
 		return $url;
 	}
-/**
- * Description
- *
- * @access public
- */
-	public function allowAnonymousComment() {
-		return $this->globalParams['allowAnonymousComment'];
-	}
 
 /**
  * Render element from global theme
  *
+ * @param string $name
+ * @param array $params
  * @access public
+ * @return string, rendered element
  */
 	public function element($name, $params = array()) {
 		$View = $this->__view();
@@ -192,12 +224,18 @@ class CommentWidgetHelper extends AppHelper {
 		}
 		return $response;
 	}
+
 /**
- * Basic tree callback
+ * Basic tree callback, used to generate tree of items element, rendered based on actual theme
+ *
+ * @param array $data
+ * @access public
+ * @return string
  */
 	public function treeCallback($data) {
 		return $this->element('item', array('comment' => $data['data'], 'data' => $data));
 	}
+
 /**
  * Get current view class
  *
@@ -211,5 +249,6 @@ class CommentWidgetHelper extends AppHelper {
 			return ClassRegistry::getObject('view');
 		}
 	}
+
 }
 ?>

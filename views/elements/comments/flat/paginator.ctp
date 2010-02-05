@@ -11,7 +11,9 @@
 <?php
 	$pager = $this->Paginator;
 	if ($commentWidget->globalParams['target']) {
-		$pager->options(array('url' => $commentWidget->prepareUrl($url),'update' => $commentWidget->globalParams['target']));
+		$pager->options(array_merge(
+			array('url' => $commentWidget->prepareUrl($url)),
+			$commentWidget->globalParams['ajaxOptions']));
 	} else {
 		$pager->options(array('url' => $url));
 	}

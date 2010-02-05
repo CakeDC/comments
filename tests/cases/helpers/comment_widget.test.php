@@ -3,7 +3,7 @@ App::import('Core', array('ClassRegistry', 'Controller', 'View', 'Model', 'Secur
 App::import('Helper', array('Comments.CommentWidget', 'Html', 'Form', 'Session'));
 App::import('Component', array('Comments.Comments'));
 
-Mock::generatePartial('AppHelper', 'JsHelper', array('link'));
+Mock::generatePartial('AppHelper', 'JsHelper', array('link', 'get', 'effect'));
 
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
@@ -157,16 +157,19 @@ class CommentWidgetHelperTest extends CakeTestCase {
  */
 	public function testOptions() {
 		$this->assertTrue(empty($this->CommentWidget->globalParams));
+		$this->Js->setReturnValue('get', $this->Js);
+		$this->Js->setReturnValue('effect', '');
 		$options = array(
 			'target' => 'test',
 			'foo' => 'bar');
+
 		$this->CommentWidget->options($options);
-		$this->assertEqual(count($this->CommentWidget->globalParams), 8);
+		$this->assertEqual(count($this->CommentWidget->globalParams), 9);
 		$this->assertEqual($this->CommentWidget->globalParams['target'], 'test');
 		$this->assertEqual($this->CommentWidget->globalParams['foo'], 'bar');
 		
 		$this->CommentWidget->options(array());
-		$this->assertEqual(count($this->CommentWidget->globalParams), 8);
+		$this->assertEqual(count($this->CommentWidget->globalParams), 9);
 		$this->assertFalse($this->CommentWidget->globalParams['target']);
 		$this->assertEqual($this->CommentWidget->globalParams['foo'], 'bar');
 	}
@@ -262,8 +265,11 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'Foobar', 
 			'/a');
 		$this->assertTags($result, $expected);
+
+		$this->Js->setReturnValue('get', $this->Js);
+		$this->Js->setReturnValue('effect', '');
 		
-		$this->CommentWidget->options(array('target' => 'wrapper')); 
+		$this->CommentWidget->options(array('target' => 'wrapper', 'ajaxOptions' => array('update' => 'wrapper'))); 
 		$this->Js->expectOnce('link', array(
 			'Foobar',
 			'/foo',
@@ -285,6 +291,9 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'action' => 'view',
 			'my-first-article');
 		$this->assertEqual($this->CommentWidget->prepareUrl($url), $expected);
+
+		$this->Js->setReturnValue('get', $this->Js);
+		$this->Js->setReturnValue('effect', '');
 		
 		$this->CommentWidget->options(array(
 			'target' => 'placeholder',
@@ -310,9 +319,9 @@ class CommentWidgetHelperTest extends CakeTestCase {
  * @return void
  */
 	public function testAllowAnonymousComment() {
-		$this->assertFalse($this->CommentWidget->allowAnonymousComment());
+		$this->assertFalse($this->CommentWidget->globalParams['allowAnonymousComment']);
 		$this->CommentWidget->options(array('allowAnonymousComment' => true));
-		$this->assertTrue($this->CommentWidget->allowAnonymousComment());
+		$this->assertTrue($this->CommentWidget->globalParams['allowAnonymousComment']);
 	}
 	
 /**
@@ -334,6 +343,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 				'urlToComment' => '',
 				'allowAnonymousComment'  => false,
 				'url' => null,
+				'ajaxOptions' => array(),
 				'viewInstance' => null,
 				'theme' => 'flat')
 		);

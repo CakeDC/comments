@@ -33,10 +33,7 @@
 	echo $form->input('Other.submit', array('type' => 'hidden'));
 
 	if ($target) {
-		echo $js->submit(__('Submit', true), array(
-			'update' => $target,
-			'url' => $ajaxUrl,
-			));
+		echo $js->submit(__('Submit', true), array_merge(array('url' => $ajaxUrl), $commentWidget->globalParams['ajaxOptions']));
 	} else {
 		echo $form->submit(__('Submit', true));
 	}

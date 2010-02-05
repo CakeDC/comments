@@ -34,3 +34,5 @@ if (!$isAddMode || $isAddMode):
 endif;
 
 ?>
+<?php echo $this->Html->image('/comments/img/indicator.gif', array('id' => 'busy-indicator',
+ 'style' => 'display:none;')); ?>
