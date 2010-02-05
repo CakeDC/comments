@@ -26,13 +26,13 @@ class Comment extends CommentsAppModel {
  * @var array $belongsTo
  * @access public
  */
-	public $belongsTo = array(
-		'UserModel' => array('className' => 'Users.User',
-			'foreignKey' => 'user_id',
-			'conditions' => '',
-			'fields' => '',
-			'counterCache' => true,
-			'order' => ''));
+	// public $belongsTo = array(
+		// 'UserModel' => array('className' => 'Users.User',
+			// 'foreignKey' => 'user_id',
+			// 'conditions' => '',
+			// 'fields' => '',
+			// 'counterCache' => true,
+			// 'order' => ''));
 /**
  * Is spam field possible values
  *

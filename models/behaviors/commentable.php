@@ -59,6 +59,16 @@ class CommentableBehavior extends ModelBehavior {
 				'conditions' => '',
 				'fields' => '',
 				'dependent' => false))), false);
+		if (!empty($settings['userModelAlias']) && !empty($settings['userModel'])) {
+			$model->Comment->bindModel(array('belongsTo' => array(
+				$settings['userModelAlias'] => array(
+					'className' => $settings['userModel'],
+					'foreignKey' => 'user_id',
+					'conditions' => '',
+					'fields' => '',
+					'counterCache' => true,
+					'order' => ''))), false);
+		}
 	}
 
 /**

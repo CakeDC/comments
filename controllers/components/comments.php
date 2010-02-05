@@ -107,6 +107,14 @@ class CommentsComponent extends Object {
 	public $userModel = 'UserModel';
 
 /**
+ * Class Name for user model in ClassRegistry format. 
+ * Ex: For User model stored in User plugin need to use Users.User
+ *
+ * Customizable in beforeFilter()
+ */
+	public $userModelClass = 'User';
+
+/**
  * Flag if this component should permanently unbind association to Comment model in order to not
  * query model for not necessary data in Controller::view() action
  *
@@ -157,14 +165,19 @@ class CommentsComponent extends Object {
  * @return void
  * @access public
  */
-	public function initialize(Controller $controller) {
+	public function initialize(Controller $controller, $settings) {
+		foreach ($settings as $setting => $value) {
+			if (isset($this->{$setting})) {
+				$this->{$setting} = $value;
+			}
+		}
 		$this->Controller = $controller;
 		$this->modelName = $controller->modelClass;
 		$this->viewVariable = Inflector::variable($this->modelName);
 		$controller->helpers = array_merge($controller->helpers, array('Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
 
 		if (!$controller->{$this->modelName}->Behaviors->attached('Commentable')) {
-			$controller->{$this->modelName}->Behaviors->attach('Comments.Commentable');
+			$controller->{$this->modelName}->Behaviors->attach('Comments.Commentable', array('userModelAlias' => $this->userModel, 'userModel' => $this->userModelClass));
 		}
 	}
 
@@ -250,7 +263,7 @@ class CommentsComponent extends Object {
  * @return void
  * @access public
  */
-	public function callback_view($displayType) {
+	public function callback_view($displayType, $processActions = true) {
 		if (!isset($this->Controller->{$this->modelName}) || 
 			(!array_key_exists($this->assocName, array_merge($this->Controller->{$this->modelName}->hasOne, $this->Controller->{$this->modelName}->hasMany)))) {
 			throw new Exception('CommentsComponent: model '.$this->modelName.' or association '.$this->assocName.' doesn\'t exist');
@@ -263,7 +276,9 @@ class CommentsComponent extends Object {
 
 		$id = $this->Controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey];
 		$options = compact('displayType', 'id');
-		$this->_processActions($options);
+		if ($processActions) {
+			$this->_processActions($options);
+		}
 
 		try {
 			$data = $this->_call('fetchData' . Inflector::camelize($displayType), array($options));
@@ -416,6 +431,14 @@ class CommentsComponent extends Object {
 					}
 					$this->flash(__d('comments', 'The Comment has been saved.', true));
 					$this->redirect(array('#' => 'comment' . $result));
+					if (!empty($this->ajaxMode)) {
+						$this->ajaxMode = null;
+						$this->Controller->set('redirect', null);
+						if (isset($this->Controller->passedArgs['comment'])) {
+							unset($this->Controller->passedArgs['comment']);
+						}
+						$this->_call('view', array($this->commentParams['displayType'], false));
+					}
 				} else {
 					$this->flash(__d('comments', 'The Comment could not be saved. Please, try again.', true));
 				}
@@ -497,6 +520,7 @@ class CommentsComponent extends Object {
 			$this->Controller->redirect($url);
 		}
 		if ($isAjax) {
+			$this->ajaxMode = true;
 			$this->Controller->set('ajaxMode', true);
 		}
 	}
