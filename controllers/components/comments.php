@@ -51,7 +51,7 @@
  *
  * @see CommentWidgetHelper
  * @package		comments
- * @subpackage	controllers
+ * @subpackage	controllers.components
  */
 class CommentsComponent extends Object {
 /**
