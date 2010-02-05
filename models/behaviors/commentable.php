@@ -20,6 +20,8 @@ class CommentableBehavior extends ModelBehavior {
 	public $defaults = array(
 		'commentModel' => 'Comments.Comment',
 		'spamField' => 'is_spam',
+		'userModelAlias' => 'UserModel',
+		'userModelClass' => 'User',
 		'spamValues' => array('spam', 'spammanual'),
 		'cleanValues' => array('clean', 'ham'));
 
@@ -59,16 +61,14 @@ class CommentableBehavior extends ModelBehavior {
 				'conditions' => '',
 				'fields' => '',
 				'dependent' => false))), false);
-		if (!empty($settings['userModelAlias']) && !empty($settings['userModel'])) {
-			$model->Comment->bindModel(array('belongsTo' => array(
-				$settings['userModelAlias'] => array(
-					'className' => $settings['userModel'],
-					'foreignKey' => 'user_id',
-					'conditions' => '',
-					'fields' => '',
-					'counterCache' => true,
-					'order' => ''))), false);
-		}
+		$model->Comment->bindModel(array('belongsTo' => array(
+			$cfg['userModelAlias'] => array(
+				'className' => $cfg['userModelClass'],
+				'foreignKey' => 'user_id',
+				'conditions' => '',
+				'fields' => '',
+				'counterCache' => true,
+				'order' => ''))), false);
 	}
 
 /**
@@ -228,7 +228,7 @@ class CommentableBehavior extends ModelBehavior {
  * @access public
  */
 	public function commentBeforeFind(&$model, $options) {
-		$options = array_merge(array('userModel' => 'UserModel', 'userData' => null, 'isAdmin' => false), (array)$options);
+		$options = array_merge(array('userModel' => $this->settings[$model->alias]['userModelAlias'], 'userData' => null, 'isAdmin' => false), (array)$options);
 		extract($options);
 
 		$model->Behaviors->detach('Containable');
@@ -267,7 +267,6 @@ class CommentableBehavior extends ModelBehavior {
 		if ($model->Comment->hasField($spamField)) {
 			$conditions['Comment.' . $spamField] = $this->settings[$model->alias]['cleanValues'];
 		}
-
 		return $conditions;
 	}
 

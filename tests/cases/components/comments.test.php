@@ -164,7 +164,7 @@ class CommentsComponentTest extends CakeTestCase {
 			'displayType' => 'flat',
 			'viewComments' => 'commentsData',
 			'modelName' => 'Article',
-			'userModel' => 'User'));
+			'userModel' => 'UserModel'));
 	}
 
 /**
@@ -305,7 +305,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->passedArgs['comment_action'] = 'view'; 
 		$this->Controller->Comments->callback_prepareParams();
 		$expected = array_merge($expected, array(
-			'userModel' => 'User',
+			'userModel' => 'UserModel',
 			'comment_action' => 'view'));
 		$this->assertEqual($this->Controller->Comments->commentParams, $expected);
 	}
@@ -399,13 +399,10 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment status update. Try later.');
 		$this->assertNull($this->Controller->redirectUrl);
 		
-		// Call this action from when in the view callback, thanks to _processActions
-		// TODO This test displays weird errors in callback_fetchDataFlat() action. Find the reason
-		/*
 		$this->__setupControllerData();
 		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
 		$this->Controller->passedArgs['comment'] = 1;
-		debug('----------------------');
+
 		$this->Controller->Comments->callback_view('flat');
 		$comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertEqual($comment['Comment']['approved'], 1);
@@ -414,7 +411,6 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertNull($this->Controller->redirectUrl);
 		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
 		
-		*/
 		
 		$this->Controller->Session->delete('Message.flash.message');
 		$this->Controller->Session->delete('Auth');
@@ -506,9 +502,6 @@ class CommentsComponentTest extends CakeTestCase {
 	protected function __setupControllerData() {
 		$this->Controller->params = array(
 			'url' => array());
-		$this->Controller->Comments->userModel = 'User';
-		$this->Controller->Article->Comment->bindModel(array(
-			'belongsTo' => array('User')));
 		$this->Controller->Article->id = 1;
 		$this->Controller->viewVars['article'] = array(
 			'Article' => array(

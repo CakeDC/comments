@@ -9,7 +9,9 @@ if (!class_exists('Article')) {
 	 */
 		public $actsAs = array(
 			'Comments.Commentable' => array(
-				'commentModel' => 'Comments.Comment'));
+				'commentModel' => 'Comments.Comment',
+				'userModelAlias' => 'UserModel',
+				'userModel' => 'User'));
 	/**
 	 * 
 	 */
