@@ -1,38 +1,27 @@
 <?php
 /**
- * Short description for file.
+ * CakePHP Comments
  *
- * Long description for file
+ * Copyright 2009 - 2010, Cake Development Corporation
+ *                        1785 E. Sahara Avenue, Suite 490-423
+ *                        Las Vegas, Nevada 89104
  *
- * PHP versions 4 and 5
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
  *
- * Converge Application Platform
- *
- * Copyright 2007-2008, Cake Development Corporation
- * 							1785 E. Sahara Avenue, Suite 490-423
- * 							Las Vegas, Nevada 89104
- *
- * You may obtain a copy of the License at:
- * License page: http://projects.cakedc.com/licenses/TBD  TBD
- * Copyright page: http://converge.cakedc.com/copyright/
- *
- * @filesource
- * @copyright		Copyright 2007-2008, Cake Development Corporation
- * @link				http://converge.cakedc.com/ Converge Application Platform
- * @package			converge.plugins
- * @subpackage		converge.plugins.calendars
- * @since			Converge v 1.0.0.0
- * @version			$Revision: 1035 $
- * @modifiedby		$LastChangedBy: skie $
- * @lastmodified	$Date: 2009-08-31 14:33:02 -0500 (Mon, 31 Aug 2009) $
- * @license			http://projects.cakedc.com/licenses/TBD  TBD
+ * @copyright 2009 - 2010, Cake Development Corporation
+ * @link      http://codaset.com/cakedc/migrations/
+ * @package   plugins.tags
+ * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+
 /**
  * Short description for class.
  *
- * @package		converge.plugins
- * @subpackage	converge.plugins.calendars
+ * @package		comments
+ * @subpackage	
  */
+
 class CommentsAppController extends AppController {
 }
 ?>

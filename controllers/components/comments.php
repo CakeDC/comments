@@ -1,17 +1,19 @@
 <?php
 /**
-	most of component methods possible to override in controller
-	for it need to create method with prefix _comments
-	Ex. : _add -> _commentsAdd, _fetchData -> _commentsFetchData
-	Callbacksalso need to prefix with '_comments' in controller.
-
- callbacks
-	afterAdd
-
- params
-	comment
-	comment_view_type
-	comment_action
+ * CakePHP Comments
+ *
+ * Copyright 2009 - 2010, Cake Development Corporation
+ *                        1785 E. Sahara Avenue, Suite 490-423
+ *                        Las Vegas, Nevada 89104
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright 2009 - 2010, Cake Development Corporation
+ * @link      http://codaset.com/cakedc/migrations/
+ * @package   plugins.tags
+ * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 
 /**
  * CommentsComponent
@@ -34,7 +36,22 @@
  * Includes helpers TextWidget and CommentWidget for controller, uses method
  * AppController::blackHole().
  *
+ * Most of component methods possible to override in controller
+ * for it need to create method with prefix _comments
+ * Ex. : _add -> _commentsAdd, _fetchData -> _commentsFetchData
+ * Callbacksalso need to prefix with '_comments' in controller.
+ *
+ * callbacks
+ * afterAdd
+ *
+ * params
+ *  comment
+ *  comment_view_type
+ *  comment_action
+ *
  * @see CommentWidgetHelper
+ * @package		comments
+ * @subpackage	controllers
  */
 class CommentsComponent extends Object {
 /**
@@ -89,6 +106,9 @@ class CommentsComponent extends Object {
  * Name of 'commentable' model
  *
  * Customizable in beforeFilter(), or default controller's model name is used
+ *
+ * @var string Model name
+ * @access public
  */
 	public $modelName = null;
 
@@ -96,6 +116,9 @@ class CommentsComponent extends Object {
  * Name of association for comments
  *
  * Customizable in beforeFilter()
+ *
+ * @var string Association name
+ * @access public
  */
 	public $assocName = 'Comment';
 
@@ -103,6 +126,9 @@ class CommentsComponent extends Object {
  * Name of user model associated to comment
  *
  * Customizable in beforeFilter()
+ *
+ * @var string Name of the user model
+ * @access public
  */
 	public $userModel = 'UserModel';
 
@@ -111,6 +137,9 @@ class CommentsComponent extends Object {
  * Ex: For User model stored in User plugin need to use Users.User
  *
  * Customizable in beforeFilter()
+ *
+ * @var string user model class name
+ * @access public
  */
 	public $userModelClass = 'User';
 
@@ -119,12 +148,17 @@ class CommentsComponent extends Object {
  * query model for not necessary data in Controller::view() action
  *
  * Customizable in beforeFilter()
+ *
+ * @var boolean
+ * @access public
  */
 	public $unbindAssoc = false;
 
 /**
  * Parameters passed to view
  *
+ * @var array
+ * @access public
  */
 	public $commentParams = array();
 
@@ -134,6 +168,9 @@ class CommentsComponent extends Object {
  * Needed just for PK value available in it
  *
  * Customizable in beforeFilter(), or default Inflector::variable($this->modelName)
+ *
+ * @var string
+ * @access public
  */
 	public $viewVariable = null;
 
@@ -141,6 +178,9 @@ class CommentsComponent extends Object {
  * Name of view variable for comments data
  *
  * Customizable in beforeFilter()
+ *
+ * @var string
+ * @access public
  */
 	public $viewComments = 'commentsData';
 
@@ -148,6 +188,9 @@ class CommentsComponent extends Object {
  * Flag to allow anonymous user make comments
  *
  * Customizable in beforeFilter()
+ *
+ * @var boolean
+ * @access public
  */
 	public $allowAnonymousComment = false;
 
@@ -155,6 +198,9 @@ class CommentsComponent extends Object {
  * Flag to allow anonymous user make comments
  *
  * Customizable in beforeFilter()
+ *
+ * @var array
+ * @access protected
  */
 	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type');
 

@@ -1,4 +1,27 @@
 <?php
+/**
+ * CakePHP Comments
+ *
+ * Copyright 2009 - 2010, Cake Development Corporation
+ *                        1785 E. Sahara Avenue, Suite 490-423
+ *                        Las Vegas, Nevada 89104
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright 2009 - 2010, Cake Development Corporation
+ * @link      http://codaset.com/cakedc/migrations/
+ * @package   plugins.tags
+ * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
+/**
+ * Short description for class.
+ *
+ * @package		comments
+ * @subpackage	models
+ */
+
 class Comment extends CommentsAppModel {
 /**
  * Name
@@ -19,20 +42,6 @@ class Comment extends CommentsAppModel {
 			'label' => 'title'),
 		'Tree');
 
-/**
- * belongsTo Associations. 
- * The reason why for alias used UserModel instead of User next: if you will need to attach comments to the User model it allow you to do it.
- *
- * @var array $belongsTo
- * @access public
- */
-	// public $belongsTo = array(
-		// 'UserModel' => array('className' => 'Users.User',
-			// 'foreignKey' => 'user_id',
-			// 'conditions' => '',
-			// 'fields' => '',
-			// 'counterCache' => true,
-			// 'order' => ''));
 /**
  * Is spam field possible values
  *
@@ -175,9 +184,10 @@ class Comment extends CommentsAppModel {
 		}
 		return $success;
 	}
-	
+
 /**
  * Overrides AppModel::delete() method
+ *
  * Automatically decrement comment count of related model
  * 
  * (non-PHPdoc)
@@ -198,7 +208,7 @@ class Comment extends CommentsAppModel {
 		}
 		return $success;
 	}
-	
+
 /**
  * Update the comment spam type
  * 
