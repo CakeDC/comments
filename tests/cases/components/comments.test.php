@@ -40,7 +40,7 @@ if (!class_exists('ArticlesTestController')) {
 	 * @var array
 	 * @access public
 	 */
-		public $components = array('Session', 'Comments.Comments', 'Cookie', 'Auth');
+		public $components = array('Session', 'Comments.Comments' => array('userModelClass' => 'User'), 'Cookie', 'Auth');
 
 	/**
 	 * Redirect url
@@ -63,6 +63,9 @@ if (!class_exists('ArticlesTestController')) {
 			$this->redirectUrl = $url;
 		}
 
+		public function callback_commentsToggleApprove($modelId, $commentId) {
+			return $this->Comments->callback_toggleApprove($modelId, $commentId);
+		}		
 	}
 }
 
@@ -325,6 +328,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->__setupControllerData();
 		$this->Controller->data = $data;
 		$User = ClassRegistry::init('User');
+		$this->Controller->passedArgs[1] = '123';
 		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
 		$this->Controller->Article->id = 1;
 		$oldCount = $this->Controller->Article->field('comments');
@@ -351,12 +355,67 @@ class CommentsComponentTest extends CakeTestCase {
 		ksort($result);
 		$this->assertEqual($result, $expected);
 		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been saved.');
-		$this->assertEqual($this->Controller->redirectUrl, array('#' => 'comment' . $created['Comment']['id']));
+		$this->assertEqual($this->Controller->redirectUrl, array('123', '#' => 'comment' . $created['Comment']['id']));
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
 		
 		$this->Controller->Session->delete('Message.flash.message');
 		$this->Controller->Session->delete('Auth');
 		unset($User);
+	}
+
+/**
+ * testCallback_add
+ *
+ * @access public
+ * @return void
+ */
+	public function testCallback_add_InAjaxMode() {
+		$data = array(
+			'Comment' => array(
+				'title' => 'My first comment <script>XSS</script>',
+				'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')
+		);
+		$this->__setupControllerData();
+		$this->Controller->data = $data;
+		$User = ClassRegistry::init('User');
+		$this->Controller->passedArgs[1] = '123';
+		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+		$this->Controller->Article->id = 1;
+		$oldCount = $this->Controller->Article->field('comments');
+		
+		$this->Controller->params['isAjax'] = true;
+		$this->Controller->Comments->commentParams['displayType'] = 'flat';
+		$this->Controller->Comments->callback_add(1, 1, 'flat');
+		$created = $this->Controller->Article->Comment->find('first', array('order' => 'created DESC'));
+		$expected = array(
+			'approved' => 1,
+			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+			'foreign_key' => 1,
+			'model' => 'Article',
+			'parent_id' => 1,
+			'title' => 'My first comment XSS',
+			'user_id' => '47ea303a-3b2c-4251-b313-4816c0a800fa',
+		);
+		$result = array();
+		foreach ($created['Comment'] as $key => $value) {
+			if (isset($expected[$key])) {
+				$result[$key] = $value;
+			}
+		}
+		$this->assertTrue(is_array($created));
+		$this->assertNotEqual($created['Comment']['id'], 3);
+		ksort($result);
+		$this->assertEqual($result, $expected);
+		$this->assertEqual($this->Controller->viewVars['messageTxt'], 'The Comment has been saved.');
+		$this->assertEqual($this->Controller->redirectUrl, null);
+		$this->assertEqual($this->Controller->viewVars['redirect'], null);
+		//array('123', '#' => 'comment' . $created['Comment']['id'])
+		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
+		
+		$this->Controller->Session->delete('Message.flash.message');
+		$this->Controller->Session->delete('Auth');
+		unset($User);
+		unset($this->Controller->params['isAjax']);
 	}
 
 /**
@@ -506,6 +565,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->viewVars['article'] = array(
 			'Article' => array(
 				'id' => 1));
+		$this->Controller->Comments->controller = $this->Controller;
 	}
 }
 ?>
