@@ -19,7 +19,7 @@ In our example we want to use the flat type comments.
 
 First let us add the following code in the PostsController:
 {{{
-	public $components = array('Comments.Comments');
+	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
 
 	public function beforeFiler() {
 		parent::beforeFiler();
@@ -37,12 +37,12 @@ Inside the view (in our case it will views/posts/view.ctp) we will add the next 
 	</div>
 }}}
 
-===How it works===
+=== How it works ===
 
 During page rendering the comments component checks if some of the passed named url parameters are filled. 
 If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
-===Component conventions===
+=== Component conventions ===
 
 The component needs to have one important convention for any actions where it is enabled:
 
@@ -51,7 +51,7 @@ The component needs to have one important convention for any actions where it is
 		$this->set('post', $this->Post->read(null, $id));
 	}}}
 
-===Component callbacks===
+=== Component callbacks ===
 
 It is possible to override or extend the most comments component methods in the controller.
 To do this we need to create method with prefix callback_comments
@@ -89,7 +89,7 @@ To do this we need to create method with prefix callback_comments
 	} 
   }}}
 
-===Component parameters.===
+=== Component parameters ===
 
 	Plugin use several named parameters that passed during comment operations like create, delete, reply or apporve is performed.
 	* comment_view_type - Parameter that allow to specify what type of comments system used. Currently allowed to use one of 'flat', 'threaded', 'tree'. This parameter possible and usefull to setup in beforeFilter to use only one type of view. If user allowed to choose between tree and flat, then it parameter can be dynamic.
@@ -98,7 +98,7 @@ To do this we need to create method with prefix callback_comments
 
 	Please not that parameters listed here should not be used as named parameters in your app!
 
-===Component settings.===
+=== Component settings ===
 
 All components parameters should be overwritten in beforeFilter method.
 
@@ -106,6 +106,7 @@ All components parameters should be overwritten in beforeFilter method.
  * modelName - Name of 'commentable' model. By default it is default controller's model name (Controller::$modelClass)
  * assocName - Name of association for comments
  * userModel - Name of user model associated to comment. By default it is UserModel. Important to have diferent name with User model name.
+ * userModelClass - Class name for the user model. By default it is User. If you use other model for identity purpose you need to setup it here.
  * unbindAssoc - enabled if this component should permanently unbind association to Comment model in order to not
  * query model for not necessary data in Controller::view() action
  * commentParams - Parameters passed to view.
@@ -113,7 +114,13 @@ All components parameters should be overwritten in beforeFilter method.
  * viewComments - Name of view variable for comments data. By default 'commentsData'
  * allowAnonymousComment - Flag to allow anonymous user make comments. By default it is false.
 
-===Helper parameters and methods====
+Exists two way to change settings values for component. You can change it in beforeFilter callback before component will initialized, or pass parameters during initialization:
+
+{{{
+	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
+}}}
+ 
+=== Helper parameters and methods ===
 
  * target - used in ajax mode to specify block where comment widget stored
  * ajaxAction - array that specify route to the action or string containing action name. Used in ajax mode.
@@ -123,7 +130,7 @@ All components parameters should be overwritten in beforeFilter method.
  * viewInstance - View instance class, that used to generated the page.
  * subtheme - parameter that allow to have several set of templates for one view type. So if you want to have two diferent representation of 'flat' type for posts and images you just used two subthemes 'posts' and 'images' like 'flat_posts' and 'flat_images'.
 
-====Template system structure====
+==== Template system structure ====
 	The template system consists of several elements stored in comments plugin.
 
 	It is 'form', 'item', 'paginator' and 'main'.
@@ -136,3 +143,27 @@ All elements are stored in the stucture views/elements/...type..., where ...type
 We can define elements in own plugin or app that used comments or use default templates.
 Sometimes we need to have several sets of templates for one view type. For example, if we want to have two diferent representation of 'flat' type for posts and images views we just used two subthemes for 'flat'.
 So in elements/comments we need to create folders 'flat_posts' and 'flat_images' and copy elements from '/elements/comments/flat' here and modify them.
+
+=== Ajax support ===
+
+Since cakephp js helper support many engines, you can freely choose any of supported js engines and comments plugin will support it. Our choose is jquery engine. 
+
+To turn on ajax mode you need set pass two parameters to the helper:
+{{{
+	<?php $commentWidget->options(array(
+		'target' => '#comments',
+		'ajaxAction' => 'comments'));
+	?>
+}}}
+
+Also necessery to implement comments view, that will just contains previous block and will include ajax element from comments plugin:
+{{{
+<?php 
+	$commentWidget->options(array(
+	'target' => '#comments',
+	'ajaxAction' => 'comments'));
+	echo $this->element('ajax', array('plugin' => 'comments'));
+?>
+}}}
+
+The comments action in controller should be same as view action, the difference only in view.
