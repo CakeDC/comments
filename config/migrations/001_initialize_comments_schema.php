@@ -33,24 +33,6 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 	public $description = '';
 
 /**
- * Dependency array. Define what minimum version required for other part of db schema
- *
- * Migration defined like 'app.m49ad0b91bd4c4bd482cc1de43461d00a' or 'plugin.PluginName.m49ad0d8518904f518db21bb43461d00a'
- * 
- * @var array $dependendOf
- * @access public
- */
-	public $dependendOf = array();
-
-/**
- * Shell object
- *
- * @var MigrationInterface
- * @access public
- */
-	public $Shell;
-
-/**
  * Migration array
  * 
  * @var array $migration
@@ -83,14 +65,9 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 					'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 				),
 			),
-			'create_field' => array(
-				'users' => array(
-					'comment_count' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10))),
 		),
 		'down' => array(
 			'drop_table' => array('comments'),
-			'drop_field' => array(
-				'users' => array('comment_count')),
 		)
 	);
 

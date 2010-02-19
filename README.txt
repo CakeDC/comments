@@ -42,6 +42,8 @@ Inside the view (in our case it will views/posts/view.ctp) we will add the next 
 During page rendering the comments component checks if some of the passed named url parameters are filled. 
 If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
+Sometimes you want to know how much comments your user did. In this case all you need to do - add aditional field with name "comments" into the table that keep all users information in you systems. It can be any table like users or profiles.
+
 === Component conventions ===
 
 The component needs to have one important convention for any actions where it is enabled:
