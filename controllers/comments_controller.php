@@ -130,7 +130,6 @@ class CommentsController extends CommentsAppController {
 							if (!isset(${$modelName})) {
 								${$modelName} = ClassRegistry::init($comment['Comment']['model']);
 							}
-							//$settings = array('permalink' => ${$modelName}->permalink($comment['Comment']['foreign_key']));
 							if (method_exists(${$modelName}, 'permalink')) {
 								$this->Comment->permalink = ${$modelName}->permalink($comment['Comment']['foreign_key']);
 							} else {
