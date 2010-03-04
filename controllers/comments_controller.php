@@ -10,8 +10,8 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright 2009 - 2010, Cake Development Corporation
- * @link      http://codaset.com/cakedc/migrations/
- * @package   plugins.tags
+ * @link      http://github.com/cakedc/comments/
+ * @package   plugins.comments
  * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -67,24 +67,102 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->recursive = 0;
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
-				'UserModel' => array(
-					'className' => 'Users.User',
+				'UserModel'  => array(
+					'className' => 'Users.User', 
 					'foreignKey' => 'user_id'))));
-
-		if ($type == 'spam') {
-			$conditions = array('Comment.is_spam' => array('spam', 'manualspam'));
-		} elseif ($type == 'clean') {
-			$conditions = array('Comment.is_spam' => array('ham', 'clean'));
-		} elseif (is_null($type)) {
-			$conditions = array();
+		$conditions = array();
+		if (App::import('Component', 'Search.Prg')) {
+			$this->Prg = new PrgComponent();
+			$this->Prg->initialize($this);
+			$this->Comment->Behaviors->attach('Search.Searchable');
+			$this->Comment->filterArgs = array(
+				array('name' => 'is_spam', 'type' => 'value'),
+				array('name' => 'approved', 'type' => 'value'),
+			);
+			$this->Prg->commonProcess();
+			$this->Comment->parseCriteria($this->passedArgs);
 		}
 
 		$this->paginate['Comment'] = array(
+			'conditions' => $conditions,
 			'contain' => array('UserModel'),
-			'conditions' => $conditions);
+			'order' => 'Comment.created DESC'); 
+		if ($type == 'spam') {
+			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'manualspam'));
+		} elseif ($type == 'clean') {
+			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
+		}			
 		$this->set('comments', $this->paginate('Comment'));
 	}
 
+
+/**
+ * Processes mailbox folders
+ *
+ * @param string $folder Name of the folder to process
+ */
+	public function admin_process($type = null) {
+		$addInfo = '';
+		if (!empty($this->data)) {
+			if (!empty($this->params['form']['delete']) || (!empty($this->data['Comment']['action']) && $this->data['Comment']['action'] == 'delete')) { //delete mails
+				$keys = array_keys($this->data['Comment']);
+				foreach ($keys as $id) {
+					$value = $this->data['Comment'][$id];
+					if (is_string($id) & strlen($id)==36 && ($value)) {
+						$result = $this->Comment->delete($id);
+						if(!$result) {
+							$addInfo = __d('comments', 'Some errors appear during excution.', true);
+						}
+					}
+				}
+				$this->Session->setFlash(__d('comments', 'Comments removed.',true) . ' ' . $addInfo);
+			} elseif ((!empty($this->data['Comment']['action']) && in_array($this->data['Comment']['action'], array('spam', 'ham', 'approve', 'disapprove')))) {
+				$keys = array_keys($this->data['Comment']);
+				$action = $this->data['Comment']['action'];
+				foreach ($keys as $id) {
+					$value = $this->data['Comment'][$id];
+					if (is_string($id) & strlen($id)==36 && ($value)) {
+						$this->Comment->recursive = -1;
+						$comment = $this->Comment->read(null, $id);
+						if ($action == 'spam' || $action == 'ham') {
+							$modelName = r('.', '', $comment['Comment']['model']);
+							if (!isset(${$modelName})) {
+								${$modelName} = ClassRegistry::init($comment['Comment']['model']);
+							}
+							$settings = array('permalink' => ${$modelName}->permalink($comment['Comment']['foreign_key']));
+							$this->Comment->permalink = ${$modelName}->permalink($comment['Comment']['foreign_key']);
+						}
+						switch ($action) {
+							case 'ham':
+								$result = $this->Comment->markAsHam($id);
+								break;
+							case 'spam':
+								$result = $this->Comment->markAsSpam($id);
+								break;
+							case 'approve':
+								$result = $this->Comment->saveField('approved', 1);
+								break;
+							case 'disapprove':
+								$result = $this->Comment->saveField('approved', 0);
+								break;
+						}
+						switch($result) {
+							case false:
+							case 'invalid':
+							case 'error':
+								$addInfo = __d('comments', 'Some errors appear during excution.', true);
+								break;
+						}
+					}
+				}
+				$this->Session->setFlash(__d('comments', 'Operation was performed. ',true) . ' ' . $addInfo);
+			}
+		}
+		$url = array('plugin'=>'comments', 'action' => 'index', 'admin' => true);
+		$url = Set::merge($url, $this->params['pass']);
+		$this->redirect(Set::merge($url, $this->params['named']));
+	}
+	
 /**
  * Admin mark comment as spam
  *

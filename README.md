@@ -48,10 +48,14 @@ Sometimes you want to know how much comments your user did. In this case all you
 
 The component needs to have one important convention for any actions where it is enabled:
 
-	To work properly, the component needs a specific variable to be set in every action using it. Its name should be either Inflector::variable(Controller::$modelClass) or Comments::$viewVariable should be set to other name of this view variable. That variable should contain sindle model record. for example you need to have next line in you view action:
+To work properly, the component needs a specific variable to be set in every action using it. Its name should be either Inflector::variable(Controller::$modelClass) or Comments::$viewVariable should be set to other name of this view variable. That variable should contain sindle model record. for example you need to have next line in you view action:
 	
 		$this->set('post', $this->Post->read(null, $id));
-	
+
+If you plan to attach comments plugin to model that stored in some plugin highly recomemeded to define Model::$fullName property for your model in ClassRegistry format.
+For example for Post model of Blogs plugin set $fullName = 'Blogs.Post'.
+Also possible you will need to define permalink function in your Post model. This method should return correct url to view page where comments displayed.
+This required by most antispam systems if you plan to use it.
 
 ### Component callbacks
 

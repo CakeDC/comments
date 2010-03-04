@@ -441,8 +441,6 @@ class CommentsComponent extends Object {
 /**
  * Handle adding comments
  *
- * TODO Remove the unused $displayType param or make use of it
- * TODO L397 Can the $permalink have an empty value?
  * @param integer $modelId
  * @param integer $commentId Parent comment id
  * @param string $displayType
@@ -454,7 +452,10 @@ class CommentsComponent extends Object {
 				$data['Comment']['title'] = $this->cleanHtml($this->Controller->data['Comment']['title']);
 			}
 			$data['Comment']['body'] = $this->cleanHtml($this->Controller->data['Comment']['body']);
-			$modelName = $this->modelName;
+			$modelName = $this->Controller->{$this->modelName}->name;
+			if (!empty($this->Controller->{$this->modelName}->fullName)) {
+				$modelName = $this->Controller->{$this->modelName}->fullName;
+			}
 			$permalink = '';
 			if (method_exists($this->Controller->{$this->modelName}, 'permalink')) {
 				$premalink = $this->Controller->{$this->modelName}->permalink($modelId);
@@ -462,7 +463,7 @@ class CommentsComponent extends Object {
 			$options = array(
 				'userId' => $this->Auth->user('id'),
 				'modelId' => $modelId,
-				'modelName' => $this->Controller->{$this->modelName}->name,
+				'modelName' => $modelName,
 				'defaultTitle' => isset($this->Controller->defaultTitle) ? $this->Controller->defaultTitle : '',
 				'data' => $data,
 				'permalink' => $permalink);
