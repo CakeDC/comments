@@ -124,8 +124,10 @@ class Comment extends CommentsAppModel {
 	public function changeCount($id, $direction) {
 		$success = false;
 		$associated = $this->__getCommentedRow($id);
-		
-		if ($associated !== false){
+		if ($associated !== false) {
+			if (!$associated['Model']->hasField('comments')) {
+				return true;
+			}
 			$sign = ($direction == 'up') ? '+' : '-';
 			$associated['Model']->recursive = -1;
 			$success = $associated['Model']->updateAll(

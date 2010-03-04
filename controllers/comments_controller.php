@@ -88,10 +88,10 @@ class CommentsController extends CommentsAppController {
 			'contain' => array('UserModel'),
 			'order' => 'Comment.created DESC'); 
 		if ($type == 'spam') {
-			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'manualspam'));
+			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
 		} elseif ($type == 'clean') {
 			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
-		}			
+		}
 		$this->set('comments', $this->paginate('Comment'));
 	}
 
@@ -100,11 +100,12 @@ class CommentsController extends CommentsAppController {
  * Processes mailbox folders
  *
  * @param string $folder Name of the folder to process
+ * @access public
  */
 	public function admin_process($type = null) {
 		$addInfo = '';
 		if (!empty($this->data)) {
-			if (!empty($this->params['form']['delete']) || (!empty($this->data['Comment']['action']) && $this->data['Comment']['action'] == 'delete')) { //delete mails
+			if (!empty($this->data['Comment']['action']) && $this->data['Comment']['action'] == 'delete') {
 				$keys = array_keys($this->data['Comment']);
 				foreach ($keys as $id) {
 					$value = $this->data['Comment'][$id];
@@ -116,7 +117,7 @@ class CommentsController extends CommentsAppController {
 					}
 				}
 				$this->Session->setFlash(__d('comments', 'Comments removed.',true) . ' ' . $addInfo);
-			} elseif ((!empty($this->data['Comment']['action']) && in_array($this->data['Comment']['action'], array('spam', 'ham', 'approve', 'disapprove')))) {
+			} elseif (!empty($this->data['Comment']['action']) && in_array($this->data['Comment']['action'], array('spam', 'ham', 'approve', 'disapprove'))) {
 				$keys = array_keys($this->data['Comment']);
 				$action = $this->data['Comment']['action'];
 				foreach ($keys as $id) {
@@ -129,8 +130,12 @@ class CommentsController extends CommentsAppController {
 							if (!isset(${$modelName})) {
 								${$modelName} = ClassRegistry::init($comment['Comment']['model']);
 							}
-							$settings = array('permalink' => ${$modelName}->permalink($comment['Comment']['foreign_key']));
-							$this->Comment->permalink = ${$modelName}->permalink($comment['Comment']['foreign_key']);
+							//$settings = array('permalink' => ${$modelName}->permalink($comment['Comment']['foreign_key']));
+							if (method_exists(${$modelName}, 'permalink')) {
+								$this->Comment->permalink = ${$modelName}->permalink($comment['Comment']['foreign_key']);
+							} else {
+								$this->Comment->permalink = '';
+							}
 						}
 						switch ($action) {
 							case 'ham':
