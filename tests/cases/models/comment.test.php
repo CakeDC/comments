@@ -194,5 +194,53 @@ class CommentTestCase extends CakeTestCase {
 		$this->assertFalse($this->Comment->exists(true));
 	}
 
+	public function testProcessDelete() {
+		$data['Comment'] = array(
+			'1' => 1,
+			'2' => 0,
+			'3' => 0);
+		$this->Comment->process('delete', $data);
+		$comment1 = $this->Comment->findById(1);
+		$this->assertFalse($comment1);
+		$comment2 = $this->Comment->findById(2);
+		$this->assertIsA($comment2, 'Array');
+	}
+
+	public function testProcessHam() {
+		$data['Comment'] = array(
+			'1' => 1,
+			'2' => 0);
+		$this->Comment->process('ham', $data);
+		$comment1 = $this->Comment->findById(1);
+		$this->assertEqual($comment1['Comment']['is_spam'], 'ham');
+	}
+	
+	public function testProcessSpam() {
+		$data['Comment'] = array(
+			'1' => 1,
+			'2' => 0);
+		$this->Comment->process('spam', $data);
+		$comment1 = $this->Comment->findById(1);
+		$this->assertEqual($comment1['Comment']['is_spam'], 'spammanual');
+	}
+	
+	public function testProcessApprove() {
+		$data['Comment'] = array(
+			'2' => 0,
+			'3' => 1);
+		$this->Comment->process('approve', $data);
+		$comment = $this->Comment->findById(3);
+		$this->assertEqual($comment['Comment']['approved'], 1);
+	}
+	
+	public function testProcessDisapprove() {
+		$data['Comment'] = array(
+			'1' => 1,
+			'2' => 0);
+		$this->Comment->process('disapprove', $data);
+		$comment = $this->Comment->findById(1);
+		$this->assertEqual($comment['Comment']['approved'], 0);
+	}
+
 }
 ?>

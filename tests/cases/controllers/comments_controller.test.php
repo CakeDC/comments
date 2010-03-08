@@ -88,6 +88,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments = new TestCommentsController();
 		$this->Comments->params = array(
 			'named' => array(),
+			'pass' => array(),
 			'url' => array());
 		$this->Comments->constructClasses();
 	}
@@ -117,6 +118,64 @@ class CommentsControllerTest extends CakeTestCase {
 		
 		$this->Comments->admin_index(null);
 		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
+	}
+	
+/**
+ * Test admin_process action
+ * 
+ * @return void
+ */
+	public function _testAdminProcessDelete() {
+		$this->Comments->data['Comment'] = array(
+			'1' => 1,
+			'2' => 0,
+			'3' => 0,
+			'action' => 'delete');
+		$this->Comments->admin_process();
+		$comment1 = $this->Comments->Comment->findById(1);
+		$this->assertFalse($comment1);
+		$comment2 = $this->Comments->Comment->findById(2);
+		$this->assertIsA($comment2, 'Array');
+	}
+
+	public function testAdminProcessHam() {
+		$this->Comments->data['Comment'] = array(
+			'1' => 1,
+			'2' => 0,
+			'action' => 'ham');
+		$this->Comments->admin_process();
+		$comment1 = $this->Comments->Comment->findById(1);
+		$this->assertEqual($comment1['Comment']['is_spam'], 'ham');
+	}
+	
+	public function testAdminProcessSpam() {
+		$this->Comments->data['Comment'] = array(
+			'1' => 1,
+			'2' => 0,
+			'action' => 'spam');
+		$this->Comments->admin_process();
+		$comment1 = $this->Comments->Comment->findById(1);
+		$this->assertEqual($comment1['Comment']['is_spam'], 'spammanual');
+	}
+	
+	public function testAdminProcessApprove() {
+		$this->Comments->data['Comment'] = array(
+			'2' => 0,
+			'3' => 1,
+			'action' => 'approve');
+		$this->Comments->admin_process();
+		$comment = $this->Comments->Comment->findById(3);
+		$this->assertEqual($comment['Comment']['approved'], 1);
+	}
+	
+	public function testAdminProcessDisapprove() {
+		$this->Comments->data['Comment'] = array(
+			'1' => 1,
+			'2' => 0,
+			'action' => 'disapprove');
+		$this->Comments->admin_process();
+		$comment = $this->Comments->Comment->findById(1);
+		$this->assertEqual($comment['Comment']['approved'], 0);
 	}
 	
 /**

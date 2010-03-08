@@ -105,62 +105,12 @@ class CommentsController extends CommentsAppController {
 	public function admin_process($type = null) {
 		$addInfo = '';
 		if (!empty($this->data)) {
-			if (!empty($this->data['Comment']['action']) && $this->data['Comment']['action'] == 'delete') {
-				$keys = array_keys($this->data['Comment']);
-				foreach ($keys as $id) {
-					$value = $this->data['Comment'][$id];
-					if (is_string($id) & strlen($id)==36 && ($value)) {
-						$result = $this->Comment->delete($id);
-						if(!$result) {
-							$addInfo = __d('comments', 'Some errors appear during excution.', true);
-						}
-					}
-				}
-				$this->Session->setFlash(__d('comments', 'Comments removed.',true) . ' ' . $addInfo);
-			} elseif (!empty($this->data['Comment']['action']) && in_array($this->data['Comment']['action'], array('spam', 'ham', 'approve', 'disapprove'))) {
-				$keys = array_keys($this->data['Comment']);
-				$action = $this->data['Comment']['action'];
-				foreach ($keys as $id) {
-					$value = $this->data['Comment'][$id];
-					if (is_string($id) & strlen($id)==36 && ($value)) {
-						$this->Comment->recursive = -1;
-						$comment = $this->Comment->read(null, $id);
-						if ($action == 'spam' || $action == 'ham') {
-							$modelName = r('.', '', $comment['Comment']['model']);
-							if (!isset(${$modelName})) {
-								${$modelName} = ClassRegistry::init($comment['Comment']['model']);
-							}
-							if (method_exists(${$modelName}, 'permalink')) {
-								$this->Comment->permalink = ${$modelName}->permalink($comment['Comment']['foreign_key']);
-							} else {
-								$this->Comment->permalink = '';
-							}
-						}
-						switch ($action) {
-							case 'ham':
-								$result = $this->Comment->markAsHam($id);
-								break;
-							case 'spam':
-								$result = $this->Comment->markAsSpam($id);
-								break;
-							case 'approve':
-								$result = $this->Comment->saveField('approved', 1);
-								break;
-							case 'disapprove':
-								$result = $this->Comment->saveField('approved', 0);
-								break;
-						}
-						switch($result) {
-							case false:
-							case 'invalid':
-							case 'error':
-								$addInfo = __d('comments', 'Some errors appear during excution.', true);
-								break;
-						}
-					}
-				}
-				$this->Session->setFlash(__d('comments', 'Operation was performed. ',true) . ' ' . $addInfo);
+			try {
+				$message = $this->Comment->process($this->data['Comment']['action'], $this->data);
+			} catch (Exception $ex) {
+				$message = $ex->getMessages();				
 			}
+			$this->Session->setFlash($message);
 		}
 		$url = array('plugin'=>'comments', 'action' => 'index', 'admin' => true);
 		$url = Set::merge($url, $this->params['pass']);

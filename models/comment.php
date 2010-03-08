@@ -114,6 +114,73 @@ class Comment extends CommentsAppModel {
 	}
 
 /**
+ * Group operation procession
+ * 
+ * @param string $action
+ * @param array $data
+ * @return boolean Success / Fail
+ */
+	public function process($action, $data) {
+		$message = $addInfo = 	'';
+		if (!empty($action) && $action == 'delete') {
+			$keys = array_keys($data['Comment']);
+			foreach ($keys as $id) {
+				$value = $data['Comment'][$id];
+				if ((is_string($id) && strlen($id) == 36 || is_numeric($id)) && $value) {
+					$result = $this->delete($id);
+					if(!$result) {
+						$addInfo = __d('comments', 'Some errors appear during excution.', true);
+					}
+				}
+			}
+			$message = __d('comments', 'Comments removed.', true) . ' ' . $addInfo;
+		} elseif (!empty($action) && in_array($action, array('spam', 'ham', 'approve', 'disapprove'))) {
+			$keys = array_keys($data['Comment']);
+			foreach ($keys as $id) {
+				$value = $data['Comment'][$id];
+				if ((is_string($id) && strlen($id) == 36 || is_numeric($id)) && $value) {
+					$this->recursive = -1;
+					$comment = $this->read(null, $id);
+					if ($action == 'spam' || $action == 'ham') {
+						$modelName = r('.', '', $comment['Comment']['model']);
+						if (!isset(${$modelName})) {
+							${$modelName} = ClassRegistry::init($comment['Comment']['model']);
+						}
+						if (method_exists(${$modelName}, 'permalink')) {
+							$this->permalink = ${$modelName}->permalink($comment['Comment']['foreign_key']);
+						} else {
+							$this->permalink = '';
+						}
+					}
+					switch ($action) {
+						case 'ham':
+							$result = $this->markAsHam($id);
+							break;
+						case 'spam':
+							$result = $this->markAsSpam($id);
+							break;
+						case 'approve':
+							$result = $this->saveField('approved', 1);
+							break;
+						case 'disapprove':
+							$result = $this->saveField('approved', 0);
+							break;
+					}
+					switch($result) {
+						case false:
+						case 'invalid':
+						case 'error':
+							$addInfo = __d('comments', 'Some errors appear during excution.', true);
+							break;
+					}
+				}
+			}
+			$message = __d('comments', 'Operation was performed. ',true) . ' ' . $addInfo;
+		}
+		return $message;
+	}
+
+/**
  * Increment or decrement the comment count cache on the associated model
  * 
  * @param mixed $id The id to change count of.
