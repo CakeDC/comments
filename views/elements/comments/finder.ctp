@@ -1,6 +1,6 @@
-<h3><?php __d('cakedc', 'Filter comments'); ?></h3>
+<h3><?php __d('comments', 'Filter comments'); ?></h3>
 <?php echo $form->create('Comment', array(
-	'url' => array('plugin' => 'cakedc', 'admin' => true, 'controller' => 'comments', 'action' => 'index'),
+	'url' => array('plugin' => 'comments', 'admin' => true, 'controller' => 'comments', 'action' => 'index'),
 	'class' => 'finder-form',
 	'id' => 'SearchForm')); ?>
 <div class="content-block clearfix">
