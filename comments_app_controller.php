@@ -11,14 +11,14 @@
  *
  * @copyright 2009 - 2010, Cake Development Corporation
  * @link      http://codaset.com/cakedc/migrations/
- * @package   plugins.tags
+ * @package   plugins.comments
  * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
  * Short description for class.
  *
- * @package		comments
+ * @package		plugins.comments
  * @subpackage	
  */
 

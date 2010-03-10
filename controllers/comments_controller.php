@@ -18,7 +18,7 @@
 /**
  * Short description for class.
  *
- * @package		comments
+ * @package		plugins.comments
  * @subpackage	controllers
  */
 

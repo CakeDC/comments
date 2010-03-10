@@ -11,7 +11,7 @@
  *
  * @copyright 2009 - 2010, Cake Development Corporation
  * @link      http://codaset.com/cakedc/migrations/
- * @package   plugins.tags
+ * @package   plugins.comments
  * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -50,7 +50,7 @@
  *  comment_action
  *
  * @see CommentWidgetHelper
- * @package		comments
+ * @package		plugins.comments
  * @subpackage	controllers.components
  */
 class CommentsComponent extends Object {
