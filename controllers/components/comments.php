@@ -10,7 +10,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright 2009 - 2010, Cake Development Corporation
- * @link      http://codaset.com/cakedc/migrations/
+ * @link      http://github.com/CakeDC/Comments
  * @package   plugins.comments
  * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -39,7 +39,7 @@
  * Most of component methods possible to override in controller
  * for it need to create method with prefix _comments
  * Ex. : _add -> _commentsAdd, _fetchData -> _commentsFetchData
- * Callbacksalso need to prefix with '_comments' in controller.
+ * Callbacks also need to prefix with '_comments' in controller.
  *
  * callbacks
  * afterAdd
@@ -51,7 +51,7 @@
  *
  * @see CommentWidgetHelper
  * @package		plugins.comments
- * @subpackage	controllers.components
+ * @subpackage	plugins.comments.controllers.components
  */
 class CommentsComponent extends Object {
 /**

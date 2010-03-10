@@ -11,15 +11,10 @@
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @filesource
  * @copyright            Copyright (c) 2008, Andy Dawson
  * @link                 www.ad7six.com
  * @package              cake-base
  * @subpackage           cake-base.app.views.helpers
- * @since                v 1.0
- * @version              $Revision: 1358 $
- * @modifiedBy           $LastChangedBy: skie $
- * @lastModified         $Date: 2009-10-15 05:49:11 -0500 (Thu, 15 Oct 2009) $
  * @license              http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 /**

@@ -10,7 +10,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright 2009 - 2010, Cake Development Corporation
- * @link      http://codaset.com/cakedc/migrations/
+ * @link      http://github.com/CakeDC/Comments
  * @package   plugins.comments
  * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -19,7 +19,7 @@
  * Short description for class.
  *
  * @package		plugins.comments
- * @subpackage	config.migrations
+ * @subpackage	pligins.comments.config.migrations
  */
 
 class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
