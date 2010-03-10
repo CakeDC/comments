@@ -62,10 +62,12 @@ This required by most antispam systems if you plan to use it.
 It is possible to override or extend the most comments component methods in the controller.
 To do this we need to create method with prefix callback_comments
 Examples: 
+
  * callback_add will named as callback_commentsAdd in controller,
  * callback_fetchData will named as callback_commentsFetchData in controller.
 
 Callbacks:
+
  * add - add new comment action. Sometimes useful to override, to add some additional preprocessing. See example bellow.
  * initType - method that set comment template system type based on vars.
  * delete - delete action. Can be overloaded.
@@ -98,6 +100,7 @@ Callbacks:
 ### Component parameters
 
 Plugin use several named parameters that passed during comment operations like create, delete, reply or approve is performed.
+
 * comment_view_type - Parameter that allow to specify what type of comments system used. Currently allowed to use one of 'flat', 'threaded', 'tree'. This parameter possible and useful to setup in beforeFilter to use only one type of view. If user allowed to choose between tree and flat, then it parameter can be dynamic.
 * comment_action - this parameter used, to pass what action should performed. N
 * comment - comment id passed here.
@@ -140,6 +143,7 @@ Exists two way to change settings values for component. You can change it in bef
 The template system consists of several elements stored in comments plugin.
 
 It is 'form', 'item', 'paginator' and 'main'.
+
  * Main element is rendered and use all other to render all parts of comments system.
  * Item element is a just one comment block.
  * Paginator is supposed to used by 'flat' and 'tree' themes. Threaded type theme is not allowed to paginate comments.
