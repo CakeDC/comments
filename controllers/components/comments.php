@@ -611,8 +611,8 @@ class CommentsComponent extends Object {
 	protected function _call($method, $args = array()) {
 		$methodName = 'callback_comments' .  Inflector::camelize(Inflector::underscore($method));
 		$localMethodName = 'callback_' .  $method;
-		if (method_exists($this->controller, $methodName)) {
-			return call_user_func_array(array(&$this->controller, $methodName), $args);
+		if (method_exists($this->Controller, $methodName)) {
+			return call_user_func_array(array(&$this->Controller, $methodName), $args);
 		} elseif (method_exists($this, $localMethodName)) {
 			return call_user_func_array(array(&$this, $localMethodName), $args);
 		} else {
