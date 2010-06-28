@@ -83,6 +83,7 @@ class CommentableBehavior extends ModelBehavior {
 				'unique' => true,
 				'conditions' => '',
 				'fields' => '',
+				'counterCache' => true,
 				'dependent' => false))), false);
 		$model->Comment->bindModel(array('belongsTo' => array(
 			$cfg['userModelAlias'] => array(
