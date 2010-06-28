@@ -168,8 +168,10 @@ class CommentWidgetHelper extends AppHelper {
 
 			$model = $params['modelName'];
 			$viewRecord = $this->globalParams['viewRecord'] = array();
+			$viewRecordFull = $this->globalParams['viewRecordFull'] = array();
 			if (isset($View->viewVars[Inflector::variable($model)][$model])) {
 				$viewRecord = $View->viewVars[Inflector::variable($model)][$model];
+				$viewRecordFull = $View->viewVars[Inflector::variable($model)];
 			}
 
 			if (isset($viewRecord['allow_comments'])) {
@@ -182,7 +184,7 @@ class CommentWidgetHelper extends AppHelper {
 
 			$allowAddByAuth = ($this->globalParams['allowAnonymousComment'] || !empty($View->viewVars['isAuthorized']));
 
-			$params = array_merge($params, compact('url', 'allowAddByAuth', 'allowAddByModel', 'adminRoute', 'isAddMode', 'viewRecord', 'theme'));
+			$params = array_merge($params, compact('url', 'allowAddByAuth', 'allowAddByModel', 'adminRoute', 'isAddMode', 'viewRecord', 'viewRecordFull', 'theme'));
 
 			$this->globalParams = Set::merge($this->globalParams, $params);
 			$result = $this->element('main');
