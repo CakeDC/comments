@@ -194,7 +194,7 @@ class CommentableBehavior extends ModelBehavior {
 				} else {
 					$fk = null;
 				}
-				$model->Comment->Behaviors->attach('Tree', array('scope' => array('foreign_key' => $fk)));
+				$model->Comment->Behaviors->attach('Tree', array('scope' => array('Comment.foreign_key' => $fk)));
 			}
 
 			if ($model->Comment->save()) {
