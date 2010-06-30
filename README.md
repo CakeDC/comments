@@ -104,6 +104,7 @@ Plugin use several named parameters that passed during comment operations like c
 * comment_view_type - Parameter that allow to specify what type of comments system used. Currently allowed to use one of 'flat', 'threaded', 'tree'. This parameter possible and useful to setup in beforeFilter to use only one type of view. If user allowed to choose between tree and flat, then it parameter can be dynamic.
 * comment_action - this parameter used, to pass what action should performed. N
 * comment - comment id passed here.
+* quote - boolean flag that show if you should use quote when generate reply to comment form.
 
 Please not that parameters listed here should not be used as named parameters in your app!
 

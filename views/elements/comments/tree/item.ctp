@@ -16,6 +16,7 @@
 
 	if (!empty($allowAddByAuth)) {
 		$_actionLinks[] = $commentWidget->link(__d('comments', 'Reply', true), array_merge($url, array('comment' => $comment['Comment']['id'], '#' => 'comment' . $comment['Comment']['id'])));
+		$_actionLinks[] = $commentWidget->link(__d('comments', 'Quote', true), array_merge($url, array('comment' => $comment['Comment']['id'], 'quote' => 1, '#' => 'comment' . $comment['Comment']['id'])));
 		if (!empty($isAdmin)) {
 			if (empty($comment['Comment']['approved'])) {
 				$_actionLinks[] = $commentWidget->link(__d('comments', 'Publish', true), array_merge($url, array('comment' => $comment['Comment']['id'], 'comment_action' => 'toggleApprove', '#' => 'comment' . $comment['id'])));

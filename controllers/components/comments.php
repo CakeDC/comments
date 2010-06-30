@@ -133,7 +133,7 @@ class CommentsComponent extends Object {
 	public $userModel = 'UserModel';
 
 /**
- * Class Name for user model in ClassRegistry format. 
+ * Class Name for user model in ClassRegistry format.
  * Ex: For User model stored in User plugin need to use Users.User
  *
  * Customizable in beforeFilter()
@@ -202,7 +202,7 @@ class CommentsComponent extends Object {
  * @var array
  * @access protected
  */
-	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type');
+	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type', 'quote');
 
 /**
  * Initialize Callback
@@ -310,7 +310,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_view($displayType, $processActions = true) {
-		if (!isset($this->Controller->{$this->modelName}) || 
+		if (!isset($this->Controller->{$this->modelName}) ||
 			(!array_key_exists($this->assocName, array_merge($this->Controller->{$this->modelName}->hasOne, $this->Controller->{$this->modelName}->hasMany)))) {
 			throw new Exception('CommentsComponent: model '.$this->modelName.' or association '.$this->assocName.' doesn\'t exist');
 		}
@@ -381,11 +381,11 @@ class CommentsComponent extends Object {
 		$Comment =& $this->Controller->{$this->modelName}->Comment;
 		$conditions = $this->_prepareModel($options);
 		$fields = array(
-			'Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved', 
-			'Comment.title', 'Comment.body', 'Comment.slug', 'Comment.created', 
-			$this->modelName . '.id', 
+			'Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved',
+			'Comment.title', 'Comment.body', 'Comment.slug', 'Comment.created',
+			$this->modelName . '.id',
 			$this->userModel . '.id',
-			$this->userModel . '.' . $Comment->{$this->userModel}->displayField, 
+			$this->userModel . '.' . $Comment->{$this->userModel}->displayField,
 			$this->userModel . '.slug');
 		$order = array(
 			'Comment.parent_id' => 'asc',
@@ -430,7 +430,7 @@ class CommentsComponent extends Object {
 			'viewComments' => $this->viewComments,
 			'modelName' => $this->modelName,
 			'userModel' => $this->userModel));
-		$allowedParams = array('comment', 'comment_action');
+		$allowedParams = array('comment', 'comment_action', 'quote');
 		foreach ($allowedParams as $param) {
 			if (isset($this->Controller->passedArgs[$param])) {
 				$this->commentParams[$param] = $this->Controller->passedArgs[$param];
@@ -490,7 +490,36 @@ class CommentsComponent extends Object {
 					$this->flash(__d('comments', 'The Comment could not be saved. Please, try again.', true));
 				}
 			}
+		} else {
+			if (!empty($this->Controller->passedArgs['quote'])) {
+				if (!empty($this->Controller->passedArgs['comment'])) {
+					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));;
+					if (!empty($message)) {
+						$this->Controller->data['Comment']['body'] = $message;
+					}
+				}
+			}
 		}
+	}
+
+/**
+ * Fetch and format comment message
+ *
+ * @param string $commentId
+ * @return string
+ * @access public
+ */
+	public function callback_getFormatedComment($commentId) {
+		$comment = $this->Controller->{$this->modelName}->Comment->find('first', array(
+			'recursive' => -1,
+			'fields' => array('Comment.body', 'Comment.title'),
+			'conditions' => array('Comment.id' => $commentId)));
+		if (!empty($comment)) {
+
+		} else {
+			return null;
+		}
+		return "[quote]\n" . $comment['Comment']['body'] . "\n[end quote]";
 	}
 
 /**
@@ -501,7 +530,7 @@ class CommentsComponent extends Object {
  * @access public
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-		if (!isset($this->Controller->passedArgs['comment_action']) 
+		if (!isset($this->Controller->passedArgs['comment_action'])
 			|| !($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
 			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation', true));
 		}
@@ -658,7 +687,7 @@ class CommentsComponent extends Object {
 
 /**
  * Wrapping method to clean incoming html contents
- * 
+ *
  * @param string $text
  * @param string $settings
  * @return string
