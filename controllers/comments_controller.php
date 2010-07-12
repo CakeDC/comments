@@ -188,6 +188,22 @@ class CommentsController extends CommentsAppController {
 	}
 
 /**
+ * View action
+ *
+ * @param string UUID
+ * @access public
+ */
+	public function view($id = null) {
+		$this->Comment->id = $id;
+		$comment = $this->Comment->read(null, $id);
+		if (empty($comment)) {
+			$this->Session->setFlash(__d('comments', 'Invalid Comment.', true));
+			return $this->redirect(array('action'=>'index'));
+		}
+		$this->set('comment', $comment);
+	}
+
+/**
  * Request comments 
  *
  * @todo Return only "clean" comments?
