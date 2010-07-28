@@ -166,7 +166,16 @@ To turn on ajax mode you need set pass two parameters to the helper:
 		'ajaxAction' => 'comments'));
 	?>
 
+Next important to implement in  controller special action, by default named comments:
 
+	<?php 
+		public function comments($id = null) {
+			$post = $this->Post->read(null, $id);
+			$this->layout = 'ajax'; 
+			$this->set(compact('post', 'id'));
+		}
+	?>
+	
 Also necessary to implement comments view, that will just contains previous block and will include ajax element from comments plugin:
 
 	<?php 
