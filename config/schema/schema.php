@@ -64,7 +64,7 @@ class AppSchema extends CakeSchema {
 		'id' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),
 		'parent_id' => array('type'=>'string', 'null' => true, 'default' => NULL, 'length' => 36),
 		'foreign_key' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36),
-		'user_id' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36),
+		'user_id' => array('type'=>'string', 'null' => true, 'default' => NULL, 'length' => 36),
 		'lft' => array('type'=>'integer', 'null' => false, 'default' => NULL, 'length' => 10),
 		'rght' => array('type'=>'integer', 'null' => false, 'default' => NULL, 'length' => 10),
 		'model' => array('type'=>'string', 'null' => false, 'default' => NULL),
