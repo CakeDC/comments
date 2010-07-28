@@ -44,6 +44,11 @@ If it is filled we perform operations like add/delete comment. The component wor
 
 Sometimes you want to know how much comments your user did. In this case all you need to do - add additional field with name "comments" into the table that keep all users information in you systems. It can be any table like users or profiles.
 
+### Requirements
+
+Need to have some sort of users or logins table that keep members personal info. This table should contain 
+slug field.
+
 ### Component conventions
 
 The component needs to have one important convention for any actions where it is enabled:
