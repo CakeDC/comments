@@ -64,12 +64,15 @@ class CommentsController extends CommentsAppController {
  * @access public
  */
 	public function admin_index($type = 'spam') {
+		$this->presetVars = array(
+			  array('field' => 'approved', 'type' => 'value'),
+			  array('field' => 'is_spam', 'type' => 'value'));
 		$this->Comment->recursive = 0;
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
 				'UserModel'  => array(
 					'className' => 'Users.User', 
-					'foreignKey' => 'user_id'))));
+					'foreignKey' => 'user_id'))), false);
 		$conditions = array();
 		if (App::import('Component', 'Search.Prg')) {
 			$this->Prg = new PrgComponent();
