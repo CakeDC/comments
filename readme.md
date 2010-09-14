@@ -185,14 +185,14 @@ For more information and support, please visit the [Cake Development Corporation
 
 ## License ##
 
-Copyright 2010, Cake Development Corporation (http://cakedc.com)
+Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
 
 Licensed under The MIT License (http://www.opensource.org/licenses/mit-license.php)<br/>
 Redistributions of files must retain the above copyright notice.
 
 ## Copyright ###
 
-Copyright 2010<br/>
+Copyright 2009-2010<br/>
 Cake Development Corporation<br/>
 1785 E. Sahara Avenue, Suite 490-423<br/>
 Las Vegas, Nevada 89104<br/>
