@@ -118,4 +118,3 @@ class SluggableBehavior extends ModelBehavior {
 	}
 
 }
-?>

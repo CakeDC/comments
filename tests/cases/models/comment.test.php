@@ -243,4 +243,3 @@ class CommentTestCase extends CakeTestCase {
 	}
 
 }
-?>

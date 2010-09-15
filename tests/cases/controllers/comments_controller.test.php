@@ -298,4 +298,3 @@ class CommentsControllerTest extends CakeTestCase {
 		unset($this->Comments);
 	}
 }
-?>

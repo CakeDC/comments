@@ -92,4 +92,3 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 	}
 
 }
-?>

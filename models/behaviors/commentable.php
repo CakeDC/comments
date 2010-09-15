@@ -295,4 +295,3 @@ class CommentableBehavior extends ModelBehavior {
 	}
 
 }
-?>

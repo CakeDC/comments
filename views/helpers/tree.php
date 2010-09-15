@@ -459,4 +459,3 @@ class TreeHelper extends AppHelper {
 	}
 
 }
-?>

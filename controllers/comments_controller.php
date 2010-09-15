@@ -246,4 +246,3 @@ class CommentsController extends CommentsAppController {
 		return array_key_exists('requested', $this->params);
 	}
 }
-?>

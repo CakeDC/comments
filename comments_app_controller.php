@@ -23,4 +23,3 @@
 
 class CommentsAppController extends AppController {
 }
-?>

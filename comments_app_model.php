@@ -30,4 +30,3 @@ class CommentsAppModel extends AppModel {
  */
 	public $plugin = 'Comments';
 }
-?>

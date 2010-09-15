@@ -405,5 +405,3 @@ class CleanerHelper extends AppHelper {
 		return $text;
 	}
 }
-
-?>

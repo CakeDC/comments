@@ -274,4 +274,3 @@ class CommentWidgetHelper extends AppHelper {
 	}
 
 }
-?>

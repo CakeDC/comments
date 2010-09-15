@@ -568,4 +568,3 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->controller = $this->Controller;
 	}
 }
-?>

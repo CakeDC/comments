@@ -700,4 +700,3 @@ class CommentsComponent extends Object {
 	}
 
 }
-?>

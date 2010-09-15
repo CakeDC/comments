@@ -239,4 +239,3 @@ class CommentableTest extends CakeTestCase {
 	}
 
 }
-?>

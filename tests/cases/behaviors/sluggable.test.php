@@ -137,4 +137,3 @@ class SluggableTest extends CakeTestCase {
 	}
 
 }
-?>

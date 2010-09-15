@@ -87,4 +87,3 @@ class AppSchema extends CakeSchema {
 	);
 
 }
-?>

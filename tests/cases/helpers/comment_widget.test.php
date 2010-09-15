@@ -395,4 +395,3 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		ClassRegistry::addObject('view', $this->View);
 	}
 }
-?>

@@ -41,5 +41,3 @@ class SluggedArticleFixture extends CakeTestFixture {
 		array('id' => 3, 'title' => 'Third Article', 'slug' => 'third_article', 'position' => 3, 'created' => '2007-03-18 10:43:23', 'updated' => '2007-03-18 10:45:31'));
 
 }
-
-?>

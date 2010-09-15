@@ -320,4 +320,3 @@ class Comment extends CommentsAppModel {
 		return $result;
 	}
 }
-?>
