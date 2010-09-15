@@ -33,9 +33,9 @@
 	echo $form->input('Other.submit', array('type' => 'hidden'));
 
 	if ($target) {
-		echo $js->submit(__('Submit', true), array_merge(array('url' => $ajaxUrl), $commentWidget->globalParams['ajaxOptions']));
+		echo $js->submit(__d('comments', 'Submit', true), array_merge(array('url' => $ajaxUrl), $commentWidget->globalParams['ajaxOptions']));
 	} else {
-		echo $form->submit(__('Submit', true));
+		echo $form->submit(__d('comments', 'Submit', true));
 	}
     echo $form->end();
 ?>
