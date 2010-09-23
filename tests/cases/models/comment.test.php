@@ -1,14 +1,29 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
 App::import('Core', 'ModelBehavior');
 Mock::generatePartial('ModelBehavior', 'AntispamableBehavior', array('isSpam', 'setSpam', 'setHam'));
 
 /**
- * 
+ * Comment Test Case
+ *
+ * @package comments
+ * @subpackage comments.tests.cases.models
  */
 class CommentTestCase extends CakeTestCase {
 
 /**
- * 
+ * Comment model
+ *
+ * @var Comment
  */
 	public $Comment = null;
 
@@ -16,7 +31,6 @@ class CommentTestCase extends CakeTestCase {
  * Fixtures
  *
  * @var array
- * @access public
  */
 	public $fixtures = array(
 		'plugin.comments.comment',
@@ -24,7 +38,9 @@ class CommentTestCase extends CakeTestCase {
 		'plugin.comments.article');
 
 /**
- * 
+ * startTest
+ *
+ * @return void
  */
 	public function startTest() {
 		$this->Comment = ClassRegistry::init('Comments.Comment');
@@ -35,8 +51,9 @@ class CommentTestCase extends CakeTestCase {
 	}
 
 /**
+ * endTest
+ *
  * @return void
- * @access public
  */
 	public function endTest() {
 		unset($this->Comment);
@@ -44,14 +61,18 @@ class CommentTestCase extends CakeTestCase {
 	}
 
 /**
- * 
+ * testCommentInstance
+ *
+ * @return void
  */
 	public function testCommentInstance() {
 		$this->assertTrue(is_a($this->Comment, 'Comment'));
 	}
 
 /**
- * 
+ * testCommentFind
+ *
+ * @return void
  */
 	public function testCommentFind() {
 		$this->Comment->recursive = -1;
@@ -85,7 +106,6 @@ class CommentTestCase extends CakeTestCase {
  * testBeforeSave
  *
  * @return void
- * @access public
  */
 	public function testBeforeSave() {
 		Configure::write('Config.language', 'eng');
@@ -97,7 +117,6 @@ class CommentTestCase extends CakeTestCase {
  * testAfterSave
  *
  * @return void
- * @access public
  */
 	public function testAfterSave() {
 		$this->Comment->Behaviors->attach('Antispamable');
@@ -123,7 +142,6 @@ class CommentTestCase extends CakeTestCase {
  * testChangeCount
  *
  * @return void
- * @access public
  */
 	public function testChangeCount() {
 		$before = $this->Comment->Article->findById(1);
@@ -194,6 +212,11 @@ class CommentTestCase extends CakeTestCase {
 		$this->assertFalse($this->Comment->exists(true));
 	}
 
+/**
+ * testProcessDelete
+ *
+ * @return void
+ */
 	public function testProcessDelete() {
 		$data['Comment'] = array(
 			'1' => 1,
@@ -206,6 +229,11 @@ class CommentTestCase extends CakeTestCase {
 		$this->assertIsA($comment2, 'Array');
 	}
 
+/**
+ * testProcessHam
+ *
+ * @return void
+ */
 	public function testProcessHam() {
 		$data['Comment'] = array(
 			'1' => 1,
@@ -214,7 +242,12 @@ class CommentTestCase extends CakeTestCase {
 		$comment1 = $this->Comment->findById(1);
 		$this->assertEqual($comment1['Comment']['is_spam'], 'ham');
 	}
-	
+
+/**
+ * testProcessSpam
+ *
+ * @return void
+ */
 	public function testProcessSpam() {
 		$data['Comment'] = array(
 			'1' => 1,
@@ -223,7 +256,12 @@ class CommentTestCase extends CakeTestCase {
 		$comment1 = $this->Comment->findById(1);
 		$this->assertEqual($comment1['Comment']['is_spam'], 'spammanual');
 	}
-	
+
+/**
+ * testProcessApprove
+ *
+ * @return void
+ */
 	public function testProcessApprove() {
 		$data['Comment'] = array(
 			'2' => 0,
@@ -232,7 +270,12 @@ class CommentTestCase extends CakeTestCase {
 		$comment = $this->Comment->findById(3);
 		$this->assertEqual($comment['Comment']['approved'], 1);
 	}
-	
+
+/**
+ * testProcessDisapprove
+ *
+ * @return void
+ */
 	public function testProcessDisapprove() {
 		$data['Comment'] = array(
 			'1' => 1,
@@ -241,5 +284,4 @@ class CommentTestCase extends CakeTestCase {
 		$comment = $this->Comment->findById(1);
 		$this->assertEqual($comment['Comment']['approved'], 0);
 	}
-
 }

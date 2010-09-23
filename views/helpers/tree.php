@@ -1,33 +1,28 @@
 <?php
 /**
- * Tree Helper.
- *
- * Used the generate nested representations of hierarchial data
- *
- * PHP versions 4 and 5
- *
- * Copyright (c) 2008, Andy Dawson
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright            Copyright (c) 2008, Andy Dawson
- * @link                 www.ad7six.com
- * @package              cake-base
- * @subpackage           cake-base.app.views.helpers
- * @license              http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+
 /**
- * Tree helper
+ * Tree Helper
  *
  * Helper to generate tree representations of MPTT or recursively nested data
+ *
+ * @package comments
+ * @subpackage comments.views.helpers
  */
 class TreeHelper extends AppHelper {
+
 /**
  * name property
  *
  * @var string 'Tree'
- * @access public
  */
 	public $name = 'Tree';
 
@@ -35,7 +30,6 @@ class TreeHelper extends AppHelper {
  * settings property
  *
  * @var array
- * @access private
  */
 	private $__settings = array();
 
@@ -43,16 +37,13 @@ class TreeHelper extends AppHelper {
  * typeAttributes property
  *
  * @var array
- * @access private
  */
-	
 	private $__typeAttributes = array();
 
 /**
  * typeAttributesNext property
  *
  * @var array
- * @access private
  */
 	private $__typeAttributesNext = array();
 
@@ -60,7 +51,6 @@ class TreeHelper extends AppHelper {
  * itemAttributes property
  *
  * @var array
- * @access private
  */
 	private $__itemAttributes = array();
 
@@ -68,7 +58,6 @@ class TreeHelper extends AppHelper {
  * helpers variable
  *
  * @var array
- * @access public
  */
 	public $helpers = array ('Html');
 
@@ -103,7 +92,6 @@ class TreeHelper extends AppHelper {
  * @param array $data data to loop on
  * @param array $settings
  * @return string html representation of the passed data
- * @access public
  */
 	public function generate($data, $settings = array ()) {
         $this->__settings = array_merge(array(
@@ -310,7 +298,6 @@ class TreeHelper extends AppHelper {
  * @param string $id
  * @param string $key
  * @param mixed $value
- * @access public
  * @return void
  */
 	public function addItemAttribute($id = '', $key = '', $value = null) {
@@ -346,7 +333,6 @@ class TreeHelper extends AppHelper {
  * @param string $id
  * @param string $key
  * @param mixed $value
- * @access public
  * @return void
  */
 	public function addTypeAttribute($id = '', $key = '', $value = null, $previousOrNext = 'next') {
@@ -366,7 +352,6 @@ class TreeHelper extends AppHelper {
  * supressChildren method
  *
  * @return void
- * @access public
  */
 	public function supressChildren() {
     }
@@ -376,7 +361,6 @@ class TreeHelper extends AppHelper {
  *
  * Used to close and reopen a ul/ol to allow easier listings
  *
- * @access private
  * @return void
  */
 	private function __suffix() {
@@ -412,7 +396,6 @@ class TreeHelper extends AppHelper {
  *
  * @param mixed $rType
  * @param array $elementData
- * @access private
  * @return void
  */
 	private function __attributes($rType, $elementData = array(), $clear = true) {
@@ -457,5 +440,4 @@ class TreeHelper extends AppHelper {
 		}
 		return '';
 	}
-
 }

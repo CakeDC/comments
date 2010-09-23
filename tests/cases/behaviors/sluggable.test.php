@@ -1,4 +1,14 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
 App::import('Behavior', 'Comments.Sluggable');
 
 /**
@@ -18,11 +28,11 @@ class SluggedArticle extends CakeTestModel {
  * Sluggable Test case
  */
 class SluggableTest extends CakeTestCase {
+
 /**
  * fixtures property
  *
  * @var array
- * @access public
  */
 	public $fixtures = array('plugin.comments.slugged_article');
 
@@ -135,5 +145,4 @@ class SluggableTest extends CakeTestCase {
 		$result = $this->Model->multibyteSlug('Ärgerlich Öl Überzogen Straße ~!@ # $% ^& *() =+[]{}\\/,.:;"\'<>');
 		$this->assertEqual('ärgerlich_öl_überzogen_straße', $result);
 	}
-
 }

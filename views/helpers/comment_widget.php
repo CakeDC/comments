@@ -1,32 +1,26 @@
 <?php
 /**
- * CakePHP Comments
- *
- * Copyright 2009 - 2010, Cake Development Corporation
- *                        1785 E. Sahara Avenue, Suite 490-423
- *                        Las Vegas, Nevada 89104
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright 2009 - 2010, Cake Development Corporation
- * @link      http://github.com/CakeDC/Comments
- * @package   plugins.comments
- * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
- * Short description for class.
+ * Comment Widget Helper
  *
- * @package		plugins.comments
- * @subpackage	plugins.comments.views.helpers
+ * @package comments
+ * @subpackage comments.views.helpers
  */
 class CommentWidgetHelper extends AppHelper {
+
 /**
  * Helpers
  *
  * @var array
- * @access public
  */
 	public $helpers = array('Html', 'Js' => array('Jquery'));
 
@@ -34,7 +28,6 @@ class CommentWidgetHelper extends AppHelper {
  * Flag if this widget is properly configured
  *
  * @var boolean
- * @access public
  */
 	public $enabled = true;
 
@@ -42,7 +35,6 @@ class CommentWidgetHelper extends AppHelper {
  * Helper options
  *
  * @var array
- * @access public
  */
 	public $options = array(
 		'target' => false,
@@ -59,7 +51,6 @@ class CommentWidgetHelper extends AppHelper {
  * List of settings needed to be not empty in $this->params['Comments']
  *
  * @var array
- * @access protected
  */
 	protected $__passedParams = array('displayType', 'viewComments');
 
@@ -67,14 +58,12 @@ class CommentWidgetHelper extends AppHelper {
  * Global widget parameters
  *
  * @var string
- * @access public
  */
 	public $globalParams = array();
 	
 /**
  * Initialize callback
  * 
- * @access public
  * @return void
  */
 	public function initialize() {
@@ -84,7 +73,6 @@ class CommentWidgetHelper extends AppHelper {
 /**
  * Before render Callback
  *
- * @access public
  * @return void
  */
 	public function beforeRender() {
@@ -106,7 +94,6 @@ class CommentWidgetHelper extends AppHelper {
  * Setup options
  *
  * @param array $data
- * @access public
  * @return void
  */
 	public function options($data) {
@@ -198,7 +185,6 @@ class CommentWidgetHelper extends AppHelper {
  * @param string $title
  * @param mixed $url
  * @param array $options
- * @access public
  * @return string, url
  */
 	public function link($title, $url='', $options = array()) {
@@ -213,7 +199,6 @@ class CommentWidgetHelper extends AppHelper {
  * Modify url in case of ajax request. Set ajaxAction that supposed to be stored in same controller.
  *
  * @param array $url
- * @access public
  * @return array, generated url
  */
 	public function prepareUrl(&$url) {
@@ -232,7 +217,6 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @param string $name
  * @param array $params
- * @access public
  * @return string, rendered element
  */
 	public function element($name, $params = array()) {
@@ -252,7 +236,6 @@ class CommentWidgetHelper extends AppHelper {
  * Basic tree callback, used to generate tree of items element, rendered based on actual theme
  *
  * @param array $data
- * @access public
  * @return string
  */
 	public function treeCallback($data) {
@@ -262,7 +245,6 @@ class CommentWidgetHelper extends AppHelper {
 /**
  * Get current view class
  *
- * @access public
  * @return object, View class
  */
 	private function __view() {
@@ -272,5 +254,4 @@ class CommentWidgetHelper extends AppHelper {
 			return ClassRegistry::getObject('view');
 		}
 	}
-
 }

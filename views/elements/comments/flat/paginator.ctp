@@ -1,23 +1,23 @@
 <?php
 /**
- * Copyright 2009 - 2010, Cake Development Corporation
- *                        1785 E. Sahara Avenue, Suite 490-423
- *                        Las Vegas, Nevada 89104
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-?>
-<?php
-	$pager = $this->Paginator;
-	if ($commentWidget->globalParams['target']) {
-		$pager->options(array_merge(
-			array('url' => $commentWidget->prepareUrl($url)),
-			$commentWidget->globalParams['ajaxOptions']));
-	} else {
-		$pager->options(array('url' => $url));
-	}
-	$paging = $pager->params('Comment');
+
+$pager = $this->Paginator;
+if ($commentWidget->globalParams['target']) {
+	$pager->options(array_merge(
+		array('url' => $commentWidget->prepareUrl($url)),
+		$commentWidget->globalParams['ajaxOptions']));
+} else {
+	$pager->options(array('url' => $url));
+}
+$paging = $pager->params('Comment');
 ?>
 
 <?php if (!empty(${$viewComments})): ?>
