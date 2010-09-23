@@ -72,7 +72,7 @@ msgid "Error appear during comment deleting. Try later."
 msgstr "Произошла ошибка при удалении коментария. Попробуйте позднее."
 
 #: /models/comment.php:132;173
-msgid "Some errors appear during excution."
+msgid "Some errors appear during execution."
 msgstr "Во время выполнения операции возникла ошибка."
 
 #: /models/comment.php:136

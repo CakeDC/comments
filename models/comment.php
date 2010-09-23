@@ -87,7 +87,7 @@ class Comment extends CommentsAppModel {
 
 /**
  * Group operation procession
- * 
+ *
  * @param string $action
  * @param array $data
  * @return boolean Success / Fail
@@ -101,7 +101,7 @@ class Comment extends CommentsAppModel {
 				if ((is_string($id) && strlen($id) == 36 || is_numeric($id)) && $value) {
 					$result = $this->delete($id);
 					if(!$result) {
-						$addInfo = __d('comments', 'Some errors appear during excution.', true);
+						$addInfo = __d('comments', 'Some errors appear during execution.', true);
 					}
 				}
 			}
@@ -142,7 +142,7 @@ class Comment extends CommentsAppModel {
 						case false:
 						case 'invalid':
 						case 'error':
-							$addInfo = __d('comments', 'Some errors appear during excution.', true);
+							$addInfo = __d('comments', 'Some errors appear during execution.', true);
 							break;
 					}
 				}
@@ -154,7 +154,7 @@ class Comment extends CommentsAppModel {
 
 /**
  * Increment or decrement the comment count cache on the associated model
- * 
+ *
  * @param mixed $id The id to change count of.
  * @param string $direction 'up' or 'down'
  * @return boolean Success of the update
@@ -177,7 +177,7 @@ class Comment extends CommentsAppModel {
 
 /**
  * Mark a comment as a spam
- * 
+ *
  * @param string $id Id of the comment to mark as spam, optionnal [defaut: $this->id]
  * @return boolean Success / Fail
  */
@@ -186,7 +186,7 @@ class Comment extends CommentsAppModel {
 		if (is_null($id)) {
 			$id = $this->id;
 		}
-		
+
 		if ($this->changeCount($id, 'down')) {
 			if ($this->__updateSpamType($id, 'spammanual')) {
 				if ($this->Behaviors->enabled('Antispamable')) {
@@ -199,10 +199,10 @@ class Comment extends CommentsAppModel {
 		}
 		return $success;
 	}
-	
+
 /**
  * Mark a comment as a ham
- * 
+ *
  * @param string $id Id of the comment to mark as ham
  * @return boolean Success / Fail
  */
@@ -211,7 +211,7 @@ class Comment extends CommentsAppModel {
 		if (is_null($id)) {
 			$id = $this->id;
 		}
-		
+
 		if ($this->changeCount($id, 'up')) {
 			if ($this->__updateSpamType($id, 'ham')) {
 				if ($this->Behaviors->enabled('Antispamable')) {
@@ -229,7 +229,7 @@ class Comment extends CommentsAppModel {
  * Overrides AppModel::delete() method
  *
  * Automatically decrement comment count of related model
- * 
+ *
  * (non-PHPdoc)
  * @see cake/libs/model/Model#delete($id, $cascade)
  */
@@ -238,7 +238,7 @@ class Comment extends CommentsAppModel {
 		if (is_null($id)) {
 			$id = $this->id;
 		}
-		
+
 		if ($this->changeCount($id, 'down')) {
 			if (parent::delete($id, $cascade)) {
 				$success = true;
@@ -251,7 +251,7 @@ class Comment extends CommentsAppModel {
 
 /**
  * Update the comment spam type
- * 
+ *
  * @param string $id Comment id
  * @param string $newType New spam type for the comment (valid values: cf $isSpamValues)
  * @return boolean Success of the update
@@ -265,21 +265,21 @@ class Comment extends CommentsAppModel {
 		}
 		return $success;
 	}
-	
+
 /**
  * Get the row related to a comment
- * 
+ *
  * @param string $id Comment id
  * @return mixed False if an error occured, an array with the following keys otherwise:
  * 	- Model: Associated model object
- *  - id: Id of the related row 
+ *  - id: Id of the related row
  */
 	private function __getCommentedRow($id) {
 		$result = false;
 		$comment = $this->find('first', array(
 			'recursive' => -1,
 			'conditions' => array('id' => $id)));
-		
+
 		if (isset($comment['Comment']['model'])) {
 			$Model = ClassRegistry::init($comment['Comment']['model']);
 			if (!empty($Model)) {

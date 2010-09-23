@@ -82,7 +82,7 @@ msgid "Error appear during comment deleting. Try later."
 msgstr "Fout tijdens het verwijderen van de reactie. Probeer het later nog eens."
 
 #: /models/comment.php:132;173
-msgid "Some errors appear during excution."
+msgid "Some errors appear during execution."
 msgstr "Fouten opgetreden tijdens het uitvoeren."
 
 #: /models/comment.php:136

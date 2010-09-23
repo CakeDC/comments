@@ -71,7 +71,7 @@ msgid "Error appear during comment deleting. Try later."
 msgstr "Une erreur est apparue lors de la suppression du commentaire. Réessayez plus tard."
 
 #: /models/comment.php:132;173
-msgid "Some errors appear during excution."
+msgid "Some errors appear during execution."
 msgstr "Des erreurs sont survenues lors de l'exécution."
 
 #: /models/comment.php:136

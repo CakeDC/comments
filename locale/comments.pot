@@ -82,7 +82,7 @@ msgid "Error appear during comment deleting. Try later."
 msgstr ""
 
 #: /models/comment.php:132;173
-msgid "Some errors appear during excution."
+msgid "Some errors appear during execution."
 msgstr ""
 
 #: /models/comment.php:136
