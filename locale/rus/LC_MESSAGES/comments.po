@@ -1,0 +1,431 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CakePHP Comments Plugin\n"
+"POT-Creation-Date: 2010-09-15 14:33+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Evgeny Tomenko <yevgeny.tomenko@cakedc.com>\n"
+"Language-Team: CakeDC\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"Plural-Forms: plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2)\n"
+
+#: /controllers/comments_controller.php:132;150
+msgid "Wrong comment id"
+msgstr "Неверный коментарий"
+
+#: /controllers/comments_controller.php:134
+msgid "Antispam system informed about spam message."
+msgstr "Система антиспама проинформированна о \"спам\" сообщении."
+
+#: /controllers/comments_controller.php:136;154
+msgid "Error appear during save."
+msgstr "При сохранении возникла ошибка."
+
+#: /controllers/comments_controller.php:152
+msgid "Antispam system informed about ham message."
+msgstr "Система антиспама проинформированна о \"не-спам\" сообщении."
+
+#: /controllers/comments_controller.php:169;203
+msgid "Invalid Comment."
+msgstr "Неверный коментарий"
+
+#: /controllers/comments_controller.php:184
+msgid "Invalid id for Comment"
+msgstr "Неверный коментарий"
+
+#: /controllers/comments_controller.php:186
+msgid "Comment deleted"
+msgstr "Коментарий удален"
+
+#: /controllers/comments_controller.php:188
+msgid "Impossible to delete the Comment. Please try again."
+msgstr "Коментарий не удалось удалить. Попробуйте позднее."
+
+#: /controllers/components/comments.php:479
+msgid "The Comment has been saved."
+msgstr "Коментарий сохранен."
+
+#: /controllers/components/comments.php:490
+msgid "The Comment could not be saved. Please, try again."
+msgstr "Коментарий  не удалось сохранить. Попробуйте позднее."
+
+#: /controllers/components/comments.php:535
+msgid "Nonrestricted operation"
+msgstr "Неразрешенная операция"
+
+#: /controllers/components/comments.php:538
+msgid "The Comment status has been updated."
+msgstr "Состояние коментария обновлено."
+
+#: /controllers/components/comments.php:540
+msgid "Error appear during comment status update. Try later."
+msgstr "Произошла ошибка при обновлении статуса коментария. Попробуйте позднее."
+
+#: /controllers/components/comments.php:554
+msgid "The Comment has been deleted."
+msgstr "Коментарий удален."
+
+#: /controllers/components/comments.php:556
+msgid "Error appear during comment deleting. Try later."
+msgstr "Произошла ошибка при удалении коментария. Попробуйте позднее."
+
+#: /models/comment.php:132;173
+msgid "Some errors appear during excution."
+msgstr "Во время выполнения операции возникла ошибка."
+
+#: /models/comment.php:136
+msgid "Comments removed."
+msgstr "Коментарий удален."
+
+#: /models/comment.php:178
+msgid "Operation was performed. "
+msgstr "Операции выполнена."
+
+#: /models/behaviors/commentable.php:162
+msgid "Unallowed comment id"
+msgstr "Недопустимый Id для коментария"
+
+#: /views/comments/add.ctp:14
+#: /views/comments/admin_add.ctp:14
+msgid "Add Comment"
+msgstr "Добавить коментарий"
+
+#: /views/comments/add.ctp:28;29
+#: /views/comments/admin_add.ctp:28;29
+#: /views/comments/admin_edit.ctp:30;31
+#: /views/comments/admin_view.ctp:65;67
+#: /views/comments/edit.ctp:30;31
+#: /views/comments/index.ctp:85
+#: /views/comments/view.ctp:65;67
+msgid "List Comments"
+msgstr "Список коментариев"
+
+#: /views/comments/add.ctp:30
+#: /views/comments/admin_add.ctp:30
+#: /views/comments/admin_edit.ctp:32
+#: /views/comments/admin_view.ctp:68
+#: /views/comments/edit.ctp:32
+#: /views/comments/index.ctp:86
+#: /views/comments/view.ctp:68
+msgid "New Parent Comment"
+msgstr "Новый родительский коментарий"
+
+#: /views/comments/add.ctp:31
+#: /views/comments/admin_add.ctp:31
+#: /views/comments/admin_edit.ctp:33
+#: /views/comments/admin_view.ctp:69
+#: /views/comments/edit.ctp:33
+#: /views/comments/index.ctp:87
+#: /views/comments/view.ctp:69
+msgid "List Users"
+msgstr "Список пользователей"
+
+#: /views/comments/add.ctp:32
+#: /views/comments/admin_add.ctp:32
+#: /views/comments/admin_edit.ctp:34
+#: /views/comments/admin_view.ctp:70
+#: /views/comments/edit.ctp:34
+#: /views/comments/index.ctp:88
+#: /views/comments/view.ctp:70
+msgid "New User"
+msgstr "Создать пользователя"
+
+#: /views/comments/admin_edit.ctp:14
+#: /views/comments/admin_view.ctp:63
+#: /views/comments/edit.ctp:14
+#: /views/comments/view.ctp:63
+msgid "Edit Comment"
+msgstr "Редактировать"
+
+#: /views/comments/admin_edit.ctp:29
+#: /views/comments/admin_index.ctp:18;81
+#: /views/comments/admin_view.ctp:110
+#: /views/comments/edit.ctp:29
+#: /views/comments/index.ctp:71
+#: /views/comments/view.ctp:110
+msgid "Delete"
+msgstr "Удалить"
+
+#: /views/comments/admin_edit.ctp:29
+#: /views/comments/admin_index.ctp:81
+#: /views/comments/admin_view.ctp:64;110
+#: /views/comments/edit.ctp:29
+#: /views/comments/index.ctp:71
+#: /views/comments/view.ctp:64;110
+msgid "Are you sure you want to delete # %s?"
+msgstr "Вы действительно желаете удалить  # %s ?"
+
+#: /views/comments/admin_index.ctp:1
+#: /views/comments/index.ctp:12
+#: /views/elements/comments/flat/main.ctp:24
+#: /views/elements/comments/threaded/main.ctp:24
+#: /views/elements/comments/tree/main.ctp:13
+msgid "Comments"
+msgstr "Коментарии"
+
+#: /views/comments/admin_index.ctp:8
+msgid "Filter spam comments"
+msgstr "Выбрать спам "
+
+#: /views/comments/admin_index.ctp:9
+msgid "Filter good comments"
+msgstr "Выбрать хорошие коментарии"
+
+#: /views/comments/admin_index.ctp:16;77
+msgid "Mark as ham"
+msgstr "Пометить как \"не спам\""
+
+#: /views/comments/admin_index.ctp:17;76
+msgid "Mark as spam"
+msgstr "Пометить как спам"
+
+#: /views/comments/admin_index.ctp:19;75
+msgid "Approve"
+msgstr "Подтвердить"
+
+#: /views/comments/admin_index.ctp:20
+msgid "Dispprove"
+msgstr "Скрыть"
+
+#: /views/comments/admin_index.ctp:32
+msgid "Select..."
+msgstr "Вабрать..."
+
+#: /views/comments/admin_index.ctp:33
+#: /views/comments/admin_view.ctp:87
+#: /views/comments/index.ctp:30
+#: /views/comments/view.ctp:87
+msgid "Actions"
+msgstr "Действия"
+
+#: /views/comments/admin_index.ctp:63
+msgid "Yes"
+msgstr "Да"
+
+#: /views/comments/admin_index.ctp:63
+msgid "No"
+msgstr "Нет"
+
+#: /views/comments/admin_index.ctp:78
+msgid "Disapprove"
+msgstr "Скрыть"
+
+#: /views/comments/admin_index.ctp:79
+#: /views/comments/admin_view.ctp:108
+#: /views/comments/index.ctp:69
+#: /views/comments/view.ctp:108
+#: /views/elements/comments/flat/item.ctp:14
+#: /views/elements/comments/threaded/item.ctp:14
+#: /views/elements/comments/tree/item.ctp:14
+msgid "View"
+msgstr "Просмотреть"
+
+#: /views/comments/admin_index.ctp:80
+#: /views/comments/admin_view.ctp:109
+#: /views/comments/index.ctp:70
+#: /views/comments/view.ctp:109
+msgid "Edit"
+msgstr "Редактировать"
+
+#: /views/comments/admin_view.ctp:12
+#: /views/comments/view.ctp:12
+msgid "Comment"
+msgstr "Коментарий"
+
+#: /views/comments/admin_view.ctp:14;78
+#: /views/comments/view.ctp:14;78
+msgid "Id"
+msgstr "Идентификатор"
+
+#: /views/comments/admin_view.ctp:19
+#: /views/comments/view.ctp:19
+msgid "Parent Comment"
+msgstr "Родительский коментарий"
+
+#: /views/comments/admin_view.ctp:24
+#: /views/comments/view.ctp:24
+msgid "Commented On"
+msgstr "Коментарий добавлен пользователем "
+
+#: /views/comments/admin_view.ctp:29
+#: /views/comments/view.ctp:29
+msgid "User"
+msgstr "Пользователь"
+
+#: /views/comments/admin_view.ctp:34;82
+#: /views/comments/view.ctp:34;82
+msgid "Model"
+msgstr "Модель"
+
+#: /views/comments/admin_view.ctp:39;83
+#: /views/comments/view.ctp:39;83
+#: /views/elements/comments/finder.ctp:8
+msgid "Approved"
+msgstr "Подтверждено"
+
+#: /views/comments/admin_view.ctp:44;84
+#: /views/comments/view.ctp:44;84
+msgid "Body"
+msgstr "Описание"
+
+#: /views/comments/admin_view.ctp:49;85
+#: /views/comments/view.ctp:49;85
+msgid "Created"
+msgstr "Дата создания"
+
+#: /views/comments/admin_view.ctp:54;86
+#: /views/comments/view.ctp:54;86
+msgid "Modified"
+msgstr "Дата изменения"
+
+#: /views/comments/admin_view.ctp:64
+#: /views/comments/view.ctp:64
+msgid "Delete Comment"
+msgstr "Удалить коментарий"
+
+#: /views/comments/admin_view.ctp:66
+#: /views/comments/index.ctp:84
+#: /views/comments/view.ctp:66
+msgid "New Comment"
+msgstr "Создать коментарий"
+
+#: /views/comments/admin_view.ctp:74
+#: /views/comments/view.ctp:74
+msgid "Related Comments"
+msgstr "Связанные коментарии"
+
+#: /views/comments/admin_view.ctp:79
+#: /views/comments/view.ctp:79
+msgid "Comment Id"
+msgstr "Идентификатор коментария"
+
+#: /views/comments/admin_view.ctp:80
+#: /views/comments/view.ctp:80
+msgid "Foreign Key"
+msgstr "Внешний ключ"
+
+#: /views/comments/admin_view.ctp:81
+#: /views/comments/view.ctp:81
+msgid "User Id"
+msgstr "Id пользователя"
+
+#: /views/comments/admin_view.ctp:119
+#: /views/comments/view.ctp:119
+msgid "New Child Comment"
+msgstr "Создать родительский коментарий"
+
+#: /views/comments/index.ctp:16
+msgid "Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%"
+msgstr "Страница %page% из %pages%, отображено %current% записей из %count%, начиная с %start%, и заканчивая %end%"
+
+#: /views/comments/index.ctp:78
+msgid "previous"
+msgstr "назад"
+
+#: /views/comments/index.ctp:80
+msgid "next"
+msgstr "далее"
+
+#: /views/elements/comments/finder.ctp:1
+msgid "Filter comments"
+msgstr "Профильтровать коментарии"
+
+#: /views/elements/comments/finder.ctp:10;18
+msgid "...select..."
+msgstr "... выбрать ..."
+
+#: /views/elements/comments/finder.ctp:16
+msgid "spam state"
+msgstr "состояние спама"
+
+#: /views/elements/comments/finder.ctp:23
+msgid "Search"
+msgstr "Искать"
+
+#: /views/elements/comments/flat/form.ctp:28
+#: /views/elements/comments/threaded/form.ctp:28
+#: /views/elements/comments/tree/form.ctp:28
+msgid "This field cannot be left blank"
+msgstr "Поле не должно быть пустым"
+
+#: /views/elements/comments/flat/form.ctp:29
+#: /views/elements/comments/threaded/form.ctp:29
+#: /views/elements/comments/tree/form.ctp:29
+msgid "You can use only headings from %s to %s"
+msgstr "Можно использовать зоголовки от %s до %s"
+
+#: /views/elements/comments/flat/form.ctp:36;38
+#: /views/elements/comments/threaded/form.ctp:36;38
+#: /views/elements/comments/tree/form.ctp:36;38
+msgid "Submit"
+msgstr "Сохранить"
+
+#: /views/elements/comments/flat/item.ctp:18
+#: /views/elements/comments/threaded/item.ctp:18
+#: /views/elements/comments/tree/item.ctp:18
+msgid "Reply"
+msgstr "Ответить"
+
+#: /views/elements/comments/flat/item.ctp:19
+#: /views/elements/comments/threaded/item.ctp:19
+#: /views/elements/comments/tree/item.ctp:19
+msgid "Quote"
+msgstr "Цитировать"
+
+#: /views/elements/comments/flat/item.ctp:22
+#: /views/elements/comments/threaded/item.ctp:22
+#: /views/elements/comments/tree/item.ctp:22
+msgid "Publish"
+msgstr "Опубликовать"
+
+#: /views/elements/comments/flat/item.ctp:24
+#: /views/elements/comments/threaded/item.ctp:24
+#: /views/elements/comments/tree/item.ctp:24
+msgid "Unpublish"
+msgstr "Скрыть"
+
+#: /views/elements/comments/flat/item.ctp:37
+#: /views/elements/comments/threaded/item.ctp:37
+#: /views/elements/comments/tree/item.ctp:36
+msgid "posted"
+msgstr "добавлено"
+
+#: /views/elements/comments/flat/main.ctp:15
+#: /views/elements/comments/threaded/main.ctp:15
+#: /views/elements/comments/tree/main.ctp:17
+msgid "Add New Comment"
+msgstr "Добавить новый коментарий"
+
+#: /views/elements/comments/flat/main.ctp:20
+#: /views/elements/comments/tree/main.ctp:22
+msgid "Add comment"
+msgstr "Добавить коментарий"
+
+#: /views/elements/comments/flat/main.ctp:26
+#: /views/elements/comments/threaded/main.ctp:26
+#: /views/elements/comments/tree/main.ctp:27
+msgid "If you want to post comments, you need to login first."
+msgstr "Чтобы добавить коментарий необходимо авторизоваться."
+
+#: /views/elements/comments/flat/main.ctp:26
+#: /views/elements/comments/threaded/main.ctp:26
+#: /views/elements/comments/tree/main.ctp:27
+msgid "login"
+msgstr "Войти"
+
+#: /views/elements/comments/flat/paginator.ctp:25
+#: /views/elements/comments/tree/paginator.ctp:25
+msgid "Most Recent"
+msgstr "Сюда"
+
+#: /views/elements/comments/flat/paginator.ctp:27
+#: /views/elements/comments/tree/paginator.ctp:27
+msgid "Oldest"
+msgstr "Туда"
+
+#: /views/elements/comments/threaded/main.ctp:20
+msgid "ADD COMMENT"
+msgstr "Добавить коментарий"
+
