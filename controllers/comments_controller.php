@@ -48,7 +48,6 @@ class CommentsController extends CommentsAppController {
 /**
  * Admin index action
  *
- * @TODO either hardcode spam/ham possible values (remove option from Commentable) or find a way to use these values here
  * @param string
  */
 	public function admin_index($type = 'spam') {
@@ -191,8 +190,6 @@ class CommentsController extends CommentsAppController {
 /**
  * Request comments 
  *
- * @todo Return only "clean" comments?
- * @todo Return also related models: find a way to automatically bind related models to comments
  * @param string user UUID
  * @return void
  */

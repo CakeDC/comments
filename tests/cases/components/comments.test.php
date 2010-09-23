@@ -141,11 +141,6 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testStartup() {
-		// TODO Is it still implemented? Fix or remove it
-		/*$this->Controller->Comments->deleteActions = array('delete_comment');
-		$this->Controller->action = 'delete_comment';
-		$this->Controller->Comments->startup($this->Controller);*/
-		
 		$this->assertTrue(isset($this->Controller->Article->hasMany['Comment']));
 		$this->Controller->Comments->unbindAssoc = true;
 		$this->Controller->Comments->startup($this->Controller);

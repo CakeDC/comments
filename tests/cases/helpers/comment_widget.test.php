@@ -203,7 +203,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$countElementCall = 0;
 		$initialParams = $this->CommentWidget->globalParams; 
 		$Article = ClassRegistry::init('Article');
-		Configure::write('Routing.admin', 'admin'); // TODO Find a 1.3 equivalent
+		Configure::write('Routing.admin', 'admin');
 		
 		// Test a basic display call
 		$currArticle = $Article->findById(1);
