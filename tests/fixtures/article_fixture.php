@@ -1,11 +1,26 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
+/**
+ * Article Fixture
+ *
+ * @package comments
+ * @subpackage comments.tests.fixtures
+ */
 class ArticleFixture extends CakeTestFixture {
 
 /**
  * name property
  *
- * @var string 'AnotherArticle'
- * @access public
+ * @var string
  */
 	public $name = 'Article';
 
@@ -13,7 +28,6 @@ class ArticleFixture extends CakeTestFixture {
  * fields property
  *
  * @var array
- * @access public
  */
 	public $fields = array(
 		'id' => array('type' => 'integer', 'key' => 'primary'),
@@ -24,10 +38,8 @@ class ArticleFixture extends CakeTestFixture {
  * records property
  *
  * @var array
- * @access public
  */
 	public $records = array(
 		array('title' => 'First Article', 'comments' => 2),
 		array('title' => 'Second Article', 'comments' => 0));
-
 }

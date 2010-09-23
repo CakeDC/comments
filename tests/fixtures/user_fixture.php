@@ -1,24 +1,40 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
+/**
+ * User Fixture
+ *
+ * @package comments
+ * @subpackage comments.tests.fixtures
+ */
 class UserFixture extends CakeTestFixture {
+
 /**
  * Name
  *
  * @var string $name
- * @access public
  */
 	public $name = 'User';
+
 /**
  * Table
  *
  * @var array $table
- * @access public
  */
 	public $table = 'users';
+
 /**
  * Fields
  *
  * @var array $fields
- * @access public
  */
 	public $fields = array(
 			'id' => array('type'=>'string', 'null' => false, 'length' => 36, 'key' => 'primary'),
@@ -45,11 +61,11 @@ class UserFixture extends CakeTestFixture {
 				'PRIMARY' => array('column' => 'id', 'unique' => 1),
 				'UNIQUE_URL' => array('column' => 'url', 'unique' => 1))
 			);
+
 /**
  * Records
  *
  * @var array $records
- * @access public
  */
 	public $records = array(
 		array(
@@ -141,8 +157,10 @@ class UserFixture extends CakeTestFixture {
 			'modified'  => '2008-03-25 02:45:46'
 		)
 	);
+
 /**
- * 
+ * Constructor
+ *
  */
 	public function __construct() {
 		parent::__construct();

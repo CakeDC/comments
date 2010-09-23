@@ -1,33 +1,26 @@
 <?php
 /**
- * CakePHP Comments
- *
- * Copyright 2009 - 2010, Cake Development Corporation
- *                        1785 E. Sahara Avenue, Suite 490-423
- *                        Las Vegas, Nevada 89104
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright 2009 - 2010, Cake Development Corporation
- * @link      http://github.com/CakeDC/Comments
- * @package   plugins.comments
- * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
- * Short description for class.
+ * Comment model
  *
- * @package		plugins.comments
- * @subpackage	plugins.comments.models
+ * @package comments
+ * @subpackage comments.models
  */
-
 class Comment extends CommentsAppModel {
+
 /**
  * Name
  *
  * @var string $name
- * @access public
  */
 	public $name = 'Comment';
 
@@ -35,18 +28,15 @@ class Comment extends CommentsAppModel {
  * Behaviors
  *
  * @var string $name
- * @access public
  */
 	public $actsAs = array(
-		'Comments.Sluggable' => array(
-			'label' => 'title'),
+		'Comments.Sluggable' => array('label' => 'title'),
 		'Tree');
 
 /**
  * Is spam field possible values
  *
  * @var array $isSpamValues
- * @access public
  */
 	public $isSpamValues = array('clean', 'spam', 'ham', 'spammanual');
 
@@ -54,7 +44,6 @@ class Comment extends CommentsAppModel {
  * hasMany associations
  *
  * @var array $hasMany
- * @access public
  */
 	public $hasMany = array();
 
@@ -62,7 +51,6 @@ class Comment extends CommentsAppModel {
  * Permalink parameter required to pass into antispam system
  *
  * @var array $hasMany
- * @access public
  */
 	public $permalink;
 
@@ -71,7 +59,6 @@ class Comment extends CommentsAppModel {
  *
  * @param boolean $created
  * @return boolean
- * @access public
  */
 	public function beforeSave() {
 		if (!isset($this->data[$this->alias]['language'])) {
@@ -85,7 +72,6 @@ class Comment extends CommentsAppModel {
  *
  * @param boolean $created
  * @return boolean
- * @access public
  */
 	public function afterSave($created) {
 		if ($created) {
@@ -97,20 +83,6 @@ class Comment extends CommentsAppModel {
 				}
 			}
 		}
-	}
-
-/**
- * Constructor
- *
- * @param string $id UUID
- * @param string $table
- * @param string $ds
- * @return
- * @access public
- */
-	public function __construct($id = false, $table = null, $ds = null) {
-		//$this->actsAs['Antispam.Antispamable'] = Set::merge($this->actsAs['Antispam.Antispamable'], Configure::read('Antispam.config'));
-		return parent::__construct($id, $table, $ds);
 	}
 
 /**
@@ -185,7 +157,6 @@ class Comment extends CommentsAppModel {
  * 
  * @param mixed $id The id to change count of.
  * @param string $direction 'up' or 'down'
- * @access public
  * @return boolean Success of the update
  */
 	public function changeCount($id, $direction) {
