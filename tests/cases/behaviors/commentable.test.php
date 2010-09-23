@@ -1,4 +1,14 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
 App::import('model', 'Comments.Comment');
 
 if (!class_exists('Article')) {
@@ -55,7 +65,6 @@ class CommentableTest extends CakeTestCase {
  * Model
  *
  * @var object
- * @access public
  */
 	public $Model = null;
 
@@ -63,7 +72,6 @@ class CommentableTest extends CakeTestCase {
  * Start test
  *
  * @return void
- * @access public
  */
 	public function startTest() {
 		$this->Model = Classregistry::init('Article');
@@ -76,7 +84,6 @@ class CommentableTest extends CakeTestCase {
  * End test
  *
  * @return void
- * @access public
  */
 	public function endTest() {
 		unset($this->Model);
@@ -87,7 +94,6 @@ class CommentableTest extends CakeTestCase {
  * Test behavior instance
  *
  * @return void
- * @access public
  */
 	public function testBehaviorInstance() {
 		$this->assertTrue(is_a($this->Model->Behaviors->Commentable, 'CommentableBehavior'));
@@ -97,7 +103,6 @@ class CommentableTest extends CakeTestCase {
  * testCommentAdd
  *
  * @return void
- * @access public
  */
 	public function testCommentAdd(){ 
 		//No data
@@ -162,7 +167,6 @@ class CommentableTest extends CakeTestCase {
  * testCommentToggleApprove
  *
  * @return void
- * @access public
  */
 	public function testCommentToggleApprove() {
 		$comment = $this->Model->Comment->find('first');
@@ -181,7 +185,6 @@ class CommentableTest extends CakeTestCase {
  * commentDelete
  *
  * @return void
- * @access public
  */
 	public function testCommentDelete() {
 		$this->Model->id = 1;
@@ -200,7 +203,6 @@ class CommentableTest extends CakeTestCase {
  * commentDelete
  *
  * @return void
- * @access public
  */
 	public function testChangeCommentCount() {
 		$this->assertTrue($this->Model->changeCommentCount('1', 'up'));
@@ -218,7 +220,6 @@ class CommentableTest extends CakeTestCase {
  * testCommentBeforeFind
  *
  * @return void
- * @access public
  */
 	public function testCommentBeforeFind() {
 		$options = array('userModel' => 'User');
@@ -237,5 +238,4 @@ class CommentableTest extends CakeTestCase {
 			'Comment.is_spam' => array('clean', 'ham'));
 		$this->assertEqual($result, $expected);
 	}
-
 }

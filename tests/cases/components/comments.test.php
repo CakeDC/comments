@@ -1,4 +1,14 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
 App::import('Controller', 'Controller', false);
 App::import('Component', 'Comments.Comments');
 
@@ -69,13 +79,18 @@ if (!class_exists('ArticlesTestController')) {
 	}
 }
 
-
+/**
+ * Comments Component Test
+ *
+ * @package comments
+ * @subpackage comments.tests.cases.components
+ */
 class CommentsComponentTest extends CakeTestCase {
+
 /**
  * Fixtures
  *
  * @var array
- * @access public
  */
 	public $fixtures = array(
 		'plugin.comments.comment',
@@ -85,7 +100,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * setUp method
  *
- * @access public
  * @return void
  */
 	function startTest() {
@@ -98,7 +112,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * tearDown method
  *
- * @access public
  * @return void
  */
 	function endTest() {
@@ -109,7 +122,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testInitialize
  *
- * @access public
  * @return void
  */
 	public function testInitialize() {
@@ -126,7 +138,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testStartup
  *
- * @access public
  * @return void
  */
 	public function testStartup() {
@@ -155,7 +166,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testBeforeRender
  *
- * @access public
  * @return void
  */
 	public function testBeforeRender() {
@@ -173,7 +183,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_initType
  *
- * @access public
  * @return void
  */
 	public function testCallback_initType() {
@@ -194,7 +203,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_view
  *
- * @access public
  * @return void
  */
 	public function testCallback_view() {
@@ -231,7 +239,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_fetchDataTree
  *
- * @access public
  * @return void
  */
 	public function testCallback_fetchDataTree() {
@@ -246,7 +253,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_fetchDataFlat
  *
- * @access public
  * @return void
  */
 	public function testCallback_fetchDataFlat() {
@@ -261,7 +267,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_fetchDataThreaded
  *
- * @access public
  * @return void
  */
 	public function testCallback_fetchDataThreaded() {
@@ -276,7 +281,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_fetchData
  *
- * @access public
  * @return void
  */
 	public function testCallback_fetchData() {
@@ -292,7 +296,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_fetchDataThreaded
  *
- * @access public
  * @return void
  */
 	public function testCallback_prepareParams() {
@@ -316,7 +319,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_add
  *
- * @access public
  * @return void
  */
 	public function testCallback_add() {
@@ -366,7 +368,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_add
  *
- * @access public
  * @return void
  */
 	public function testCallback_add_InAjaxMode() {
@@ -421,7 +422,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_add
  *
- * @access public
  * @return void
  */
 	public function testCallback_toggleApprove() {
@@ -479,7 +479,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testCallback_delete
  *
- * @access public
  * @return void
  */
 	public function testCallback_delete() {
@@ -504,7 +503,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testFlash
  *
- * @access public
  * @return void
  */
 	public function testFlash() {
@@ -522,7 +520,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testFlash
  *
- * @access public
  * @return void
  */
 	public function testRedirect() {
@@ -541,7 +538,6 @@ class CommentsComponentTest extends CakeTestCase {
 /**
  * testFlash
  *
- * @access public
  * @return void
  */
 	public function testPermalink() {

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+
 App::import('Core', array('ClassRegistry', 'Controller', 'View', 'Model', 'Security'));
 App::import('Helper', array('Comments.CommentWidget', 'Html', 'Form', 'Session'));
 App::import('Component', array('Comments.Comments'));
@@ -47,13 +57,18 @@ if (!class_exists('ArticlesTestController')) {
 	}
 }
 
+/**
+ * Comment Widget Helper Test
+ *
+ * @package comments
+ * @subpackage comment.tests.cases.helpers
+ */
 class CommentWidgetHelperTest extends CakeTestCase {
 
 /**
  * fixtures property
  *
  * @var array
- * @access public
  */
 	public $fixtures = array(
 		'plugin.comments.comment',

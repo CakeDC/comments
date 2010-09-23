@@ -1,34 +1,26 @@
 <?php
 /**
- * CakePHP Comments
- *
- * Copyright 2009 - 2010, Cake Development Corporation
- *                        1785 E. Sahara Avenue, Suite 490-423
- *                        Las Vegas, Nevada 89104
+ * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright 2009 - 2010, Cake Development Corporation
- * @link      http://github.com/CakeDC/Comments
- * @package   plugins.comments
- * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 /**
- * Short description for class.
+ * Comments Controller
  *
- * @package		plugins.comments
- * @subpackage	plugins.comments.controllers
+ * @package comments
+ * @subpackage comments.controllers
  */
-
 class CommentsController extends CommentsAppController {
 
 /**
  * Name
  *
  * @var string
- * @access public
  */
 	public $name = 'Comments';
 
@@ -36,7 +28,6 @@ class CommentsController extends CommentsAppController {
  * Components
  *
  * @var array
- * @access public
  */
 	public $components = array('RequestHandler');
 
@@ -44,7 +35,6 @@ class CommentsController extends CommentsAppController {
  * Helpers
  *
  * @var array
- * @access public
  */
 	public $helpers = array('Text', 'Time');
 
@@ -52,7 +42,6 @@ class CommentsController extends CommentsAppController {
  * Uses
  *
  * @var array
- * @access public
  */
 	public $uses = array('Comments.Comment');
 
@@ -61,7 +50,6 @@ class CommentsController extends CommentsAppController {
  *
  * @TODO either hardcode spam/ham possible values (remove option from Commentable) or find a way to use these values here
  * @param string
- * @access public
  */
 	public function admin_index($type = 'spam') {
 		$this->presetVars = array(
@@ -103,7 +91,6 @@ class CommentsController extends CommentsAppController {
  * Processes mailbox folders
  *
  * @param string $folder Name of the folder to process
- * @access public
  */
 	public function admin_process($type = null) {
 		$addInfo = '';
@@ -124,7 +111,6 @@ class CommentsController extends CommentsAppController {
  * Admin mark comment as spam
  *
  * @param string UUID
- * @access public
  */
 	public function admin_spam($id) {
 		$this->Comment->id = $id;
@@ -142,7 +128,6 @@ class CommentsController extends CommentsAppController {
  * Admin mark comment as ham
  *
  * @param string UUID
- * @access public
  */
 	public function admin_ham($id) {
 		$this->Comment->id = $id;
@@ -160,7 +145,6 @@ class CommentsController extends CommentsAppController {
  * Admin View action
  *
  * @param string UUID
- * @access public
  */
 	public function admin_view($id = null) {
 		$this->Comment->id = $id;
@@ -176,7 +160,6 @@ class CommentsController extends CommentsAppController {
  * Admin delete action
  *
  * @param string UUID
- * @access public
  */
 	public function admin_delete($id = null) {
 		$this->Comment->id = $id;
@@ -194,7 +177,6 @@ class CommentsController extends CommentsAppController {
  * View action
  *
  * @param string UUID
- * @access public
  */
 	public function view($id = null) {
 		$this->Comment->id = $id;
@@ -213,7 +195,6 @@ class CommentsController extends CommentsAppController {
  * @todo Return also related models: find a way to automatically bind related models to comments
  * @param string user UUID
  * @return void
- * @access public
  */
 	public function requestForUser($userId = null, $amount = 5) {
 		if (!$this->RequestHandler->isAjax() && !$this->_isRequestedAction()) {
