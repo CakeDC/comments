@@ -179,21 +179,28 @@ Also necessary to implement comments view, that will just contains previous bloc
 
 The comments action in controller should be same as view action, the difference only in view.
 
+## Requirements ##
+
+* PHP version: PHP 5.2+
+* CakePHP version: Cakephp 1.3 Stable
+
 ## Support ##
 
-For more information and support, please visit the [Cake Development Corporation website](http://cakedc.com).
+For support and feature request, please visit the [Comments Plugin Support Site](http://cakedc.lighthouseapp.com/projects/59616-comments-plugin/).
+
+For more information about our Professional CakePHP Services please visit the [Cake Development Corporation website](http://cakedc.com).
 
 ## License ##
 
-Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+Copyright 2009-2010, [Cake Development Corporation](http://cakedc.com)
 
-Licensed under The MIT License (http://www.opensource.org/licenses/mit-license.php)<br/>
+Licensed under [The MIT License](http://www.opensource.org/licenses/mit-license.php)<br/>
 Redistributions of files must retain the above copyright notice.
 
 ## Copyright ###
 
 Copyright 2009-2010<br/>
-Cake Development Corporation<br/>
+[Cake Development Corporation](http://cakedc.com)<br/>
 1785 E. Sahara Avenue, Suite 490-423<br/>
 Las Vegas, Nevada 89104<br/>
 http://cakedc.com<br/>
