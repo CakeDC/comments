@@ -55,7 +55,7 @@ class CommentableBehavior extends ModelBehavior {
  * @param array $settings
  * @access public
  */
-	public function setup(&$model, $settings = array()) {
+	public function setup(Model $model, $settings = array()) {
 		if (!isset($this->settings[$model->alias])) {
 			$this->settings[$model->alias] = $this->defaults;
 		}
@@ -105,7 +105,7 @@ class CommentableBehavior extends ModelBehavior {
  * @return boolean
  * @access public
  */
-	public function commentToggleApprove(&$model, $commentId, $options = array()) {
+	public function commentToggleApprove(Model $model, $commentId, $options = array()) {
 		$model->Comment->recursive = -1;
 		$data = $model->Comment->read(null, $commentId);
 		if ($data) {
@@ -132,7 +132,7 @@ class CommentableBehavior extends ModelBehavior {
  * @return boolean
  * @access public
  */
-	public function commentDelete(&$model, $commentId = null) {
+	public function commentDelete(Model $model, $commentId = null) {
 		return $model->Comment->delete($commentId);
 	}
 
@@ -145,7 +145,7 @@ class CommentableBehavior extends ModelBehavior {
  * @return boolean
  * @access public
  */
-	public function commentAdd(&$model, $commentId = null, $options = array()) {
+	public function commentAdd(Model $model, $commentId = null, $options = array()) {
 		$options = array_merge(array('defaultTitle' => '', 'modelId' => null, 'userId' => null, 'data' => array(), 'permalink' => ''), (array)$options);
 		extract($options);
 		if (isset($options['permalink'])) {
@@ -184,6 +184,12 @@ class CommentableBehavior extends ModelBehavior {
 				}
 			}
 
+			if (method_exists($model, 'beforeComment')) {
+				if (!$model->beforeComment(&$data)) {
+					return false;
+				}
+			}
+
 			$model->Comment->create($data);
 
 			if ($model->Comment->Behaviors->enabled('Tree')) {
@@ -199,13 +205,15 @@ class CommentableBehavior extends ModelBehavior {
 
 			if ($model->Comment->save()) {
 				$id = $model->Comment->id;
-				// $spamField = $this->settings[$model->alias]['spamField'];
-				// if ($model->Comment->hasField($spamField)) {
-					// $data['Comment.'][$spamField];
-				// }
-
+				$data['Comment']['id'] = $id;
+				$model->Comment->data[$model->Comment->alias]['id'] = $id;
 				if (!isset($data['Comment']['approved']) || $data['Comment']['approved'] == true) {
 					$this->changeCommentCount($model, $modelId);
+				}
+				if (method_exists($model, 'afterComment')) {
+					if (!$model->afterComment($data)) {
+						return false;
+					}
 				}
 				return $id;
 			} else {
@@ -224,7 +232,7 @@ class CommentableBehavior extends ModelBehavior {
  * @access public
  * @return null
  */
-	public function changeCommentCount(&$model, $id = null, $direction = 'up') {
+	public function changeCommentCount(Model $model, $id = null, $direction = 'up') {
 		if ($model->hasField('comments')) {
 			if ($direction == 'up') {
 				$direction = '+ 1';
@@ -251,7 +259,7 @@ class CommentableBehavior extends ModelBehavior {
  * @return boolean
  * @access public
  */
-	public function commentBeforeFind(&$model, $options) {
+	public function commentBeforeFind(Model $model, $options) {
 		$options = array_merge(array('userModel' => $this->settings[$model->alias]['userModelAlias'], 'userData' => null, 'isAdmin' => false), (array)$options);
 		extract($options);
 

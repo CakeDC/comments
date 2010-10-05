@@ -10,9 +10,12 @@
  */
 
 App::import('model', 'Comments.Comment');
-
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
+	/**
+	 * 
+	 */
+		public $callbackData = array();
 
 	/**
 	 * 
@@ -31,6 +34,52 @@ if (!class_exists('Article')) {
 	 * 
 	 */
 		public $name = 'Article';
+	}
+}
+
+if (!class_exists('Article2')) {
+	class Article2 extends CakeTestModel {
+	/**
+	 * 
+	 */
+		public $callbackData = array();
+
+	/**
+	 * 
+	 */
+		public $actsAs = array(
+			'Comments.Commentable' => array(
+				'commentModel' => 'Comments.Comment',
+				'userModelAlias' => 'UserModel',
+				'userModel' => 'User'));
+	/**
+	 * 
+	 */
+		public $useTable = 'articles';
+
+	/**
+	 * 
+	 */
+		public $name = 'Article2';
+
+	
+	/**
+	 * 
+	 */
+		public function beforeComment(&$data) {
+			$data['Comment']['title'] = 'Changed in beforeComment!';
+			$this->callbackData['beforeComment'] = $data;
+			return true;
+		}
+
+	/**
+	 * 
+	 */
+		public function afterComment(&$data) {
+			$data['Comment']['body'] = 'Changed in afterComment!';
+			$this->callbackData['afterComment'] = $data;
+			return true;
+		}
 	}
 }
 
@@ -228,7 +277,7 @@ class CommentableTest extends CakeTestCase {
 			'Comment.approved' => 1,
 			'Comment.is_spam' => array('clean', 'ham'));
 		$this->assertEqual($result, $expected);
-		
+
 		$options = array_merge($options, array(
 			'isAdmin' => true,
 			'id' => 1));
@@ -238,4 +287,28 @@ class CommentableTest extends CakeTestCase {
 			'Comment.is_spam' => array('clean', 'ham'));
 		$this->assertEqual($result, $expected);
 	}
+
+/**
+ * testBeforeAndAfterCallbacks
+ *
+ * @return void
+ */
+	public function testBeforeAndAfterCallbacks() {
+		$this->Model = Classregistry::init('Article2');
+		$options = array(
+			'userId' => '47ea303a-3b2c-4251-b313-4816c0a800fa',
+			'modelId' => '1',
+			'modelName' => 'Article',
+			'defaultTitle' => 'Specified default title',
+			'data' => array(
+				'Comment' => array(
+					'body' => "Comment Test successful Captn!",
+					'title' => 'Not the Default title')),
+			'permalink' => 'http://testing.something.com');
+		$this->Model->commentAdd(0, $options);
+
+		$this->assertEqual($this->Model->callbackData['beforeComment']['Comment']['title'], 'Changed in beforeComment!');
+		$this->assertEqual($this->Model->callbackData['afterComment']['Comment']['body'], 'Changed in afterComment!');
+	}
+
 }
