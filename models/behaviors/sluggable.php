@@ -8,7 +8,6 @@ class SluggableBehavior extends ModelBehavior {
  * Settings to configure the behavior
  *
  * @var array
- * @access public
  */
 	public $settings = array();
 
@@ -16,7 +15,6 @@ class SluggableBehavior extends ModelBehavior {
  * Default settings
  *
  * @var array
- * @access protected
  */
 	protected $_defaults = array(
 		'label' => 'title',
@@ -33,7 +31,6 @@ class SluggableBehavior extends ModelBehavior {
  *
  * @param object $Model
  * @param array $settings
- * @access public
  */
 	public function setup(&$Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $settings);
@@ -43,7 +40,6 @@ class SluggableBehavior extends ModelBehavior {
  * beforeSave callback
  *
  * @param object $Model
- * @access public
  */
 	public function beforeSave(&$Model) {
 		if (empty($Model->data[$Model->alias])) {
@@ -104,7 +100,6 @@ class SluggableBehavior extends ModelBehavior {
 /**
  * @param string
  * @return string
- * @access public
  */
 	public function multibyteSlug(&$Model, $string = null) {
 		$str = mb_strtolower($string);

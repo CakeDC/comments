@@ -30,7 +30,6 @@ class CommentableBehavior extends ModelBehavior {
  * Settings array
  *
  * @var array
- * @access public
  */
 	public $settings = array();
 
@@ -38,7 +37,6 @@ class CommentableBehavior extends ModelBehavior {
  * Default settings
  *
  * @var array
- * @access public
  */
 	public $defaults = array(
 		'commentModel' => 'Comments.Comment',
@@ -53,7 +51,6 @@ class CommentableBehavior extends ModelBehavior {
  *
  * @param AppModel $model
  * @param array $settings
- * @access public
  */
 	public function setup(Model $model, $settings = array()) {
 		if (!isset($this->settings[$model->alias])) {
@@ -103,7 +100,6 @@ class CommentableBehavior extends ModelBehavior {
  * @param mixed commentId
  * @param array $options
  * @return boolean
- * @access public
  */
 	public function commentToggleApprove(Model $model, $commentId, $options = array()) {
 		$model->Comment->recursive = -1;
@@ -130,7 +126,6 @@ class CommentableBehavior extends ModelBehavior {
  * @param AppModel $model
  * @param mixed commentId
  * @return boolean
- * @access public
  */
 	public function commentDelete(Model $model, $commentId = null) {
 		return $model->Comment->delete($commentId);
@@ -143,7 +138,6 @@ class CommentableBehavior extends ModelBehavior {
  * @param mixed $commentId parent comment id, 0 for none
  * @param array $options extra information and comment statistics
  * @return boolean
- * @access public
  */
 	public function commentAdd(Model $model, $commentId = null, $options = array()) {
 		$options = array_merge(array('defaultTitle' => '', 'modelId' => null, 'userId' => null, 'data' => array(), 'permalink' => ''), (array)$options);
@@ -229,7 +223,6 @@ class CommentableBehavior extends ModelBehavior {
  * @param Object $model Model to change count of
  * @param mixed $id The id to change count of
  * @param string $direction 'up' or 'down'
- * @access public
  * @return null
  */
 	public function changeCommentCount(Model $model, $id = null, $direction = 'up') {
@@ -257,7 +250,6 @@ class CommentableBehavior extends ModelBehavior {
  *
  * @param array $options
  * @return boolean
- * @access public
  */
 	public function commentBeforeFind(Model $model, $options) {
 		$options = array_merge(array('userModel' => $this->settings[$model->alias]['userModelAlias'], 'userData' => null, 'isAdmin' => false), (array)$options);

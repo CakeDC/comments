@@ -28,7 +28,6 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
  * Migration description
  *
  * @var string
- * @access public
  */
 	public $description = '';
 
@@ -36,7 +35,6 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
  * Migration array
  * 
  * @var array $migration
- * @access public
  */
 	public $migration = array(
 		'up' => array(
@@ -75,7 +73,6 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
  * before migration callback
  *
  * @param string $direction, up or down direction of migration process
- * @access public
  */
 	public function before($direction) {
 		return true;
@@ -85,7 +82,6 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
  * after migration callback
  *
  * @param string $direction, up or down direction of migration process
- * @access public
  */
 	public function after($direction) {
 		return true;

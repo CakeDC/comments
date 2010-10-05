@@ -21,7 +21,6 @@ class CommentsController extends CommentsAppController {
  * Name
  *
  * @var string
- * @access public
  */
 	public $name = 'Comments';
 
@@ -29,7 +28,6 @@ class CommentsController extends CommentsAppController {
  * Components
  *
  * @var array
- * @access public
  */
 	public $components = array('RequestHandler');
 
@@ -37,7 +35,6 @@ class CommentsController extends CommentsAppController {
  * Helpers
  *
  * @var array
- * @access public
  */
 	public $helpers = array('Text', 'Time');
 
@@ -45,7 +42,6 @@ class CommentsController extends CommentsAppController {
  * Uses
  *
  * @var array
- * @access public
  */
 	public $uses = array('Comments.Comment');
 
@@ -54,7 +50,6 @@ class CommentsController extends CommentsAppController {
  *
  * @param string
  * @return void
- * @access public
  */
 	public function admin_index($type = 'spam') {
 		$this->presetVars = array(
@@ -97,7 +92,6 @@ class CommentsController extends CommentsAppController {
  *
  * @param string $folder Name of the folder to process
  * @return void
- * @access public
  */
 	public function admin_process($type = null) {
 		$addInfo = '';

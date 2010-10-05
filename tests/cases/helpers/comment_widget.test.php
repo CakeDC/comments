@@ -29,19 +29,16 @@ if (!class_exists('ArticlesTestController')) {
 
 	/**
 	 * @var string
-	 * @access public
 	 */
 		public $name = 'ArticlesTest';
 
 	/**
 	 * @var array
-	 * @access public
 	 */
 		public $uses = array('Article');
 
 	/**
 	 * @var array
-	 * @access public
 	 */
 		public $components = array('Comments.Comments');
 

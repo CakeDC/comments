@@ -28,7 +28,6 @@ class AppSchema extends CakeSchema {
  * Name
  *
  * @var string
- * @access public
  */
 	public $name = 'App';
 
@@ -37,7 +36,6 @@ class AppSchema extends CakeSchema {
  *
  * @param string Event
  * @return boolean
- * @access public
  */
 	public function before($event = array()) {
 		return true;
@@ -48,7 +46,6 @@ class AppSchema extends CakeSchema {
  *
  * @param string Event
  * @return boolean
- * @access public
  */
 	public function after($event = array()) {
 		return true;
@@ -58,7 +55,6 @@ class AppSchema extends CakeSchema {
  * Schema for taggeds table
  *
  * @var array
- * @access public
  */
 	public $comments = array(
 		'id' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),

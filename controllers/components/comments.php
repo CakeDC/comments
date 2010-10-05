@@ -475,7 +475,6 @@ class CommentsComponent extends Object {
  *
  * @param string $commentId
  * @return string
- * @access public
  */
 	public function callback_getFormatedComment($commentId) {
 		$comment = $this->Controller->{$this->modelName}->Comment->find('first', array(
@@ -496,7 +495,6 @@ class CommentsComponent extends Object {
  * @param string $modelId
  * @param string $commentId
  * @return void
- * @access public
  */
 	public function callback_toggleApprove($modelId, $commentId) {
 		if (!isset($this->Controller->passedArgs['comment_action'])

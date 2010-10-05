@@ -20,7 +20,6 @@ class CommentsAppModel extends AppModel {
  * Plugin name
  *
  * @var string $plugin
- * @access public
  */
 	public $plugin = 'Comments';
 }
