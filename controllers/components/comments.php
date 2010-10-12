@@ -317,17 +317,18 @@ class CommentsComponent extends Object {
  * @return array
  */
 	public function callback_fetchDataTree($options) {
-		$conditions = $this->_prepareModel($options);
-		$order = array('Comment.lft' => 'asc');
-		$limit = 10;
-		$this->Controller->paginate['Comment'] = compact('order', 'conditions', 'limit');
+		$settings = $this->_prepareModel($options);
+		$settings['order'] = array('Comment.lft' => 'asc');
+		$paginate = $settings;
+		$paginate['limit'] = 10;
+		$this->Controller->paginate['Comment'] = $paginate;
 		$data = $this->Controller->paginate('Comment');
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
 			$rec = $data[0]['Comment'];
 			$conditions[] = array('Comment.lft <' => $rec['lft']);
 			$conditions[] = array('Comment.rght >' => $rec['rght']);
-			$parents = $this->Controller->{$this->modelName}->Comment->find('all', compact('conditions', 'order'));
+			$parents = $this->Controller->{$this->modelName}->Comment->find('all', $settings);
 		}
 		return array_merge($parents, $data);
 	}
@@ -339,8 +340,9 @@ class CommentsComponent extends Object {
  * @return array
  */
 	public function callback_fetchDataFlat($options) {
-		$conditions = $this->_prepareModel($options);
-		return $this->Controller->paginate($this->assocName, $conditions);
+		$paginate = $this->_prepareModel($options);
+		$this->Controller->paginate['Comment'] = $paginate;
+		return $this->Controller->paginate('Comment');
 	}
 
 /**
@@ -351,18 +353,18 @@ class CommentsComponent extends Object {
  */
 	public function callback_fetchDataThreaded($options) {
 		$Comment =& $this->Controller->{$this->modelName}->Comment;
-		$conditions = $this->_prepareModel($options);
-		$fields = array(
+		$settings = $this->_prepareModel($options);		
+		$settings['fields'] = array(
 			'Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved',
 			'Comment.title', 'Comment.body', 'Comment.slug', 'Comment.created',
 			$this->modelName . '.id',
 			$this->userModel . '.id',
 			$this->userModel . '.' . $Comment->{$this->userModel}->displayField,
 			$this->userModel . '.slug');
-		$order = array(
+		$settings['order'] = array(
 			'Comment.parent_id' => 'asc',
 			'Comment.created' => 'asc');
-		return $Comment->find('threaded', compact('conditions', 'fields', 'order'));
+		return $Comment->find('threaded', $settings);
 	}
 
 /**

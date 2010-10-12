@@ -291,7 +291,7 @@ class CommentableBehavior extends ModelBehavior {
 		if ($model->Comment->hasField($spamField)) {
 			$conditions['Comment.' . $spamField] = $this->settings[$model->alias]['cleanValues'];
 		}
-		return $conditions;
+		return array('conditions' => $conditions);
 	}
 
 }
