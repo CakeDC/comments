@@ -326,8 +326,8 @@ class CommentsComponent extends Object {
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
 			$rec = $data[0]['Comment'];
-			$conditions[] = array('Comment.lft <' => $rec['lft']);
-			$conditions[] = array('Comment.rght >' => $rec['rght']);
+			$settings['conditions'][] = array('Comment.lft <' => $rec['lft']);
+			$settings['conditions'][] = array('Comment.rght >' => $rec['rght']);
 			$parents = $this->Controller->{$this->modelName}->Comment->find('all', $settings);
 		}
 		return array_merge($parents, $data);
