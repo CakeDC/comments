@@ -12,25 +12,6 @@
 App::import('Controller', 'Controller', false);
 App::import('Component', 'Comments.Comments');
 
-if (!class_exists('Article')) {
-	class Article extends CakeTestModel {
-	/**
-	 * 
-	 */
-		public $name = 'Article';
-	}
-}
-
-
-if (!class_exists('User')) {
-	class User extends CakeTestModel {
-	/**
-	 * 
-	 */
-		public $name = 'User';
-	}
-}
-
 if (!class_exists('ArticlesTestController')) {
 	class ArticlesTestController extends Controller {
 
@@ -72,7 +53,7 @@ if (!class_exists('ArticlesTestController')) {
 
 		public function callback_commentsToggleApprove($modelId, $commentId) {
 			return $this->Comments->callback_toggleApprove($modelId, $commentId);
-		}		
+		}
 	}
 }
 
@@ -142,7 +123,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->unbindAssoc = true;
 		$this->Controller->Comments->startup($this->Controller);
 		$this->assertFalse(isset($this->Controller->Article->hasMany['Comment']));
-		
+
 		$User = ClassRegistry::init('User');
 
 		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));

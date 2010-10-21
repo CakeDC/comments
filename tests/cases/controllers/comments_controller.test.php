@@ -43,10 +43,11 @@ class TestCommentsController extends CommentsController {
 
 /**
  * Redirect URL
+ *
  * @var mixed
  */
 	public $redirectUrl = null;
-	
+
 /**
  * Cake error method logged when cakeError is triggered
  * @var string
@@ -56,7 +57,7 @@ class TestCommentsController extends CommentsController {
 /**
  * Override controller method for testing
  */
-	public public function redirect($url, $status = null, $exit = true) {
+	public function redirect($url, $status = null, $exit = true) {
 		$this->redirectUrl = $url;
 	}
 
@@ -73,6 +74,7 @@ class TestCommentsController extends CommentsController {
 	public function cakeError($method, $messages = array()) {
 		$this->cakeErrorMethod = $method;
 	}
+
 }
 
 /**
@@ -129,17 +131,17 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public function testAdminIndex() {
 		$this->Comments->admin_index();
-		$this->assertEqual(count($this->Comments->viewVars['comments']), 1);
-		$this->assertEqual($this->Comments->viewVars['comments'][0]['Comment']['id'], 3);
-		
+		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
+		$this->assertEqual($this->Comments->viewVars['comments'][0]['Comment']['id'], 1);
+
 		$this->Comments->admin_index('clean');
 		$this->assertEqual(count($this->Comments->viewVars['comments']), 2);
 		$this->assertEqual($this->Comments->viewVars['comments'][0]['Comment']['id'], 1);
-		
+
 		$this->Comments->admin_index(null);
 		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
 	}
-	
+
 /**
  * Test admin_process action
  * 

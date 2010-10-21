@@ -51,10 +51,11 @@ class CommentsController extends CommentsAppController {
  * @param string
  * @return void
  */
-	public function admin_index($type = 'spam') {
+	public function admin_index($type = '') {
 		$this->presetVars = array(
-			  array('field' => 'approved', 'type' => 'value'),
-			  array('field' => 'is_spam', 'type' => 'value'));
+			array('field' => 'approved', 'type' => 'value'),
+			array('field' => 'is_spam', 'type' => 'value'));
+
 		$this->Comment->recursive = 0;
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
@@ -62,16 +63,17 @@ class CommentsController extends CommentsAppController {
 					'className' => 'Users.User', 
 					'foreignKey' => 'user_id'))), false);
 		$conditions = array();
+
 		if (App::import('Component', 'Search.Prg')) {
-			$this->Prg = new PrgComponent();
-			$this->Prg->initialize($this);
 			$this->Comment->Behaviors->attach('Search.Searchable');
 			$this->Comment->filterArgs = array(
 				array('name' => 'is_spam', 'type' => 'value'),
-				array('name' => 'approved', 'type' => 'value'),
-			);
+				array('name' => 'approved', 'type' => 'value'));
+			$this->Prg = new PrgComponent();
+			$this->Prg->initialize($this);
 			$this->Prg->commonProcess();
-			$this->Comment->parseCriteria($this->passedArgs);
+			$conditions = $this->Comment->parseCriteria($this->passedArgs);
+			$this->set('searchEnabled', true);
 		}
 
 		$this->paginate['Comment'] = array(
@@ -83,6 +85,7 @@ class CommentsController extends CommentsAppController {
 		} elseif ($type == 'clean') {
 			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
 		}
+
 		$this->set('comments', $this->paginate('Comment'));
 	}
 

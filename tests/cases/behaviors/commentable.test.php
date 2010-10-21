@@ -39,6 +39,7 @@ if (!class_exists('Article')) {
 
 if (!class_exists('Article2')) {
 	class Article2 extends CakeTestModel {
+
 	/**
 	 * 
 	 */
@@ -52,6 +53,7 @@ if (!class_exists('Article2')) {
 				'commentModel' => 'Comments.Comment',
 				'userModelAlias' => 'UserModel',
 				'userModel' => 'User'));
+
 	/**
 	 * 
 	 */
@@ -62,7 +64,6 @@ if (!class_exists('Article2')) {
 	 */
 		public $name = 'Article2';
 
-	
 	/**
 	 * 
 	 */
@@ -274,8 +275,9 @@ class CommentableTest extends CakeTestCase {
 		$options = array('userModel' => 'User');
 		$result = $this->Model->commentBeforeFind($options);
 		$expected = array(
-			'Comment.approved' => 1,
-			'Comment.is_spam' => array('clean', 'ham'));
+			'conditions' => array(
+				'Comment.approved' => 1,
+				'Comment.is_spam' => array('clean', 'ham')));
 		$this->assertEqual($result, $expected);
 
 		$options = array_merge($options, array(
@@ -283,8 +285,9 @@ class CommentableTest extends CakeTestCase {
 			'id' => 1));
 		$result = $this->Model->commentBeforeFind($options);
 		$expected = array(
-			'Article.id' => 1,
-			'Comment.is_spam' => array('clean', 'ham'));
+			'conditions' => array(
+					'Article.id' => 1,
+			'Comment.is_spam' => array('clean', 'ham')));
 		$this->assertEqual($result, $expected);
 	}
 

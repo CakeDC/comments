@@ -201,7 +201,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$initialParams = $this->CommentWidget->globalParams; 
 		$Article = ClassRegistry::init('Article');
 		Configure::write('Routing.admin', 'admin');
-		
+
 		// Test a basic display call
 		$currArticle = $Article->findById(1);
 		$this->View->passedArgs = array(
@@ -219,7 +219,8 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			array_merge(
 				$initialParams,
 				array(
-					'viewRecord' => $currArticle['Article']),
+					'viewRecord' => $currArticle['Article'],
+					'viewRecordFull' => $currArticle),
 				$this->View->viewVars['commentParams'],
 				array(
 					'url' => array('article-slug'),
@@ -230,12 +231,14 @@ class CommentWidgetHelperTest extends CakeTestCase {
 					'theme' => 'flat')
 				)
 		);
+
 		$this->View->expectAt($countElementCall, 'element', $expectedParams);
 		$expected = 'Here are your comments!';
 		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$result = $this->CommentWidget->display();
 		$this->assertEqual($result, $expected);
-		
+
+
 		// Test a display call with options
 		$expectedParams[0] = 'comments/threaded_custom/main';
 		$expectedParams[1] = array_merge($expectedParams[1], array(
@@ -249,22 +252,26 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'subtheme' => 'custom');
 		$result = $this->CommentWidget->display($options);
 		$this->assertEqual($result, $expected);
-		
+
+
 		// Test other cases
 		$this->CommentWidget->initialize();
 		$this->View->params['userslug'] = 'example-user';
 		unset($this->View->viewVars['article']);
 		$expectedParams[1] = array_merge($expectedParams[1], array(
 			'url' => array('example-user', 'article-slug'),
-			'viewRecord' => array()));
+			'viewRecord' => array(),
+			'viewRecordFull' => array()));
 		$this->View->expectAt($countElementCall, 'element', $expectedParams);
 		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$result = $this->CommentWidget->display($options);
 		$this->assertEqual($result, $expected);
-		
-		$this->View->expectCallCount('element', $countElementCall);
-	}
 
+		$this->View->expectCallCount('element', $countElementCall);
+
+	}
+//target, ajaxAction, displayUrlToComment, urlToComment, allowAnonymousComment, url, ajaxOptions, viewInstance, viewRecord, viewComments, modelName, userModel, allowAddByAuth, allowAddByModel, adminRoute, isAddMode, theme, displayType, subtheme
+//target, ajaxAction, displayUrlToComment, urlToComment, allowAnonymousComment, url, ajaxOptions, viewInstance, viewRecord, viewRecordFull, viewComments, modelName, userModel, allowAddByAuth, allowAddByModel, adminRoute, isAddMode, theme, displayType, subtheme]]
 /**
  * Test link method
  * 
