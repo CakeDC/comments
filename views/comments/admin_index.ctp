@@ -11,9 +11,11 @@
 ?>
 <h2><?php __d('comments', 'Comments');?></h2>
 
-<div class="finder">
-	<?php echo $this->element('comments/finder'); ?>
-</div>
+<?php if (isset($searchEnabled)) : ?>
+	<div class="finder">
+		<?php echo $this->element('comments/finder'); ?>
+	</div>
+<?php endif;?>
 
 <ul>
 	<li><?php echo $this->Html->link(__d('comments', 'Filter spam comments', true), array('action' => 'index', 'spam'));?></li>

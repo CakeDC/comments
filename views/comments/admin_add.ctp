@@ -10,19 +10,19 @@
  */
 ?>
 <div class="comments form">
-<?php echo $form->create('Comment');?>
+<?php echo $this->Form->create('Comment');?>
 	<fieldset>
  		<legend><?php __d('comments', 'Add Comment');?></legend>
 	<?php
-		echo $form->input('comment_id');
-		echo $form->input('foreign_key');
-		echo $form->input('user_id');
-		echo $form->input('model');
-		echo $form->input('approved');
-		echo $form->input('body');
+		echo $this->Form->input('comment_id');
+		echo $this->Form->input('foreign_key');
+		echo $this->Form->input('user_id');
+		echo $this->Form->input('model');
+		echo $this->Form->input('approved');
+		echo $this->Form->input('body');
 	?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
+<?php echo $this->Form->end('Submit');?>
 </div>
 <div class="actions">
 	<ul>

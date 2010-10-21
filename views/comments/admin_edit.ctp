@@ -10,24 +10,24 @@
  */
 ?>
 <div class="comments form">
-<?php echo $form->create('Comment');?>
+<?php echo $this->Form->create('Comment');?>
 	<fieldset>
  		<legend><?php __d('comments', 'Edit Comment');?></legend>
 	<?php
-		echo $form->input('id');
-		echo $form->input('comment_id');
-		echo $form->input('foreign_key');
-		echo $form->input('user_id');
-		echo $form->input('model');
-		echo $form->input('approved');
-		echo $form->input('body');
+		echo $this->Form->input('id');
+		echo $this->Form->input('comment_id');
+		echo $this->Form->input('foreign_key');
+		echo $this->Form->input('user_id');
+		echo $this->Form->input('model');
+		echo $this->Form->input('approved');
+		echo $this->Form->input('body');
 	?>
 	</fieldset>
-<?php echo $form->end('Submit');?>
+<?php echo $this->Form->end('Submit');?>
 </div>
 <div class="actions">
 	<ul>
-		<li><?php echo $html->link(__d('comments', 'Delete', true), array('action'=>'delete', $form->value('Comment.id')), null, sprintf(__d('comments', 'Are you sure you want to delete # %s?', true), $form->value('Comment.id'))); ?></li>
+		<li><?php echo $html->link(__d('comments', 'Delete', true), array('action'=>'delete', $this->Form->value('Comment.id')), null, sprintf(__d('comments', 'Are you sure you want to delete # %s?', true), $this->Form->value('Comment.id'))); ?></li>
 		<li><?php echo $html->link(__d('comments', 'List Comments', true), array('action'=>'index'));?></li>
 		<li><?php echo $html->link(__d('comments', 'List Comments', true), array('controller'=> 'comments', 'action'=>'index')); ?> </li>
 		<li><?php echo $html->link(__d('comments', 'New Parent Comment', true), array('controller'=> 'comments', 'action'=>'add')); ?> </li>

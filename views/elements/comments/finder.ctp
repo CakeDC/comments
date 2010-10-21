@@ -10,12 +10,12 @@
  */
 ?>
 <h3><?php __d('comments', 'Filter comments'); ?></h3>
-<?php echo $form->create('Comment', array(
+<?php echo $this->Form->create('Comment', array(
 	'url' => array('plugin' => 'comments', 'admin' => true, 'controller' => 'comments', 'action' => 'index'),
 	'class' => 'finder-form',
 	'id' => 'SearchForm')); ?>
 <div class="content-block clearfix">
-	<?php echo $form->input('approved', array(
+	<?php echo $this->Form->input('approved', array(
 		'label' => __d('comments', 'Approved', true),
 		'class' => 'small',
 		'empty' => __d('comments', '...select...', true),
@@ -23,7 +23,7 @@
 		'div' => array('class' => 'left'),
 	)); ?>
 
-	<?php echo $form->input('is_spam', array(
+	<?php echo $this->Form->input('is_spam', array(
 		'label' => __d('comments', 'spam state', true),
 		'class' => 'small',
 		'empty' => __d('comments', '...select...', true),
@@ -31,6 +31,6 @@
 		'div' => array('class' => 'left spaced'),
 	)); ?>
 </div>
-<?php echo $form->submit(__d('comments', 'Search', true), array(
+<?php echo $this->Form->submit(__d('comments', 'Search', true), array(
 	'class' => 'button-search', 'div' => array('class' => 'buttons'))); ?>
-<?php echo $form->end(null); ?>
+<?php echo $this->Form->end(null); ?>

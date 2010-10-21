@@ -172,7 +172,6 @@ class CommentWidgetHelper extends AppHelper {
 			$allowAddByAuth = ($this->globalParams['allowAnonymousComment'] || !empty($View->viewVars['isAuthorized']));
 
 			$params = array_merge($params, compact('url', 'allowAddByAuth', 'allowAddByModel', 'adminRoute', 'isAddMode', 'viewRecord', 'viewRecordFull', 'theme'));
-
 			$this->globalParams = Set::merge($this->globalParams, $params);
 			$result = $this->element('main');
 		}
