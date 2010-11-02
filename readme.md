@@ -2,6 +2,19 @@
 
 Comments plugin is a universal comment system that can be attached to any controller with a few lines of code.
 
+## Installation ##
+
+Before beginning with the comments plugin, you'll need to create the necessary database tables to store the comments.
+
+This plugin comes with two mechanisms to get your database tables setup.
+
+1. You can use the default CakePHP schema method from the console: `cake schema create -plugin comments`
+2. You can use the CakeDC migrations plugin to import your database tables: `cake migration all -plugin comments`
+
+If you choose the second method, please ensure you have first installed the [CakeDC migrations plugin](http://github.com/CakeDC/migrations) first.
+
+Finally, you need to have some sort of `users` or `logins` table that keeps member information. This table should contain a slug field, as it is used by the comments plugin.
+
 ## Usage ##
 
 We have Post model and want to have comments on the /posts/view page.
@@ -32,10 +45,6 @@ During page rendering the comments component checks if some of the passed named 
 If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
 Sometimes you want to know how much comments your user did. In this case all you need to do - add additional field with name "comments" into the table that keep all users information in you systems. It can be any table like users or profiles.
-
-## Requirements ##
-
-Need to have some sort of users or logins table that keep members personal info. This table should contain slug field.
 
 ## Component conventions ##
 
