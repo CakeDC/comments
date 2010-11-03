@@ -25,8 +25,8 @@ First let us add the following code in the PostsController:
 
 	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
 
-	public function beforeFiler() {
-		parent::beforeFiler();
+	public function beforeFilter() {
+		parent::beforeFilter();
 		$this->passedArgs['comment_view_type'] = 'flat';
 	}
 
