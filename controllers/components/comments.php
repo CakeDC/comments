@@ -318,7 +318,7 @@ class CommentsComponent extends Object {
  */
 	public function callback_fetchDataTree($options) {
 		$settings = $this->_prepareModel($options);
-		$settings['order'] = array('Comment.lft' => 'asc');
+		$settings += array('order' => array('Comment.lft' => 'asc'));
 		$paginate = $settings;
 		$paginate['limit'] = 10;
 		$this->Controller->paginate['Comment'] = $paginate;
@@ -361,9 +361,10 @@ class CommentsComponent extends Object {
 			$this->userModel . '.id',
 			$this->userModel . '.' . $Comment->{$this->userModel}->displayField,
 			$this->userModel . '.slug');
-		$settings['order'] = array(
+		$settings += array('order' => array(
 			'Comment.parent_id' => 'asc',
-			'Comment.created' => 'asc');
+			'Comment.created' => 'asc'));
+
 		return $Comment->find('threaded', $settings);
 	}
 
@@ -640,10 +641,12 @@ class CommentsComponent extends Object {
 					$this->_call(Inflector::variable($commentAction), array($id, $this->Controller->passedArgs['comment']));
 				} else {
 					Configure::write('Comment.action', 'add');
-					$this->_call('add', array($id, $this->Controller->passedArgs['comment'], $displayType));
+					$parent = empty($this->Controller->passedArgs['comment']) ? null : $this->Controller->passedArgs['comment'];
+					$this->_call('add', array($id, $parent, $displayType));
 				}
 			} else {
-				return $this->Controller->blackHole('CommentsComponent: user should be logged in for working with comments');
+				$this->Controller->Session->write('Auth.redirect', $this->Controller->params['url']['url']);
+				$this->Controller->redirect($this->Controller->Auth->loginAction);
 			}
 		}
 	}
