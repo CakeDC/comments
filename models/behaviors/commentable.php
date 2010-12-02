@@ -238,7 +238,7 @@ class CommentableBehavior extends ModelBehavior {
 			$model->id = $id;
 			if (!is_null($direction) && $model->exists(true)) {
 				return $model->updateAll(
-					array($model->alias . '.comments' => 'comments ' . $direction),
+					array($model->alias . '.comments' => $model->alias . '.comments ' . $direction),
 					array($model->alias . '.id' => $id));
 			}
 		}
