@@ -176,9 +176,7 @@ class CommentsComponent extends Object {
 	public $allowAnonymousComment = false;
 
 /**
- * Flag to allow anonymous user make comments
- *
- * Customizable in beforeFilter()
+ * Named params used internally by the component
  *
  * @var array
  */
@@ -543,20 +541,18 @@ class CommentsComponent extends Object {
 
 /**
  * Redirect
+ * Redirects the user to the wanted action by persisting passed args excepted
+ * the ones used internally by the component
  *
  * @param array $urlBase
  * @return void
  */
 	public function redirect($urlBase = array()) {
 		$isAjax = isset($this->Controller->params['isAjax']) ? $this->Controller->params['isAjax'] : false;
-		$url = array();
-		foreach ($this->Controller->passedArgs as $key => $value) {
-			if (is_numeric($key)) {
-				$url[] = $value;
-			}
-		}
-
-		$url = array_merge($url, $urlBase);
+		
+		$url = array_merge(
+			array_diff_key($this->Controller->passedArgs, array_flip($this->_supportNamedParams)),
+			$urlBase);
 		if ($isAjax) {
 			$this->Controller->set('redirect', $url);
 		} else {

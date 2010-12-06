@@ -491,7 +491,7 @@ class CommentsComponentTest extends CakeTestCase {
 	}
 
 /**
- * testFlash
+ * testRedirect
  *
  * @return void
  */
@@ -505,6 +505,29 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->params['isAjax'] = true;
 		$this->Controller->Comments->redirect($url);
 		$this->assertEqual($this->Controller->viewVars['redirect'], $url);
+		$this->assertEqual($this->Controller->viewVars['ajaxMode'], true);
+	}
+
+/**
+ * testRedirect with passed arguments to be persisted in params
+ * Named parameters used internally by the component must not be persisted as it can
+ * lead to infinite loops
+ *
+ * @return void
+ */
+	public function testRedirectPersistParams() {
+		// Here 'comment_action' => 'add' is a named param used internally
+		$this->Controller->passedArgs = array('foo', 'custom' => 'important', 'comment_action' => 'add');
+		$url = array('controller' => 'tests', 'action' => 'index', 'other' => 'value');
+		$expected = array('controller' => 'tests', 'action' => 'index', 'foo', 'custom' => 'important', 'other' => 'value');
+
+		$this->Controller->params['isAjax'] = false;
+		$this->Controller->Comments->redirect($url);
+		$this->assertEqual($this->Controller->redirectUrl, $expected);
+
+		$this->Controller->params['isAjax'] = true;
+		$this->Controller->Comments->redirect($url);
+		$this->assertEqual($this->Controller->viewVars['redirect'], $expected);
 		$this->assertEqual($this->Controller->viewVars['ajaxMode'], true);
 	}
 
