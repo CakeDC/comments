@@ -268,10 +268,57 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->assertEqual($result, $expected);
 
 		$this->View->expectCallCount('element', $countElementCall);
-
 	}
-//target, ajaxAction, displayUrlToComment, urlToComment, allowAnonymousComment, url, ajaxOptions, viewInstance, viewRecord, viewComments, modelName, userModel, allowAddByAuth, allowAddByModel, adminRoute, isAddMode, theme, displayType, subtheme
-//target, ajaxAction, displayUrlToComment, urlToComment, allowAnonymousComment, url, ajaxOptions, viewInstance, viewRecord, viewRecordFull, viewComments, modelName, userModel, allowAddByAuth, allowAddByModel, adminRoute, isAddMode, theme, displayType, subtheme]]
+
+/**
+ * Test display method with a custom url
+ * 
+ * @return void
+ */
+	public function testDisplayCustomUrl() {
+		$this->__mockView();
+		$countElementCall = 0;
+		$initialParams = $this->CommentWidget->globalParams; 
+		$Article = ClassRegistry::init('Article');
+		Configure::write('Routing.admin', 'admin');
+
+		// Test a basic display call
+		$currArticle = $Article->findById(1);
+		$this->View->passedArgs = array(
+			'foo' => 'bar',
+			'article-slug');
+		$this->View->viewVars = array(
+			'article' => $currArticle,
+			'commentParams' => array(
+				'viewComments' => 'commentsData',
+				'modelName' => 'Article',
+				'userModel' => 'User'),
+		);
+		$expectedParams = array(
+			'comments/flat/main', 
+			array_merge(
+				$initialParams,
+				array(
+					'viewRecord' => $currArticle['Article'],
+					'viewRecordFull' => $currArticle),
+				$this->View->viewVars['commentParams'],
+				array(
+					'url' => array('action' => 'other', 'param1'),
+					'allowAddByAuth' => false,
+					'allowAddByModel' => 1,
+					'adminRoute' => 'admin',
+					'isAddMode' => false,
+					'theme' => 'flat')
+				)
+		);
+		$this->CommentWidget->options(array('url' => array('action' => 'other', 'param1')));
+		$this->View->expectAt($countElementCall, 'element', $expectedParams);
+		$expected = 'Here are your comments!';
+		$this->View->setReturnValueAt($countElementCall++, 'element', $expected);
+		$result = $this->CommentWidget->display();
+		$this->assertEqual($result, $expected);
+	}
+
 /**
  * Test link method
  * 

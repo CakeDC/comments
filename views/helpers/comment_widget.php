@@ -141,14 +141,18 @@ class CommentWidgetHelper extends AppHelper {
 				$theme = 'flat';
 			}
 
-			$url = $this->globalParams['url'] = array();
-			if (isset($View->params['userslug'])) {
-				$url[] = $View->params['userslug'];
-			}
-			if (!empty($View->passedArgs)) {
-				foreach ($View->passedArgs as $key => $value) {
-					if (is_numeric($key)) {
-						$url[] = $value;
+			if (!is_null($this->globalParams['url'])){
+				$url = array();
+			} else {
+				$url = array();
+				if (isset($View->params['userslug'])) {
+					$url[] = $View->params['userslug'];
+				}
+				if (!empty($View->passedArgs)) {
+					foreach ($View->passedArgs as $key => $value) {
+						if (is_numeric($key)) {
+							$url[] = $value;
+						}
 					}
 				}
 			}
