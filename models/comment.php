@@ -169,7 +169,7 @@ class Comment extends CommentsAppModel {
 			$sign = ($direction == 'up') ? '+' : '-';
 			$associated['Model']->recursive = -1;
 			$success = $associated['Model']->updateAll(
-				array('comments' => "comments $sign 1"),
+				array('comments' => $associated['Model']->alias.".comments $sign 1"),
 				array($associated['Model']->alias . '.id' => $associated['id']));
 		}
 		return $success;
