@@ -263,7 +263,11 @@ class CommentableBehavior extends ModelBehavior {
 			if (!empty($model->Comment->{$assocType})) {
 				$unbind[$assocType] = array();
 				foreach ($model->Comment->{$assocType} as $key => $assocConfig) {
-					if (!in_array($key, array($userModel, $model->name))) {
+					$keep = false;
+					if (!empty($options['keep']) && in_array($key, $options['keep'])) {
+						$keep = true;
+					}
+					if (!in_array($key, array($userModel, $model->name)) && !$keep) {
 						$unbind[$assocType][] = $key;
 					}
 				}
