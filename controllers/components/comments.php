@@ -196,6 +196,7 @@ class CommentsComponent extends Object {
 		}
 		$this->Controller = $controller;
 		$this->modelName = $controller->modelClass;
+		$this->modelAlias = $controller->{$this->modelName}->alias;
 		$this->viewVariable = Inflector::variable($this->modelName);
 		$controller->helpers = array_merge($controller->helpers, array('Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
 
@@ -289,11 +290,11 @@ class CommentsComponent extends Object {
 		}
 
 		$primaryKey = $this->Controller->{$this->modelName}->primaryKey;
-		if (empty($this->Controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey])) {
+		if (empty($this->Controller->viewVars[$this->viewVariable][$this->Controller->{$this->modelName}->alias][$primaryKey])) {
 			throw new Exception('CommentsComponent: missing view variable ' . $this->viewVariable . ' or value for primary key ' . $primaryKey . ' of model ' . $this->modelName);
 		}
 
-		$id = $this->Controller->viewVars[$this->viewVariable][$this->modelName][$primaryKey];
+		$id = $this->Controller->viewVars[$this->viewVariable][$this->Controller->{$this->modelName}->alias][$primaryKey];
 		$options = compact('displayType', 'id');
 		if ($processActions) {
 			$this->_processActions($options);
@@ -351,18 +352,18 @@ class CommentsComponent extends Object {
  */
 	public function callback_fetchDataThreaded($options) {
 		$Comment =& $this->Controller->{$this->modelName}->Comment;
-		$settings = $this->_prepareModel($options);		
+		$settings = $this->_prepareModel($options);
 		$settings['fields'] = array(
+			'Comment.author_email', 'Comment.author_name', 'Comment.author_url',
 			'Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved',
 			'Comment.title', 'Comment.body', 'Comment.slug', 'Comment.created',
-			$this->modelName . '.id',
+			$this->Controller->{$this->modelName}->alias . '.id',
 			$this->userModel . '.id',
 			$this->userModel . '.' . $Comment->{$this->userModel}->displayField,
 			$this->userModel . '.slug');
 		$settings += array('order' => array(
 			'Comment.parent_id' => 'asc',
 			'Comment.created' => 'asc'));
-
 		return $Comment->find('threaded', $settings);
 	}
 
@@ -398,7 +399,7 @@ class CommentsComponent extends Object {
 	public function callback_prepareParams() {
 		$this->commentParams = array_merge($this->commentParams, array(
 			'viewComments' => $this->viewComments,
-			'modelName' => $this->modelName,
+			'modelName' => $this->modelAlias,
 			'userModel' => $this->userModel));
 		$allowedParams = array('comment', 'comment_action', 'quote');
 		foreach ($allowedParams as $param) {
@@ -421,7 +422,7 @@ class CommentsComponent extends Object {
 				$data['Comment']['title'] = $this->cleanHtml($this->Controller->data['Comment']['title']);
 			}
 			$data['Comment']['body'] = $this->cleanHtml($this->Controller->data['Comment']['body']);
-			$modelName = $this->Controller->{$this->modelName}->name;
+			$modelName = $this->Controller->{$this->modelName}->alias;
 			if (!empty($this->Controller->{$this->modelName}->fullName)) {
 				$modelName = $this->Controller->{$this->modelName}->fullName;
 			}
@@ -549,7 +550,7 @@ class CommentsComponent extends Object {
  */
 	public function redirect($urlBase = array()) {
 		$isAjax = isset($this->Controller->params['isAjax']) ? $this->Controller->params['isAjax'] : false;
-		
+
 		$url = array_merge(
 			array_diff_key($this->Controller->passedArgs, array_flip($this->_supportNamedParams)),
 			$urlBase);
@@ -660,3 +661,4 @@ class CommentsComponent extends Object {
 		return $cleaner->clean($text, $settings);
 	}
 }
+

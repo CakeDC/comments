@@ -74,7 +74,7 @@ class CommentableBehavior extends ModelBehavior {
 				'finderQuery' => '',
 				'counterQuery' => ''))), false);
 		$model->Comment->bindModel(array('belongsTo' => array(
-			$model->name => array(
+			$model->alias => array(
 				'className' => $model->name,
 				'foreignKey' => 'foreign_key',
 				'unique' => true,
@@ -267,7 +267,7 @@ class CommentableBehavior extends ModelBehavior {
 					if (!empty($options['keep']) && in_array($key, $options['keep'])) {
 						$keep = true;
 					}
-					if (!in_array($key, array($userModel, $model->name)) && !$keep) {
+					if (!in_array($key, array($userModel, $model->alias)) && !$keep) {
 						$unbind[$assocType][] = $key;
 					}
 				}
@@ -299,3 +299,4 @@ class CommentableBehavior extends ModelBehavior {
 	}
 
 }
+
