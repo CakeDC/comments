@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
@@ -9,7 +9,7 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-$_url = array_merge($url, array('action' => r(Configure::read('Routing.admin') . '_', '', $this->action)));
+$_url = array_merge($url, array('controller' => $this->params['controller'], 'action' => r(Configure::read('Routing.admin') . '_', '', $this->action)));
 foreach (array('page', 'order', 'sort', 'direction') as $named) {
 	if (isset($this->passedArgs[$named])) {
 		$_url[$named] = $this->passedArgs[$named];
@@ -18,9 +18,9 @@ foreach (array('page', 'order', 'sort', 'direction') as $named) {
 if ($target) {
 	$_url['action'] = r(Configure::read('Routing.admin') . '_', '', 'comments');
 	$ajaxUrl = $commentWidget->prepareUrl(array_merge($_url, array('comment' => $comment, '#' => 'comment' . $comment)));
-	echo $this->Form->create(null, array('url' => $ajaxUrl, 'target' => $target));
+	echo $this->Form->create($modelName, array('url' => $ajaxUrl, 'target' => $target));
 } else {
-	echo $this->Form->create(null, array('url' => array_merge($_url, array('comment' => $comment, '#' => 'comment' . $comment))));
+	echo $this->Form->create($modelName, array('url' => array_merge($_url, array('comment' => $comment, '#' => 'comment' . $comment))));
 }
 echo $this->Form->input('Comment.title');
 echo $this->Form->input('Comment.body', array(
@@ -38,3 +38,4 @@ if ($target) {
 	echo $this->Form->submit(__d('comments', 'Submit', true));
 }
 echo $this->Form->end();
+
