@@ -320,7 +320,7 @@ class CommentsComponent extends Object {
 		$paginate = $settings;
 		$paginate['limit'] = 10;
 		$this->Controller->paginate['Comment'] = $paginate;
-		$data = $this->Controller->paginate('Comment');
+		$data = $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
 			$rec = $data[0]['Comment'];
@@ -340,7 +340,7 @@ class CommentsComponent extends Object {
 	public function callback_fetchDataFlat($options) {
 		$paginate = $this->_prepareModel($options);
 		$this->Controller->paginate['Comment'] = $paginate;
-		return $this->Controller->paginate('Comment');
+		return $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 	}
 
 /**
