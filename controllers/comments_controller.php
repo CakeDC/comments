@@ -60,7 +60,7 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
 				'UserModel'  => array(
-					'className' => 'Users.User', 
+					'className' => 'Users.User',
 					'foreignKey' => 'user_id'))), false);
 		$conditions = array();
 
@@ -79,7 +79,7 @@ class CommentsController extends CommentsAppController {
 		$this->paginate['Comment'] = array(
 			'conditions' => $conditions,
 			'contain' => array('UserModel'),
-			'order' => 'Comment.created DESC'); 
+			'order' => 'Comment.created DESC');
 		if ($type == 'spam') {
 			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
 		} elseif ($type == 'clean') {
@@ -102,7 +102,7 @@ class CommentsController extends CommentsAppController {
 			try {
 				$message = $this->Comment->process($this->data['Comment']['action'], $this->data);
 			} catch (Exception $ex) {
-				$message = $ex->getMessages();				
+				$message = $ex->getMessages();
 			}
 			$this->Session->setFlash($message);
 		}
@@ -110,7 +110,7 @@ class CommentsController extends CommentsAppController {
 		$url = Set::merge($url, $this->params['pass']);
 		$this->redirect(Set::merge($url, $this->params['named']));
 	}
-	
+
 /**
  * Admin mark comment as spam
  *
@@ -193,7 +193,7 @@ class CommentsController extends CommentsAppController {
 	}
 
 /**
- * Request comments 
+ * Request comments
  *
  * @param string user UUID
  * @return void
@@ -207,7 +207,7 @@ class CommentsController extends CommentsAppController {
 		if (!empty($this->params['named']['model'])) {
 			$conditions['Comment.model'] = $this->params['named']['model'];
 		}
-
+		$conditions['Comment.is_spam'] = array('ham','clean');
 		$this->paginate = array(
 			'conditions' => $conditions,
 			'order' => 'Comment.created DESC',
@@ -229,3 +229,4 @@ class CommentsController extends CommentsAppController {
 		return array_key_exists('requested', $this->params);
 	}
 }
+
