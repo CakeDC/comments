@@ -68,7 +68,7 @@ class CommentsComponent extends Object {
  *
  * @var mixed $controller
  */
-	public $controller = null;
+	public $Controller = null;
 
 /**
  * Name of actions this component should use
@@ -183,17 +183,25 @@ class CommentsComponent extends Object {
 	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type', 'quote');
 
 /**
- * Initialize Callback
+ * Constructor. 
  *
- * @param object
- * @return void
  */
-	public function initialize(Controller $controller, $settings) {
+	public function __construct(ComponentCollection $collection, $settings = array()) {
+		parent::__construct($collection, $settings); 
 		foreach ($settings as $setting => $value) {
 			if (isset($this->{$setting})) {
 				$this->{$setting} = $value;
 			}
 		}
+	}
+
+/**
+ * Initialize Callback
+ *
+ * @param object
+ * @return void
+ */
+	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
 		$this->modelName = $controller->modelClass;
 		$this->modelAlias = $controller->{$this->modelName}->alias;
@@ -212,7 +220,7 @@ class CommentsComponent extends Object {
  * @return void
  */
 	public function startup(Controller $controller) {
-		$this->Auth = $this->Controller->Auth;
+		//$this->Auth = $this->Controller->Auth;
 		if ($this->Auth->user()) {
 			$controller->set('isAuthorized', ($this->Auth->user('id') != ''));
 		}

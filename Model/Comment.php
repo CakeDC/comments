@@ -30,7 +30,7 @@ class Comment extends CommentsAppModel {
  * @var string $name
  */
 	public $actsAs = array(
-		'Comments.Sluggable' => array('label' => 'title'),
+		'Utils.Sluggable' => array('label' => 'title'),
 		'Tree');
 
 /**
@@ -101,11 +101,11 @@ class Comment extends CommentsAppModel {
 				if ((is_string($id) && strlen($id) == 36 || is_numeric($id)) && $value) {
 					$result = $this->delete($id);
 					if(!$result) {
-						$addInfo = __d('comments', 'Some errors appear during execution.', true);
+						$addInfo = __d('comments', 'Some errors appear during execution.');
 					}
 				}
 			}
-			$message = __d('comments', 'Comments removed.', true) . ' ' . $addInfo;
+			$message = __d('comments', 'Comments removed.') . ' ' . $addInfo;
 		} elseif (!empty($action) && in_array($action, array('spam', 'ham', 'approve', 'disapprove'))) {
 			$keys = array_keys($data['Comment']);
 			foreach ($keys as $id) {
@@ -114,7 +114,7 @@ class Comment extends CommentsAppModel {
 					$this->recursive = -1;
 					$comment = $this->read(null, $id);
 					if ($action == 'spam' || $action == 'ham') {
-						$modelName = r('.', '', $comment['Comment']['model']);
+						$modelName = str_replace('.', '', $comment['Comment']['model']);
 						if (!isset(${$modelName})) {
 							${$modelName} = ClassRegistry::init($comment['Comment']['model']);
 						}
@@ -142,12 +142,12 @@ class Comment extends CommentsAppModel {
 						case false:
 						case 'invalid':
 						case 'error':
-							$addInfo = __d('comments', 'Some errors appear during execution.', true);
+							$addInfo = __d('comments', 'Some errors appear during execution.');
 							break;
 					}
 				}
 			}
-			$message = __d('comments', 'Operation was performed. ',true) . ' ' . $addInfo;
+			$message = __d('comments', 'Operation was performed. ') . ' ' . $addInfo;
 		}
 		return $message;
 	}

@@ -71,20 +71,21 @@ class CommentsComponentTest extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.comments.comment',
-		'plugin.comments.user',
-		'plugin.comments.article');
+		'plugin.Comments.comment',
+		'plugin.Comments.user',
+		'plugin.Comments.article');
 
 /**
  * setUp method
  *
  * @return void
  */
-	function startTest() {
+	function setUp() {
+		parent::setUp();
 		$this->Controller = new ArticlesTestController();
 		$this->Controller->constructClasses();
-		$this->Controller->Component->init($this->Controller);
-		$this->Controller->Component->initialize($this->Controller);
+		$this->Controller->Components->init($this->Controller);
+		// $this->Controller->Components->initialize($this->Controller);
 	}
 
 /**
@@ -92,7 +93,8 @@ class CommentsComponentTest extends CakeTestCase {
  *
  * @return void
  */
-	function endTest() {
+	function tearDown() {
+		parent::tearDown();
 		unset($this->Controller);
 		ClassRegistry::flush();
 	}
@@ -105,8 +107,8 @@ class CommentsComponentTest extends CakeTestCase {
 	public function testInitialize() {
 		$this->Controller = new ArticlesTestController();
 		$this->Controller->constructClasses();
-		$this->Controller->Component->init($this->Controller);
-		$this->Controller->Component->initialize($this->Controller);
+		// $this->Controller->Components->init($this->Controller);
+		$this->Controller->Comments->initialize($this->Controller, array());
 		$this->assertEqual($this->Controller->helpers, array(
 			'Session', 'Html', 'Form', 'Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
 		$this->assertTrue($this->Controller->Article->Behaviors->attached('Commentable'));
@@ -119,10 +121,13 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testStartup() {
-		$this->assertTrue(isset($this->Controller->Article->hasMany['Comment']));
+	debug($this->Controller->Article->hasMany);
+		//$this->assertTrue(isset($this->Controller->Article->hasMany['Comment']));
 		$this->Controller->Comments->unbindAssoc = true;
+		debug($this->Controller->Comments);
 		$this->Controller->Comments->startup($this->Controller);
 		$this->assertFalse(isset($this->Controller->Article->hasMany['Comment']));
+	debug($this->Controller->Article->hasMany);
 
 		$User = ClassRegistry::init('User');
 
@@ -557,6 +562,6 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->viewVars['article'] = array(
 			'Article' => array(
 				'id' => 1));
-		$this->Controller->Comments->controller = $this->Controller;
+		$this->Controller->Comments->Controller = $this->Controller;
 	}
 }

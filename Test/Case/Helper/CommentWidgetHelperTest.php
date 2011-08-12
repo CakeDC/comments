@@ -9,11 +9,13 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Controller', 'Controller');
+App::uses('View', 'View');
 App::import('Core', array('ClassRegistry', 'Controller', 'View', 'Model', 'Security'));
 App::import('Helper', array('Comments.CommentWidget', 'Html', 'Form', 'Session'));
 App::import('Component', array('Comments.Comments'));
 
-Mock::generatePartial('AppHelper', 'JsHelper', array('link', 'get', 'effect'));
+//Mock::generatePartial('AppHelper', 'JsHelper', array('link', 'get', 'effect'));
 
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
@@ -68,9 +70,9 @@ class CommentWidgetHelperTest extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.comments.comment',
-		'plugin.comments.user',
-		'plugin.comments.article');
+		'plugin.Comments.comment',
+		'plugin.Comments.user',
+		'plugin.Comments.article');
 
 /**
  * Helper being tested
@@ -101,8 +103,8 @@ class CommentWidgetHelperTest extends CakeTestCase {
  *
  * @return void
  */
-	public function startTest($method) {
-		parent::startTest($method);
+	public function setUp() {
+		parent::setUp();
 
 		$this->CommentWidget = new CommentWidgetHelper();
 		$this->CommentWidget->Form = new FormHelper();
@@ -118,6 +120,17 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		if (!in_array($method, array('testInitialize', 'testOptions'))) {
 			$this->CommentWidget->initialize();
 		}
+	}
+
+
+/**
+ * End test method
+ *
+ * @return void
+ */
+	public function tearDown() {
+		unset($this->CommentWidget, $this->Controller, $this->View);
+		ClassRegistry::flush();
 	}
 	
 /**
@@ -435,16 +448,6 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->assertEqual($this->CommentWidget->element('view', array('target' => 'wrapper', 'theme' => 'threaded')), $expected);
 		
 		$this->View->expectCallCount('element', $countElementCall);
-	}
-
-/**
- * End test method
- *
- * @return void
- */
-	public function endTest($method) {
-		unset($this->CommentWidget, $this->Controller, $this->View);
-		ClassRegistry::flush();
 	}
 
 /**

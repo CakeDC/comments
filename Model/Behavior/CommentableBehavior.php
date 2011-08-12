@@ -22,6 +22,8 @@
  * @subpackage	models.behaviors
  */
 
+CakePlugin::load('Utils');
+ 
 class BlackHoleException extends Exception {}
 class NoActionException extends Exception {}
 
@@ -56,7 +58,11 @@ class CommentableBehavior extends ModelBehavior {
 		if (!isset($this->settings[$model->alias])) {
 			$this->settings[$model->alias] = $this->defaults;
 		}
-		$this->settings[$model->alias] = am($this->settings[$model->alias], ife(is_array($settings), $settings, array()));
+		if (!is_array($settings)) {
+			$settings = (array) $settings;
+		}
+			
+		$this->settings[$model->alias] = array_merge($this->settings[$model->alias], $settings);
 
 		$cfg = $this->settings[$model->alias];
 		$model->bindModel(array('hasMany' => array(
@@ -112,7 +118,7 @@ class CommentableBehavior extends ModelBehavior {
 				$data['Comment']['approved'] = 0;
 				$direction = 'down';
 			}
-			if ($model->Comment->save($data, false)) {
+			if ($model->Comment->save($data, false, array('approved'))) {
 				$this->changeCommentCount($model, $data['Comment']['foreign_key'], $direction);
 				return true;
 			}

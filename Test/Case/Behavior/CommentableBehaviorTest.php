@@ -9,7 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('model', 'Comments.Comment');
+App::import('Model', 'Comments.Comment');
+	
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
 	/**
@@ -107,9 +108,9 @@ class CommentableTest extends CakeTestCase {
  *
  */
 	public $fixtures = array(
-		'plugin.comments.comment',
-		'plugin.comments.user',
-		'plugin.comments.article');
+		'plugin.Comments.comment',
+		'plugin.Comments.user',
+		'plugin.Comments.article');
 
 /**
  * Model
@@ -165,9 +166,11 @@ class CommentableTest extends CakeTestCase {
 
 		try {
 			$this->Model->commentAdd(1);
-			$this->fail();
+			$this->assertFalse(true); 
+			// @todo refactor $this->fail();
 		} catch (BlackHoleException $e) {
-			$this->pass();
+			$this->assertTrue(true); 
+			// @todo refactor $this->pass();
 		}
 
 		// If it's successfull, commentAdd returns the id of the newly created comment
@@ -220,13 +223,13 @@ class CommentableTest extends CakeTestCase {
  */
 	public function testCommentToggleApprove() {
 		$comment = $this->Model->Comment->find('first');
-		$this->assertEqual($comment['Comment']['approved'], 1);
+		$this->assertEqual($comment['Comment']['approved'], true);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
 		$comment = $this->Model->Comment->find('first');
-		$this->assertEqual($comment['Comment']['approved'], 0);
+		$this->assertEqual($comment['Comment']['approved'], false);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
 		$comment = $this->Model->Comment->find('first');
-		$this->assertEqual($comment['Comment']['approved'], 1);
+		$this->assertEqual($comment['Comment']['approved'], true);
 
 		$this->assertFalse($this->Model->commentToggleApprove(21415));
 	}

@@ -97,9 +97,9 @@ class CommentsControllerTest extends CakeTestCase {
  * @var array
  */
 	public $fixtures = array(
-		'plugin.comments.comment',
-		'plugin.comments.user',
-		'plugin.comments.article');
+		'plugin.Comments.comment',
+		'plugin.Comments.user',
+		'plugin.Comments.article');
 
 /**
  * (non-PHPdoc)
