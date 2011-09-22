@@ -22,14 +22,14 @@
  * @subpackage	plugins.comments.config.schema
  */
 
-class AppSchema extends CakeSchema {
+class CommentsSchema extends CakeSchema {
 
 /**
  * Name
  *
  * @var string
  */
-	public $name = 'App';
+	public $name = 'Comments';
 
 /**
  * Before callback

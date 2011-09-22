@@ -13,12 +13,12 @@ App::import('model', 'Comments.Comment');
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
 	/**
-	 * 
+	 *
 	 */
 		public $callbackData = array();
 
 	/**
-	 * 
+	 *
 	 */
 		public $actsAs = array(
 			'Comments.Commentable' => array(
@@ -26,12 +26,12 @@ if (!class_exists('Article')) {
 				'userModelAlias' => 'UserModel',
 				'userModel' => 'User'));
 	/**
-	 * 
+	 *
 	 */
 		public $useTable = 'articles';
 
 	/**
-	 * 
+	 *
 	 */
 		public $name = 'Article';
 	}
@@ -41,12 +41,12 @@ if (!class_exists('Article2')) {
 	class Article2 extends CakeTestModel {
 
 	/**
-	 * 
+	 *
 	 */
 		public $callbackData = array();
 
 	/**
-	 * 
+	 *
 	 */
 		public $actsAs = array(
 			'Comments.Commentable' => array(
@@ -55,17 +55,17 @@ if (!class_exists('Article2')) {
 				'userModel' => 'User'));
 
 	/**
-	 * 
+	 *
 	 */
 		public $useTable = 'articles';
 
 	/**
-	 * 
+	 *
 	 */
 		public $name = 'Article2';
 
 	/**
-	 * 
+	 *
 	 */
 		public function beforeComment(&$data) {
 			$data['Comment']['title'] = 'Changed in beforeComment!';
@@ -74,7 +74,7 @@ if (!class_exists('Article2')) {
 		}
 
 	/**
-	 * 
+	 *
 	 */
 		public function afterComment(&$data) {
 			$data['Comment']['body'] = 'Changed in afterComment!';
@@ -87,24 +87,24 @@ if (!class_exists('Article2')) {
 if (!class_exists('User')) {
 	class User extends CakeTestModel {
 	/**
-	 * 
+	 *
 	 */
 		public $useTable = 'users';
 
 	/**
-	 * 
+	 *
 	 */
 		public $name = 'User';
 	}
 }
 
 /**
- * 
+ *
  */
 class CommentableTest extends CakeTestCase {
 
 /**
- * 
+ *
  */
 	public $fixtures = array(
 		'plugin.comments.comment',
@@ -137,7 +137,7 @@ class CommentableTest extends CakeTestCase {
  */
 	public function endTest() {
 		unset($this->Model);
-		ClassRegistry::flush(); 
+		ClassRegistry::flush();
 	}
 
 /**
@@ -154,7 +154,7 @@ class CommentableTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testCommentAdd(){ 
+	public function testCommentAdd(){
 		//No data
 		$expected = null;
 		$this->assertEqual($expected, $this->Model->commentAdd(0));
@@ -169,7 +169,7 @@ class CommentableTest extends CakeTestCase {
 		} catch (BlackHoleException $e) {
 			$this->pass();
 		}
-		
+
 		// If it's successfull, commentAdd returns the id of the newly created comment
 		$options = array(
 			'userId' => '47ea303a-3b2c-4251-b313-4816c0a800fa',
@@ -186,11 +186,11 @@ class CommentableTest extends CakeTestCase {
 		$this->assertTrue(is_string($result));
 		$this->Model->Comment->id = $result;
 		$this->assertEqual($this->Model->Comment->field('title'), $options['defaultTitle']);
-		
+
 		$this->Model->id = $options['modelId'];
 		$oldCount = $this->Model->field('comments');
 		$this->assertTrue(is_numeric($oldCount));
-		
+
 		// Testing adding a comment (approved by default)
 		$options['data'] = array('Comment' => $options['data']);
 		$result = $this->Model->commentAdd(0, $options);
@@ -198,14 +198,14 @@ class CommentableTest extends CakeTestCase {
 		$this->Model->Comment->id = $result;
 		$this->assertEqual($this->Model->Comment->field('title'), $options['data']['Comment']['title']);
 		$this->assertEqual($this->Model->field('comments'), ++$oldCount);
-		
+
 		// Test adding non approved comment
 		$options['data']['Comment']['approved'] = 0;
 		$result = $this->Model->commentAdd(0, $options);
 		$this->assertTrue(is_string($result));
 		$this->Model->id = $options['modelId'];
 		$this->assertEqual($this->Model->field('comments'), $oldCount);
-		
+
 		// Test adding spam comment
 		$options['data'] = array_merge($options['data'], array(
 			'Other' => array(
@@ -241,11 +241,11 @@ class CommentableTest extends CakeTestCase {
 		$initCounts = array(
 			'Model' => $this->Model->field('comments'),
 			'Comments' => $this->Model->Comment->find('count'));
-		
+
 		$this->assertTrue($this->Model->commentDelete(1));
 		$this->assertEqual($this->Model->field('comments'), $initCounts['Model'] - 1);
 		$this->assertEqual($this->Model->Comment->find('count'), $initCounts['Comments'] - 1);
-		
+
 		$this->assertFalse($this->Model->commentDelete('does-not-exist'));
 	}
 
@@ -283,12 +283,16 @@ class CommentableTest extends CakeTestCase {
 		$options = array_merge($options, array(
 			'isAdmin' => true,
 			'id' => 1));
+		$this->Model->Comment->Behaviors->attach('Containable');
+		$this->Model->Behaviors->attach('Containable');
 		$result = $this->Model->commentBeforeFind($options);
 		$expected = array(
 			'conditions' => array(
 					'Article.id' => 1,
 			'Comment.is_spam' => array('clean', 'ham')));
 		$this->assertEqual($result, $expected);
+		$this->assertTrue($this->Model->Behaviors->enabled('Containable'));
+		$this->assertTrue($this->Model->Comment->Behaviors->enabled('Containable'));
 	}
 
 /**
@@ -315,3 +319,4 @@ class CommentableTest extends CakeTestCase {
 	}
 
 }
+

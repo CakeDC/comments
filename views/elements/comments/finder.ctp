@@ -19,7 +19,9 @@
 		'label' => __d('comments', 'Approved', true),
 		'class' => 'small',
 		'empty' => __d('comments', '...select...', true),
-		'options' => array(0 => 'not aproved', 1 => 'approved'),
+		'options' => array(
+			0 => __d('comments', 'Not Approved', true),
+			1 => __d('comments', 'Approved', true)),
 		'div' => array('class' => 'left'),
 	)); ?>
 
@@ -27,7 +29,11 @@
 		'label' => __d('comments', 'spam state', true),
 		'class' => 'small',
 		'empty' => __d('comments', '...select...', true),
-		'options' => array('clean' => 'clean', 'ham' => 'ham', 'manualspam' => 'manualspam', 'spam' => 'spam'),
+		'options' => array(
+			'clean' => __d('comments', 'Clean', true),
+			'ham' => __d('comments', 'Ham', true),
+			'spammanual' => __d('comments', 'Manual Spam', true),
+			'spam' => __d('comments', 'Spam', true)),
 		'div' => array('class' => 'left spaced'),
 	)); ?>
 </div>

@@ -74,7 +74,7 @@ class CommentableBehavior extends ModelBehavior {
 				'finderQuery' => '',
 				'counterQuery' => ''))), false);
 		$model->Comment->bindModel(array('belongsTo' => array(
-			$model->name => array(
+			$model->alias => array(
 				'className' => $model->name,
 				'foreignKey' => 'foreign_key',
 				'unique' => true,
@@ -255,8 +255,8 @@ class CommentableBehavior extends ModelBehavior {
 		$options = array_merge(array('userModel' => $this->settings[$model->alias]['userModelAlias'], 'userData' => null, 'isAdmin' => false), (array)$options);
 		extract($options);
 
-		$model->Behaviors->detach('Containable');
-		$model->Comment->Behaviors->detach('Containable');
+		$model->Behaviors->disable('Containable');
+		$model->Comment->Behaviors->disable('Containable');
 		$unbind = array();
 
 		foreach (array('belongsTo', 'hasOne', 'hasMany', 'hasAndBelongsToMany') as $assocType) {
@@ -267,7 +267,7 @@ class CommentableBehavior extends ModelBehavior {
 					if (!empty($options['keep']) && in_array($key, $options['keep'])) {
 						$keep = true;
 					}
-					if (!in_array($key, array($userModel, $model->name)) && !$keep) {
+					if (!in_array($key, array($userModel, $model->alias)) && !$keep) {
 						$unbind[$assocType][] = $key;
 					}
 				}
@@ -295,7 +295,11 @@ class CommentableBehavior extends ModelBehavior {
 		if ($model->Comment->hasField($spamField)) {
 			$conditions['Comment.' . $spamField] = $this->settings[$model->alias]['cleanValues'];
 		}
+		$model->Behaviors->enable('Containable');
+		$model->Comment->Behaviors->enable('Containable');
+
 		return array('conditions' => $conditions);
 	}
 
 }
+

@@ -15,7 +15,7 @@ App::import('Model', 'Comments.Comment');
 if (!class_exists('User')) {
 	class User extends CakeTestModel {
 	/**
-	 * 
+	 *
 	 */
 		public $name = 'User';
 	}
@@ -99,7 +99,7 @@ class CommentsControllerTest extends CakeTestCase {
 	public $fixtures = array(
 		'plugin.comments.comment',
 		'plugin.comments.user',
-		'plugin.comments.article');	
+		'plugin.comments.article');
 
 /**
  * (non-PHPdoc)
@@ -117,7 +117,7 @@ class CommentsControllerTest extends CakeTestCase {
 
 /**
  * Test Controller instance
- * 
+ *
  * @return void
  */
 	public function testCommentsControllerInstance() {
@@ -126,25 +126,25 @@ class CommentsControllerTest extends CakeTestCase {
 
 /**
  * Test admin_index action
- * 
+ *
  * @return void
  */
 	public function testAdminIndex() {
 		$this->Comments->admin_index();
-		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
+		$this->assertEqual(count($this->Comments->viewVars['comments']), 4);
 		$this->assertEqual($this->Comments->viewVars['comments'][0]['Comment']['id'], 1);
 
 		$this->Comments->admin_index('clean');
-		$this->assertEqual(count($this->Comments->viewVars['comments']), 2);
+		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
 		$this->assertEqual($this->Comments->viewVars['comments'][0]['Comment']['id'], 1);
 
 		$this->Comments->admin_index(null);
-		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
+		$this->assertEqual(count($this->Comments->viewVars['comments']), 4);
 	}
 
 /**
  * Test admin_process action
- * 
+ *
  * @return void
  */
 	public function _testAdminProcessDelete() {
@@ -169,7 +169,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$comment1 = $this->Comments->Comment->findById(1);
 		$this->assertEqual($comment1['Comment']['is_spam'], 'ham');
 	}
-	
+
 	public function testAdminProcessSpam() {
 		$this->Comments->data['Comment'] = array(
 			'1' => 1,
@@ -179,7 +179,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$comment1 = $this->Comments->Comment->findById(1);
 		$this->assertEqual($comment1['Comment']['is_spam'], 'spammanual');
 	}
-	
+
 	public function testAdminProcessApprove() {
 		$this->Comments->data['Comment'] = array(
 			'2' => 0,
@@ -189,7 +189,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$comment = $this->Comments->Comment->findById(3);
 		$this->assertEqual($comment['Comment']['approved'], 1);
 	}
-	
+
 	public function testAdminProcessDisapprove() {
 		$this->Comments->data['Comment'] = array(
 			'1' => 1,
@@ -199,10 +199,10 @@ class CommentsControllerTest extends CakeTestCase {
 		$comment = $this->Comments->Comment->findById(1);
 		$this->assertEqual($comment['Comment']['approved'], 0);
 	}
-	
+
 /**
  * Test admin_spam action
- * 
+ *
  * @return void
  */
 	public function testAdminSpam() {
@@ -210,7 +210,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Wrong comment id');
 		$this->Comments->Session->delete('Message.flash.message');
-		
+
 		$Article = ClassRegistry::init('Article');
 		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
 		$this->Comments->admin_spam(1);
@@ -222,10 +222,10 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($newCount, $oldCount - 1);
 		$this->Comments->Session->delete('Message.flash.message');
 	}
-	
+
 /**
  * Test admin_ham action
- * 
+ *
  * @return void
  */
 	public function testAdminHam() {
@@ -233,7 +233,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Wrong comment id');
 		$this->Comments->Session->delete('Message.flash.message');
-		
+
 		$Article = ClassRegistry::init('Article');
 		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));
 		$this->Comments->admin_ham(3);
@@ -245,10 +245,10 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($newCount, $oldCount + 1);
 		$this->Comments->Session->delete('Message.flash.message');
 	}
-	
+
 /**
  * Test admin_view action
- * 
+ *
  * @return void
  */
 	public function testAdminView() {
@@ -256,14 +256,14 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Invalid Comment.');
 		$this->Comments->Session->delete('Message.flash.message');
-		
+
 		$this->Comments->admin_view(1);
 		$this->assertEqual($this->Comments->viewVars['comment']['Comment']['id'], 1);
 	}
-	
+
 /**
  * Test admin_delete action
- * 
+ *
  * @return void
  */
 	public function testAdminDelete() {
@@ -271,7 +271,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Invalid id for Comment');
 		$this->Comments->Session->delete('Message.flash.message');
-		
+
 		$Article = ClassRegistry::init('Article');
 		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
 		$this->Comments->admin_delete(1);
@@ -281,36 +281,36 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($newCount, $oldCount - 1);
 		$this->Comments->Session->delete('Message.flash.message');
 	}
-	
+
 /**
  * Test requestForUser action
- * 
+ *
  * @return void
  */
 	public function testRequestForUser() {
 		$this->Comments->requestForUser();
 		$this->assertEqual($this->Comments->cakeErrorMethod, '404');
-		
+
 		$this->Comments->params['requested'] = array();
 		$this->Comments->requestForUser();
 		$ids = Set::extract($this->Comments->viewVars['comments'], '/Comment/id');
 		$this->assertEqual($ids, array(1, 2));
 		$this->assertEqual($this->Comments->renderedView, 'comment');
-		
+
 		$this->Comments->requestForUser(null, 1);
 		$ids = Set::extract($this->Comments->viewVars['comments'], '/Comment/id');
 		$this->assertEqual($ids, array(1));
-		
+
 		$this->Comments->requestForUser('47ea303a-3b2c-4251-b313-4816c0a800fa');
 		$ids = Set::extract($this->Comments->viewVars['comments'], '/Comment/id');
-		$this->assertEqual($ids, array(3));
+		$this->assertEqual($ids, array(4));
 		$this->assertEqual($this->Comments->viewVars['userId'], '47ea303a-3b2c-4251-b313-4816c0a800fa');
-		
+
 		$this->Comments->params['named']['model'] = 'Other';
 		$this->Comments->requestForUser();
 		$this->assertTrue(empty($this->Comments->viewVars['comments']));
 	}
-	
+
 /**
  * (non-PHPdoc)
  * @see cake/tests/lib/CakeTestCase#endTest($method)
@@ -320,3 +320,4 @@ class CommentsControllerTest extends CakeTestCase {
 		unset($this->Comments);
 	}
 }
+

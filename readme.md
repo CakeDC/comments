@@ -8,7 +8,7 @@ Before beginning with the comments plugin, you'll need to create the necessary d
 
 This plugin comes with two mechanisms to get your database tables setup.
 
-1. You can use the default CakePHP schema method from the console: `cake schema create -plugin comments`
+1. You can use the default CakePHP schema method from the console: `cake schema create -plugin comments -name app`
 2. You can use the CakeDC migrations plugin to import your database tables: `cake migration all -plugin comments`
 
 If you choose the second method, please ensure you have first installed the [CakeDC migrations plugin](http://github.com/CakeDC/migrations) first.
@@ -41,7 +41,7 @@ Inside the view (in our case it will views/posts/view.ctp) we will add the next 
 
 ## How it works ##
 
-During page rendering the comments component checks if some of the passed named url parameters are filled. 
+During page rendering the comments component checks if some of the passed named url parameters are filled.
 If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
 Sometimes you want to know how much comments your user did. In this case all you need to do - add additional field with name "comments" into the table that keep all users information in you systems. It can be any table like users or profiles.
@@ -51,7 +51,7 @@ Sometimes you want to know how much comments your user did. In this case all you
 The component needs to have one important convention for any actions where it is enabled:
 
 To work properly, the component needs a specific variable to be set in every action using it. Its name should be either Inflector::variable(Controller::$modelClass) or Comments::$viewVariable should be set to other name of this view variable. That variable should contain single model record. for example you need to have next line in you view action:
-	
+
 		$this->set('post', $this->Post->read(null, $id));
 
 If you plan to attach comments plugin to model that stored in some plugin highly recommended to define Model::$fullName property for your model in ClassRegistry format.
@@ -63,7 +63,7 @@ This required by most antispam systems if you plan to use it.
 
 It is possible to override or extend the most comments component methods in the controller.
 To do this we need to create method with prefix callback_comments
-Examples: 
+Examples:
 
 * callback_add will named as callback_commentsAdd in controller,
 * callback_fetchData will named as callback_commentsFetchData in controller.
@@ -82,20 +82,20 @@ Possible to extend or override any callback without changing component code.
 			...
 			///perform some validation and field manipulations here. all value need to store into the $data.
 			$data['Comment']['author_name'] = $this->Auth->user('username');
-			$data['Comment']['author_email'] = $this->Auth->user('email'); 			
-			
+			$data['Comment']['author_email'] = $this->Auth->user('email');
+
 			$valid = true;
 			if (empty($this->data['Comment']['author_name'])) {
 				$valid = false;
 			}
 			if (!$valid) {
 				$this->Session->setFlash(__('Please enter necessery information', true));
-				return; 				
+				return;
 			}
 			...
 		}
 		return $this->Comments->callback_add($modelId, $commentId, $displayType, $data);
-	} 
+	}
 
 ## Component parameters ##
 
@@ -129,7 +129,7 @@ Exists two way to change settings values for component. You can change it in bef
 
 	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
 
- 
+
 ## Helper parameters and methods ##
 
  * target                - used in ajax mode to specify block where comment widget stored
@@ -169,21 +169,21 @@ To turn on ajax mode you need set pass two parameters to the helper:
 
 Next important to implement in  controller special action, by default named comments:
 
-	<?php 
+	<?php
 		public function comments($id = null) {
 			$post = $this->Post->read(null, $id);
-			$this->layout = 'ajax'; 
+			$this->layout = 'ajax';
 			$this->set(compact('post', 'id'));
 		}
 	?>
-	
+
 Also necessary to implement comments view, that will just contains previous block and will include ajax element from comments plugin:
 
-	<?php 
+	<?php
 		$commentWidget->options(array(
 		'target' => '#comments',
 		'ajaxAction' => 'comments'));
-		echo $this->element('ajax', array('plugin' => 'comments'));
+		echo $this->element('/ajax');
 	?>
 
 The comments action in controller should be same as view action, the difference only in view.
@@ -213,3 +213,4 @@ Copyright 2009-2010<br/>
 1785 E. Sahara Avenue, Suite 490-423<br/>
 Las Vegas, Nevada 89104<br/>
 http://cakedc.com<br/>
+

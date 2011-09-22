@@ -130,5 +130,28 @@ class CommentFixture extends CakeTestFixture {
 			'is_spam' => 'spam',
 			'comment_type' => 'comment',
 		),
+		array(
+			'id'  => '4',
+			'user_id'  => '47ea303a-3b2c-4251-b313-4816c0a800fa', // phpnut
+			'model'  => 'Article',
+			'foreign_key'  => '2',
+			'parent_id'  => '0',
+			'approved'  => 0,
+			'name'  => null,
+			'title'  => '-',
+			'slug'  => '_',
+			'body'  => 'This is a clean comment',
+			'lft'  => 3,
+			'rght'  => 4,
+			'modified'  => '2008-12-22 16:39:19',
+			'created'  => '2008-12-22 16:39:19',
+			'author_name' => 'Larry Masters',
+			'author_email' => 'example@example.com',
+			'author_url' => 'http://example.com',
+			'is_spam' => 'clean',
+			'comment_type' => 'comment',
+		),
+
 	);
 }
+

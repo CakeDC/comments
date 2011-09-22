@@ -27,13 +27,11 @@ else: ?>
 		echo sprintf(__d('comments', 'If you want to post comments, you need to login first.', true), $html->link(__d('comments', 'login', true), array('controller' => 'users', 'action' => 'login', 'prefix' => $adminRoute, $adminRoute => false)));
 endif;
 
-if (!$isAddMode || $isAddMode):
-	//echo $commentWidget->element('paginator');
-	echo $tree->generate(${$viewComments}, array(
-		'callback' => array(&$commentWidget, 'treeCallback'),
-		'model' => 'Comment',
-		'class' => 'tree-block'));
-endif;
+//echo $commentWidget->element('paginator');
+echo $tree->generate(${$viewComments}, array(
+	'callback' => array(&$commentWidget, 'treeCallback'),
+	'model' => 'Comment',
+	'class' => 'tree-block'));
 
 ?>
 </div>
