@@ -365,7 +365,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->params['isAjax'] = true;
 		$this->Controller->Comments->commentParams['displayType'] = 'flat';
 		$this->Controller->Comments->callback_add(1, 1, 'flat');
-		$created = $this->Controller->Article->Comment->find('first', array('order' => 'created DESC'));
+		$created = $this->Controller->Article->Comment->find('first', array('order' => 'Comment.created DESC'));
 		$expected = array(
 			'approved' => 1,
 			'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',

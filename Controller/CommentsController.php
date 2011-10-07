@@ -15,6 +15,13 @@
  * @package comments
  * @subpackage comments.controllers
  */
+
+/**
+ * @property Comment Comment
+ * @property PrgComponent Prg
+ * @property SessionComponent  Session
+ * @property RequestHandlerComponent RequestHandler
+ */
 class CommentsController extends CommentsAppController {
 
 /**
@@ -44,6 +51,13 @@ class CommentsController extends CommentsAppController {
  * @var array
  */
 	public $uses = array('Comments.Comment');
+
+/**
+ * Preset for search views
+ *
+ * @var array
+ */
+    public $presetVars = array();
 
 /**
  * Admin index action
@@ -102,7 +116,7 @@ class CommentsController extends CommentsAppController {
 			try {
 				$message = $this->Comment->process($this->data['Comment']['action'], $this->data);
 			} catch (Exception $ex) {
-				$message = $ex->getMessages();
+				$message = $ex->getMessage();
 			}
 			$this->Session->setFlash($message);
 		}

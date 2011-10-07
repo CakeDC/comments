@@ -222,13 +222,13 @@ class CommentableTest extends CakeTestCase {
  * @return void
  */
 	public function testCommentToggleApprove() {
-		$comment = $this->Model->Comment->find('first');
+		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
 		$this->assertEqual($comment['Comment']['approved'], true);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
-		$comment = $this->Model->Comment->find('first');
+		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
 		$this->assertEqual($comment['Comment']['approved'], false);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
-		$comment = $this->Model->Comment->find('first');
+		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
 		$this->assertEqual($comment['Comment']['approved'], true);
 
 		$this->assertFalse($this->Model->commentToggleApprove(21415));

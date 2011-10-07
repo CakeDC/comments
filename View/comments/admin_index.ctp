@@ -36,12 +36,13 @@
 <table cellpadding="0" cellspacing="0">
 	<tr>
 		<th><?php echo $this->Paginator->sort('name');?></th>
-		<th><?php echo $this->Paginator->sort('author_name');?></th>
-		<th><?php echo $this->Paginator->sort('author_email');?></th>
-		<th><?php echo $this->Paginator->sort('author_url');?></th>
-		<th><?php echo $this->Paginator->sort('created');?></th>
-		<th><?php echo $this->Paginator->sort('is_spam');?></th>
-		<th><?php echo $this->Paginator->sort('approved');?></th>
+        <th> Body </th>
+        <th><?php echo $this->Paginator->sort('author_name');?></th>
+        <th><?php echo $this->Paginator->sort('author_email');?></th>
+        <th><?php echo $this->Paginator->sort('author_url');?></th>
+        <th><?php echo $this->Paginator->sort('created');?></th>
+        <th><?php echo $this->Paginator->sort('is_spam');?></th>
+        <th><?php echo $this->Paginator->sort('approved');?></th>
 		<th><?php __d('comments', 'Select...');?> <input id="mainCheck" style="width: 100%;" type="checkbox" onclick="$('.cbox').each (function (id,f) {$('#'+this.id).attr('checked', !!$('#mainCheck').attr('checked'))})"> </th>
 		<th class="actions"><?php __d('comments', 'Actions');?></th>
 	</tr>
@@ -56,6 +57,10 @@
 		<tr<?php echo $class;?>>
 			<td>
 				<?php echo h($comment['Comment']['title']); ?>
+			</td>
+			<td>
+				<div class="hidden"><?php echo h($comment['Comment']['body']); ?> </div>
+                <?php echo $this->Html->link(__('Hide', true), '#', array('class' => 'toggle')); ?>
 			</td>
 			<td>
 				<?php echo h($comment['Comment']['author_name']); ?>
@@ -99,3 +104,19 @@
 <?php echo $this->Form->end(); ?>
 
 <?php echo $this->element('paging'); ?>
+
+<script type="text/javascript">
+    $("td div.hidden").show();
+    $("td a.toggle").click(function(event) {
+        $this = $(this);
+        if ($this[0].innerHTML == 'Show') {
+            $this[0].innerHTML = 'Hide';
+        } else {
+            $this[0].innerHTML = 'Show';
+        }
+        $(this).parent().find("div.hidden").toggle();
+        event.preventDefault();
+    });
+
+
+</script>
