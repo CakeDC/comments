@@ -100,6 +100,7 @@ class CommentWidgetHelper extends AppHelper {
 		$this->globalParams = array_merge(array_merge($this->globalParams, $this->options), (array)$data);
 		if (!empty($this->globalParams['target']) && empty($this->globalParams['ajaxOptions'])) {
 			$this->globalParams['ajaxOptions'] = array(
+				'rel' => 'nofollow',
 				'update' => $this->globalParams['target'],
 				'evalScripts' => true,
 				'before' =>
