@@ -99,7 +99,9 @@ class SluggableTest extends CakeTestCase {
 		$this->Model->create(array('title' => 'Fourth "Article"'));
 		$this->Model->save();
 
-		$results = $this->Model->find('all', array('conditions' => array('title LIKE' => 'Fourth%')));
+		$results = $this->Model->find('all', array(
+			'order' => array('SluggedArticle.slug'),
+			'conditions' => array('title LIKE' => 'Fourth%')));
 		$this->assertEqual(count($results), 3);
 		$this->assertEqual($results[0]['SluggedArticle']['slug'], 'fourth_article');
 		$this->assertEqual($results[1]['SluggedArticle']['slug'], 'fourth_article_1');
