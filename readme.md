@@ -136,6 +136,33 @@ There are two way to change settings values for component. You can change it in 
 	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
 
 
+## Behavior overloading and configuration ##
+
+Some times during search need to bind some addtional models into result returned in list of comments.
+Most logic way for that - overload behavior commentBeforeFind method like this on model level:
+
+	/**
+	 * Prepare models association to before fetch data
+	 *
+	 * @param array $options
+	 * @return boolean
+	 * @access public
+	 */
+		public function commentBeforeFind($options) {
+			$result = $this->Behaviors->dispatchMethod($this, 'commentBeforeFind', array($options));
+
+			$userModel = $this->Behaviors->Commentable->settings[$this->alias]['userModelAlias'];
+			$this->Comment->bindModel(array('belongsTo' => array(
+				'Profile' => array(
+					'className' => 'Profile',
+					'foreignKey' => false,
+					'conditions' => array('Profile.user_id = ' . $userModel . '.id')
+				)
+			)), false);
+			return $result;
+		}
+
+
 ## Helper parameters and methods ##
 
  * target                - used in ajax mode to specify block where comment widget stored
