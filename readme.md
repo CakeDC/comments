@@ -14,6 +14,7 @@ First created the needed tables in database. This plugin comes with two mechanis
 If you choose the second method, please ensure you have first installed the [CakeDC migrations plugin](http://github.com/CakeDC/migrations) first.
 
 Finally, you need to have some sort of `users` or `logins` table that keeps member information. This table should contain a slug field, as it is used by the comments plugin.
+We recommended to use [CakeDC users plugin](http://github.com/CakeDC/users) that allow all needed for plugin features.
 
 ## Usage ##
 
