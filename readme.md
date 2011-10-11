@@ -196,6 +196,15 @@ It is also necessary to implement comments view, that will just contains previou
 
 The comments action in controller should be same as view action, the difference only in view.
 
+If you should pass some more params into CommentWidget::display method in ajax element you can call it with addtional displayOptions parameter:
+
+	<?php
+		$this->CommentWidget->options(array(
+			'target' => '#comments',
+			'ajaxAction' => 'comments'));
+		$this->element('/ajax', array('displayOptions' => array(/* ... params ...  */)));
+	?>
+
 ## Requirements ##
 
 * PHP version: PHP 5.2+
