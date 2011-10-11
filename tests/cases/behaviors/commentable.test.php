@@ -288,7 +288,8 @@ class CommentableTest extends CakeTestCase {
 		$result = $this->Model->commentBeforeFind($options);
 		$expected = array(
 			'conditions' => array(
-					'Article.id' => 1,
+				'Comment.model' => 'Article',
+				'Article.id' => 1,
 			'Comment.is_spam' => array('clean', 'ham')));
 		$this->assertEqual($result, $expected);
 		$this->assertTrue($this->Model->Behaviors->enabled('Containable'));

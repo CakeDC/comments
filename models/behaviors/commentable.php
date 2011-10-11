@@ -281,6 +281,7 @@ class CommentableBehavior extends ModelBehavior {
 		$conditions = array('Comment.approved' => 1);
 		if (isset($id)) {
 			$conditions[$model->alias . '.' . $model->primaryKey] = $id;
+			$conditions[$model->Comment->alias . '.model'] = $model->alias;
 		}
 
 		if ($isAdmin) {
