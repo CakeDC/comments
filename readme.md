@@ -1,12 +1,12 @@
 # Comments Plugin for CakePHP #
 
+Version 1.1
+
 Comments plugin is a universal comment system that can be attached to any controller with a few lines of code.
 
 ## Installation ##
 
-Before beginning with the comments plugin, you'll need to create the necessary database tables to store the comments.
-
-This plugin comes with two mechanisms to get your database tables setup.
+First created the needed tables in database. This plugin comes with two mechanisms to get your database tables setup:
 
 1. You can use the default CakePHP schema method from the console: `cake schema create -plugin comments -name app`
 2. You can use the CakeDC migrations plugin to import your database tables: `cake migration all -plugin comments`
@@ -18,17 +18,22 @@ Finally, you need to have some sort of `users` or `logins` table that keeps memb
 ## Usage ##
 
 We have Post model and want to have comments on the /posts/view page.
-So we need to choose how we want to display the comments - flat, or as tree.
+So we need to choose how we want to display the comments - flat, threaded, or as tree.
 In our example we want to use the flat type comments.
 
 First let us add the following code in the PostsController:
 
-	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
+	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User')); // Customize the User class
 
-	public function beforeFilter() {
-		parent::beforeFilter();
-		$this->passedArgs['comment_view_type'] = 'flat';
-	}
+	/**
+	 * Initializes the view type for comments widget
+	 *
+	 * @return string
+	 * @access public
+	 */
+		public function callback_commentsInitType() {
+			return 'flat'; // threaded, tree and flat supported
+		}
 
 By default the component assumes that the action that will be used for comments is named 'view', but we can override it inside the beforeFilter method.
 
@@ -56,7 +61,7 @@ To work properly, the component needs a specific variable to be set in every act
 
 If you plan to attach comments plugin to model that stored in some plugin highly recommended to define Model::$fullName property for your model in ClassRegistry format.
 For example for Post model of Blogs plugin set $fullName = 'Blogs.Post'.
-Also possible you will need to define permalink function in your Post model. This method should return correct url to view page where comments displayed.
+It is also possible to define a permalink() function in your Post model. This method should return the correct url to the view page where comments displayed.
 This required by most antispam systems if you plan to use it.
 
 ## Component callbacks ##
@@ -65,8 +70,8 @@ It is possible to override or extend the most comments component methods in the 
 To do this we need to create method with prefix callback_comments
 Examples:
 
-* callback_add will named as callback_commentsAdd in controller,
-* callback_fetchData will named as callback_commentsFetchData in controller.
+* callback\_add will named as callback_commentsAdd in controller,
+* callback\_fetchData will named as callback_commentsFetchData in controller.
 
 Callbacks:
 
@@ -75,7 +80,7 @@ Callbacks:
 * delete   - delete action. Can be overloaded.
 * afterAdd - callback called after success adding new comment.
 
-Possible to extend or override any callback without changing component code.
+Extend or override any callback without changing component code.
 
 	public function callback_commentsAdd($modelId, $commentId, $displayType, $data = array()) {
 		if (!empty($this->data)) {
@@ -99,14 +104,14 @@ Possible to extend or override any callback without changing component code.
 
 ## Component parameters ##
 
-Plugin use several named parameters that passed during comment operations like create, delete, reply or approve is performed.
+Plugin uses several named parameters that are passed during comment operations like create, delete, reply or approve is performed.
 
-* comment_view_type - Parameter that allow to specify what type of comments system used. Currently allowed to use one of 'flat', 'threaded', 'tree'. This parameter possible and useful to setup in beforeFilter to use only one type of view. If user allowed to choose between tree and flat, then it parameter can be dynamic.
+* comment\_view\_type - Parameter that allow to specify what type of comments system used. Currently allowed to use one of 'flat', 'threaded', 'tree'. This parameter possible and useful to setup in beforeFilter to use only one type of view. If user allowed to choose between tree and flat, then it parameter can be dynamic.
 * comment_action    - this parameter used, to pass what action should performed. N
 * comment           - comment id passed here.
 * quote             - boolean flag that show if you should use quote when generate reply to comment form.
 
-Please not that parameters listed here should not be used as named parameters in your app!
+Please note that parameters listed here should not be used as named parameters in your app!
 
 ## Component settings ##
 
@@ -124,7 +129,7 @@ All components parameters should be overwritten in beforeFilter method.
  * viewComments          - Name of view variable for comments data. By default 'commentsData'
  * allowAnonymousComment - Flag to allow anonymous user make comments. By default it is false.
 
-Exists two way to change settings values for component. You can change it in beforeFilter callback before component will initialized, or pass parameters during initialization:
+There are two way to change settings values for component. You can change it in beforeFilter callback before component will initialized, or pass parameters during initialization:
 
 
 	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
@@ -138,7 +143,7 @@ Exists two way to change settings values for component. You can change it in bef
  * urlToComment          - used if you want to have separate pages for each comment. Contain url to view comment.
  * allowAnonymousComment - boolean var, that show if anonymous comments allowed
  * viewInstance          - View instance class, that used to generated the page.
- * subtheme              - parameter that allow to have several set of templates for one view type. So if you want to have two different representation of 'flat' type for posts and images you just used two subthemes 'posts' and 'images' like 'flat_posts' and 'flat_images'.
+ * subtheme              - parameter that allow to have several set of templates for one view type. So if you want to have two different representation of 'flat' type for posts and images you just used two subthemes 'posts' and 'images' like 'flat\_posts' and 'flat\_images'.
 
 ### Template system structure ###
 
@@ -152,9 +157,11 @@ It is 'form', 'item', 'paginator' and 'main'.
  * Form element contains form markup to add comment or reply.
 
 All elements are stored in the structure views/elements/...type..., where ...type... is one of view types: 'flat', 'tree', 'threaded'.
-We can define elements in own plugin or app that used comments or use default templates.
+It is possible to define any of this elements in any of your plugins or app using this comments system.
+
 Sometimes we need to have several sets of templates for one view type. For example, if we want to have two different representation of 'flat' type for posts and images views we just used two subthemes for 'flat'.
-So in elements/comments we need to create folders 'flat_posts' and 'flat_images' and copy elements from '/elements/comments/flat' here and modify them.
+
+So in elements/comments we need to create folders 'flat\_posts' and 'flat\_images' and copy elements from '/elements/comments/flat' here and modify them.
 
 ## Ajax support ##
 
@@ -162,7 +169,7 @@ The plugin was tested with jquery engine. Since cakephp js helper support many e
 
 To turn on ajax mode you need set pass two parameters to the helper:
 
-	<?php $commentWidget->options(array(
+	<?php $thic->CommentWidget->options(array(
 		'target' => '#comments',
 		'ajaxAction' => 'comments'));
 	?>
@@ -177,10 +184,10 @@ Next important to implement in  controller special action, by default named comm
 		}
 	?>
 
-Also necessary to implement comments view, that will just contains previous block and will include ajax element from comments plugin:
+It is also necessary to implement comments view, that will just contains previous block and will include ajax element from comments plugin:
 
 	<?php
-		$commentWidget->options(array(
+		$this->CommentWidget->options(array(
 		'target' => '#comments',
 		'ajaxAction' => 'comments'));
 		echo $this->element('/ajax');
@@ -208,7 +215,7 @@ Redistributions of files must retain the above copyright notice.
 
 ## Copyright ###
 
-Copyright 2009-2010<br/>
+Copyright 2009-2011<br/>
 [Cake Development Corporation](http://cakedc.com)<br/>
 1785 E. Sahara Avenue, Suite 490-423<br/>
 Las Vegas, Nevada 89104<br/>

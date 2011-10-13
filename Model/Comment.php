@@ -55,6 +55,14 @@ class Comment extends CommentsAppModel {
 	public $permalink;
 
 /**
+ * Filter args
+ *
+ * @var array
+ */
+    public $filterArgs = array();
+
+
+/**
  * beforeSave
  *
  * @param boolean $created

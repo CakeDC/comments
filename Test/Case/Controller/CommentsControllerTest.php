@@ -137,7 +137,6 @@ class CommentsControllerTest extends CakeTestCase {
 
 		$this->Comments->admin_index('clean');
 		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
-		$this->assertEqual($this->Comments->viewVars['comments'][0]['Comment']['id'], 1);
 
 		$this->Comments->admin_index(null);
 		$this->assertEqual(count($this->Comments->viewVars['comments']), 4);

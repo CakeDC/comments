@@ -30,7 +30,7 @@ class ArticleFixture extends CakeTestFixture {
  * @var array
  */
 	public $fields = array(
-		'id' => array('type' => 'integer', 'key' => 'primary'),
+		'id' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'), 		
 		'title' => array('type' => 'string', 'null' => false),
 		'comments' => array('type' => 'integer', 'null' => false, 'default' => '0'));
 
@@ -40,6 +40,6 @@ class ArticleFixture extends CakeTestFixture {
  * @var array
  */
 	public $records = array(
-		array('title' => 'First Article', 'comments' => 2),
-		array('title' => 'Second Article', 'comments' => 0));
+		array('id' => '1', 'title' => 'First Article', 'comments' => 2),
+		array('id' => '2', 'title' => 'Second Article', 'comments' => 0));
 }
