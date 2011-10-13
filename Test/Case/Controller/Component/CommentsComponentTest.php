@@ -81,6 +81,9 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	function startTest($method) {
+		if (!defined('FULL_BASE_URL')) {
+			define('FULL_BASE_URL', 'http://');
+		}
 		$this->Request = new CakeRequest();
 		$this->Controller = new ArticlesTestController($this->Request);
 		$this->Controller->constructClasses();
