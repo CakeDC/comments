@@ -106,12 +106,13 @@ class CommentsControllerTest extends CakeTestCase {
  * @see cake/tests/lib/CakeTestCase#startTest($method)
  */
 	public function startTest($method) {
-		parent::startTest($method);
-		$this->Comments = new TestCommentsController();
-		$this->Comments->params = array(
+		$this->Request = new CakeRequest();
+		$this->Request->params = array(
 			'named' => array(),
 			'pass' => array(),
 			'url' => array());
+		$this->Comments = new TestCommentsController($this->Request);
+		//$this->Comments->params = $this->Request->params;
 		$this->Comments->constructClasses();
 	}
 
@@ -161,7 +162,7 @@ class CommentsControllerTest extends CakeTestCase {
 	}
 
 	public function testAdminProcessHam() {
-		$this->Comments->data['Comment'] = array(
+		$this->Comments->request->data['Comment'] = array(
 			'1' => 1,
 			'2' => 0,
 			'action' => 'ham');
@@ -171,7 +172,7 @@ class CommentsControllerTest extends CakeTestCase {
 	}
 
 	public function testAdminProcessSpam() {
-		$this->Comments->data['Comment'] = array(
+		$this->Comments->request->data['Comment'] = array(
 			'1' => 1,
 			'2' => 0,
 			'action' => 'spam');
@@ -181,7 +182,7 @@ class CommentsControllerTest extends CakeTestCase {
 	}
 
 	public function testAdminProcessApprove() {
-		$this->Comments->data['Comment'] = array(
+		$this->Comments->request->data['Comment'] = array(
 			'2' => 0,
 			'3' => 1,
 			'action' => 'approve');
@@ -191,7 +192,7 @@ class CommentsControllerTest extends CakeTestCase {
 	}
 
 	public function testAdminProcessDisapprove() {
-		$this->Comments->data['Comment'] = array(
+		$this->Comments->request->data['Comment'] = array(
 			'1' => 1,
 			'2' => 0,
 			'action' => 'disapprove');
@@ -316,7 +317,6 @@ class CommentsControllerTest extends CakeTestCase {
  * @see cake/tests/lib/CakeTestCase#endTest($method)
  */
 	public function endTest($method) {
-		parent::endTest($method);
 		unset($this->Comments);
 	}
 }

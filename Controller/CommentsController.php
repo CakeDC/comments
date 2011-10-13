@@ -29,7 +29,7 @@ class CommentsController extends CommentsAppController {
  *
  * @var array
  */
-	public $components = array('RequestHandler');
+	public $components = array('RequestHandler', 'Paginator');
 
 /**
  * Helpers
@@ -65,28 +65,30 @@ class CommentsController extends CommentsAppController {
 		$conditions = array();
 
 		if (App::import('Component', 'Search.Prg')) {
-			$this->Comment->Behaviors->attach('Search.Searchable');
+			$this->Comment->Behaviors->load('Search.Searchable');
 			$this->Comment->filterArgs = array(
 				array('name' => 'is_spam', 'type' => 'value'),
 				array('name' => 'approved', 'type' => 'value'));
-			$this->Prg = new PrgComponent();
+			$this->Prg = new PrgComponent($this->Components);
 			$this->Prg->initialize($this);
 			$this->Prg->commonProcess();
 			$conditions = $this->Comment->parseCriteria($this->passedArgs);
 			$this->set('searchEnabled', true);
 		}
+		
 
-		$this->paginate['Comment'] = array(
-			'conditions' => $conditions,
-			'contain' => array('UserModel'),
-			'order' => 'Comment.created DESC');
+		$this->Paginator->paginate = array(
+			'Comment' => array(
+				'conditions' => $conditions,
+				'contain' => array('UserModel'),
+				'order' => 'Comment.created DESC'));
 		if ($type == 'spam') {
-			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
+			$this->Paginator->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
 		} elseif ($type == 'clean') {
-			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
+			$this->Paginator->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
 		}
 
-		$this->set('comments', $this->paginate('Comment'));
+		$this->set('comments', $this->Paginator->paginate('Comment'));
 	}
 
 

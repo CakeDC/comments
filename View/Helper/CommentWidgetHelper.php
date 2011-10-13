@@ -75,8 +75,8 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @return void
  */
-	public function beforeRender() {
-		parent::beforeRender();
+	public function beforeRender($file = null) {
+		parent::beforeRender($file);
 		$View = $this->__view();
 
 		$this->enabled = !empty($View->viewVars['commentParams']);
@@ -228,7 +228,10 @@ class CommentWidgetHelper extends AppHelper {
 			$name = 'comments/' . $this->globalParams['theme'] . '/' . $name;
 		}
 		$params = Set::merge($this->globalParams, $params);
+		debug($params);
+		debug($View);
 		$response = $View->element($name, $params);
+		debug($response);
 		if (is_null($response) || strpos($response, 'Not Found:') !== false) {
 			$response = $View->element($name, array_merge($params, array('plugin' => 'comments')));
 		}
@@ -254,7 +257,7 @@ class CommentWidgetHelper extends AppHelper {
 		if (!empty($this->globalParams['viewInstance'])) {
 			return $this->globalParams['viewInstance'];
 		} else {
-			return ClassRegistry::getObject('view');
+			return $this->_View;//ClassRegistry::getObject('view');
 		}
 	}
 }

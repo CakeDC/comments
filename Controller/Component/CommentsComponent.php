@@ -203,6 +203,17 @@ class CommentsComponent extends Object {
  */
 	public function initialize(Controller $controller) {
 		$this->Controller = $controller;
+		if (empty($this->Cookie) && !empty($this->Controller->Cookie)) {
+			$this->Cookie = $this->Controller->Cookie;
+		}
+		if (empty($this->Session) && !empty($this->Controller->Session)) {
+			$this->Session = $this->Controller->Session;
+		}
+		if (empty($this->Auth) && !empty($this->Controller->Auth)) {
+			$this->Auth = $this->Controller->Auth;
+		}
+		
+		
 		$this->modelName = $controller->modelClass;
 		$this->modelAlias = $controller->{$this->modelName}->alias;
 		$this->viewVariable = Inflector::variable($this->modelName);
@@ -220,7 +231,7 @@ class CommentsComponent extends Object {
  * @return void
  */
 	public function startup(Controller $controller) {
-		//$this->Auth = $this->Controller->Auth;
+		$this->Auth = $this->Controller->Auth;
 		if ($this->Auth->user()) {
 			$controller->set('isAuthorized', ($this->Auth->user('id') != ''));
 		}
@@ -244,7 +255,7 @@ class CommentsComponent extends Object {
  */
 	public function beforeRender() {
 		try {
-			if ($this->enabled && in_array($this->Controller->action, $this->actionNames)) {
+			if ($this->enabled && in_array($this->Controller->request->action, $this->actionNames)) {
 				$type = $this->_call('initType');
 				$this->commentParams = array_merge($this->commentParams, array('displayType' => $type));
 				$this->_call('view', array($type));
@@ -328,7 +339,7 @@ class CommentsComponent extends Object {
 		$settings += array('order' => array('Comment.lft' => 'asc'));
 		$paginate = $settings;
 		$paginate['limit'] = 10;
-		$this->Controller->paginate['Comment'] = $paginate;
+		$this->Controller->paginate = array('Comment' => $paginate);
 		$data = $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
@@ -348,7 +359,7 @@ class CommentsComponent extends Object {
  */
 	public function callback_fetchDataFlat($options) {
 		$paginate = $this->_prepareModel($options);
-		$this->Controller->paginate['Comment'] = $paginate;
+		$this->Controller->paginate = array('Comment' => $paginate);
 		return $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 	}
 
@@ -665,7 +676,7 @@ class CommentsComponent extends Object {
  */
 	function cleanHtml($text, $settings = 'full') {
 		App::import('Helper', 'Comments.Cleaner');
-		$cleaner = & new CleanerHelper();
+		$cleaner = & new CleanerHelper(new View($this->Controller));
 		return $cleaner->clean($text, $settings);
 	}
 }
