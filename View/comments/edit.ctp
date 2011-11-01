@@ -12,7 +12,7 @@
 <div class="comments form">
 <?php echo $this->Form->create('Comment');?>
 	<fieldset>
- 		<legend><?php __d('comments', 'Edit Comment');?></legend>
+ 		<legend><?php echo __d('comments', 'Edit Comment');?></legend>
 	<?php
 		echo $this->Form->input('id');
 		echo $this->Form->input('comment_id');
@@ -27,11 +27,11 @@
 </div>
 <div class="actions">
 	<ul>
-		<li><?php echo $html->link(__d('comments', 'Delete', true), array('action'=>'delete', $this->Form->value('Comment.id')), null, sprintf(__d('comments', 'Are you sure you want to delete # %s?', true), $this->Form->value('Comment.id'))); ?></li>
-		<li><?php echo $html->link(__d('comments', 'List Comments', true), array('action'=>'index'));?></li>
-		<li><?php echo $html->link(__d('comments', 'List Comments', true), array('controller'=> 'comments', 'action'=>'index')); ?> </li>
-		<li><?php echo $html->link(__d('comments', 'New Parent Comment', true), array('controller'=> 'comments', 'action'=>'add')); ?> </li>
-		<li><?php echo $html->link(__d('comments', 'List Users', true), array('controller'=> 'users', 'action'=>'index')); ?> </li>
-		<li><?php echo $html->link(__d('comments', 'New User', true), array('controller'=> 'users', 'action'=>'add')); ?> </li>
+		<li><?php echo $this->Html->link(__d('comments', 'Delete'), array('action'=>'delete', $this->Form->value('Comment.id')), null, sprintf(__d('comments', 'Are you sure you want to delete # %s?'), $this->Form->value('Comment.id'))); ?></li>
+		<li><?php echo $this->Html->link(__d('comments', 'List Comments'), array('action'=>'index'));?></li>
+		<li><?php echo $this->Html->link(__d('comments', 'List Comments'), array('controller'=> 'comments', 'action'=>'index')); ?> </li>
+		<li><?php echo $this->Html->link(__d('comments', 'New Parent Comment', true), array('controller'=> 'comments', 'action'=>'add')); ?> </li>
+		<li><?php echo $this->Html->link(__d('comments', 'List Users'), array('controller'=> 'users', 'action'=>'index')); ?> </li>
+		<li><?php echo $this->Html->link(__d('comments', 'New User'), array('controller'=> 'users', 'action'=>'add')); ?> </li>
 	</ul>
 </div>

@@ -9,15 +9,15 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-$_url = array_merge($url, array('action' => r(Configure::read('Routing.admin') . '_', '', $this->action)));
+$_url = array_merge($url, array('action' => str_replace(Configure::read('Routing.admin') . '_', '', $this->action)));
 foreach (array('page', 'order', 'sort', 'direction') as $named) {
 	if (isset($this->passedArgs[$named])) {
 		$_url[$named] = $this->passedArgs[$named];
 	}
 }
 if ($target) {
-	$_url['action'] = r(Configure::read('Routing.admin') . '_', '', 'comments');
-	$ajaxUrl = $commentWidget->prepareUrl(array_merge($_url, array('comment' => $comment, '#' => 'comment' . $comment)));
+	$_url['action'] = str_replace(Configure::read('Routing.admin') . '_', '', 'comments');
+	$ajaxUrl = $this->CommentWidget->prepareUrl(array_merge($_url, array('comment' => $comment, '#' => 'comment' . $comment)));
 	echo $this->Form->create(null, array('url' => $ajaxUrl, 'target' => $target));
 } else {
 	echo $this->Form->create(null, array('url' => array_merge($_url, array('comment' => $comment, '#' => 'comment' . $comment))));
@@ -25,16 +25,16 @@ if ($target) {
 echo $this->Form->input('Comment.title');
 echo $this->Form->input('Comment.body', array(
 	'error' => array(
-		'body_required' => __d('comments', 'This field cannot be left blank',true),
-		'body_markup' => sprintf(__d('comments', 'You can use only headings from %s to %s' ,true), 4, 7))));
+		'body_required' => __d('comments', 'This field cannot be left blank'),
+		'body_markup' => sprintf(__d('comments', 'You can use only headings from %s to %s' ), 4, 7))));
 // Bots will very likely fill this fields
 echo $this->Form->input('Other.title', array('type' => 'hidden'));
 echo $this->Form->input('Other.comment', array('type' => 'hidden'));
 echo $this->Form->input('Other.submit', array('type' => 'hidden'));
 
 if ($target) {
-	echo $js->submit(__d('comments', 'Submit', true), array_merge(array('url' => $ajaxUrl), $commentWidget->globalParams['ajaxOptions']));
+	echo $this->Js->submit(__d('comments', 'Submit'), array_merge(array('url' => $ajaxUrl), $this->CommentWidget->globalParams['ajaxOptions']));
 } else {
-	echo $this->Form->submit(__d('comments', 'Submit', true));
+	echo $this->Form->submit(__d('comments', 'Submit'));
 }
 echo $this->Form->end();

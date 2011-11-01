@@ -47,7 +47,7 @@
  * @package comments
  * @subpackage comments.controllers.components
  */
-class CommentsComponent extends Object {
+class CommentsComponent extends Component {
 
 /**
  * Components
@@ -484,7 +484,7 @@ class CommentsComponent extends Object {
 				if (!empty($this->Controller->passedArgs['comment'])) {
 					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));;
 					if (!empty($message)) {
-						$this->Controller->data['Comment']['body'] = $message;
+						$this->Controller->request->data['Comment']['body'] = $message;
 					}
 				}
 			}
