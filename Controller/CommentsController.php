@@ -36,7 +36,10 @@ class CommentsController extends CommentsAppController {
  *
  * @var array
  */
-	public $components = array('RequestHandler', 'Paginator');
+	public $components = array(
+		'RequestHandler',
+		'Paginator',
+		'Session');
 
 /**
  * Helpers
@@ -83,7 +86,7 @@ class CommentsController extends CommentsAppController {
 			$this->Comment->filterArgs = array(
 				array('name' => 'is_spam', 'type' => 'value'),
 				array('name' => 'approved', 'type' => 'value'));
-			$this->Prg = new PrgComponent($this->Components);
+			$this->Prg = new PrgComponent($this->Components, array());
 			$this->Prg->initialize($this);
 			$this->Prg->commonProcess();
 			$conditions = $this->Comment->parseCriteria($this->passedArgs);

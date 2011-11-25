@@ -47,6 +47,8 @@
  * @package comments
  * @subpackage comments.controllers.components
  */
+App::uses('Component', 'Controller');
+
 class CommentsComponent extends Component {
 
 /**
