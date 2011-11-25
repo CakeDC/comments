@@ -15,11 +15,11 @@ class AllCommentsPluginTest extends PHPUnit_Framework_TestSuite {
 		// controllers
 		$suite->addTestFile($basePath . 'Controller' . DS . 'Component' . DS . 'CommentsComponentTest.php');
 		// behaviors
-		$suite->addTestFile($basePath . 'Behavior' . DS . 'CommentableBehaviorTest.php');
+		$suite->addTestFile($basePath . 'Model' . DS . 'Behavior' . DS . 'CommentableBehaviorTest.php');
 		// models
 		$suite->addTestFile($basePath . 'Model' . DS . 'CommentTest.php');
 		// helpers
-		$suite->addTestFile($basePath . 'Helper' . DS . 'CommentWidgetTest.php');
+		$suite->addTestFile($basePath . 'View' . DS . 'Helper' . DS . 'CommentWidgetHelperTest.php');
 		return $suite;
 	}
 
