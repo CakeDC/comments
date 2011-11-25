@@ -9,8 +9,9 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Model', 'Comments.Comment');
-	
+App::uses('Comment', 'Comments.Model');
+App::uses('ModelBehavior', 'Model');
+
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
 	/**

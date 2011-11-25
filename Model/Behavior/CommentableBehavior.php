@@ -23,7 +23,7 @@
  */
 
 CakePlugin::load('Utils');
- 
+
 class BlackHoleException extends Exception {}
 class NoActionException extends Exception {}
 
