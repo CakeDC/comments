@@ -395,7 +395,9 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->Js->expectOnce('link', array(
 			'Foobar',
 			'/foo',
-			array('class' => 'bar', 'update' => 'wrapper'))
+			array(
+			'update' => 'wrapper',
+			'class' => 'bar'))
 		);
 		$this->Js->setReturnValueAt(0, 'link', '/ajaxFoo');
 		$result = $this->CommentWidget->link('Foobar', '/foo', array('class' => 'bar'));
