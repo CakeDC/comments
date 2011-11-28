@@ -36,7 +36,7 @@ class CommentsController extends CommentsAppController {
  *
  * @var array
  */
-	public $components = array('RequestHandler');
+	public $components = array('RequestHandler', 'Session', 'Cookie');
 
 /**
  * Helpers

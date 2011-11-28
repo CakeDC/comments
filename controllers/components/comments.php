@@ -320,7 +320,8 @@ class CommentsComponent extends Object {
 		$settings += array('order' => array('Comment.lft' => 'asc'));
 		$paginate = $settings;
 		$paginate['limit'] = 10;
-		$this->Controller->paginate['Comment'] = $paginate;
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
+		$this->Controller->paginate['Comment'] = array_merge($paginate, $overloadPaginate); 
 		$data = $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
@@ -340,7 +341,8 @@ class CommentsComponent extends Object {
  */
 	public function callback_fetchDataFlat($options) {
 		$paginate = $this->_prepareModel($options);
-		$this->Controller->paginate['Comment'] = $paginate;
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
+		$this->Controller->paginate['Comment'] = array_merge($paginate, $overloadPaginate); 
 		return $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 	}
 
