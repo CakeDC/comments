@@ -14,6 +14,7 @@ First created the needed tables in database. This plugin comes with two mechanis
 If you choose the second method, please ensure you have first installed the [CakeDC migrations plugin](http://github.com/CakeDC/migrations) first.
 
 Finally, you need to have some sort of `users` or `logins` table that keeps member information. This table should contain a slug field, as it is used by the comments plugin.
+We recommended to use [CakeDC users plugin](http://github.com/CakeDC/users) that allow all needed for plugin features.
 
 ## Usage ##
 
@@ -135,6 +136,33 @@ There are two way to change settings values for component. You can change it in 
 	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User'));
 
 
+## Behavior overloading and configuration ##
+
+Some times during search need to bind some addtional models into result returned in list of comments.
+Most logic way for that - overload behavior commentBeforeFind method like this on model level:
+
+	/**
+	 * Prepare models association to before fetch data
+	 *
+	 * @param array $options
+	 * @return boolean
+	 * @access public
+	 */
+		public function commentBeforeFind($options) {
+			$result = $this->Behaviors->dispatchMethod($this, 'commentBeforeFind', array($options));
+
+			$userModel = $this->Behaviors->Commentable->settings[$this->alias]['userModelAlias'];
+			$this->Comment->bindModel(array('belongsTo' => array(
+				'Profile' => array(
+					'className' => 'Profile',
+					'foreignKey' => false,
+					'conditions' => array('Profile.user_id = ' . $userModel . '.id')
+				)
+			)), false);
+			return $result;
+		}
+
+
 ## Helper parameters and methods ##
 
  * target                - used in ajax mode to specify block where comment widget stored
@@ -194,6 +222,15 @@ It is also necessary to implement comments view, that will just contains previou
 	?>
 
 The comments action in controller should be same as view action, the difference only in view.
+
+If you should pass some more params into CommentWidget::display method in ajax element you can call it with addtional displayOptions parameter:
+
+	<?php
+		$this->CommentWidget->options(array(
+			'target' => '#comments',
+			'ajaxAction' => 'comments'));
+		$this->element('/ajax', array('displayOptions' => array(/* ... params ...  */)));
+	?>
 
 ## Requirements ##
 

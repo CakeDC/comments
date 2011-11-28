@@ -42,9 +42,7 @@ class CommentableBehavior extends ModelBehavior {
 		'commentModel' => 'Comments.Comment',
 		'spamField' => 'is_spam',
 		'userModelAlias' => 'UserModel',
-		'userModelClass' => 'User',
-		'spamValues' => array('spam', 'spammanual'),
-		'cleanValues' => array('clean', 'ham'));
+		'userModelClass' => 'User');
 
 /**
  * Setup
@@ -283,6 +281,7 @@ class CommentableBehavior extends ModelBehavior {
 		$conditions = array('Comment.approved' => 1);
 		if (isset($id)) {
 			$conditions[$model->alias . '.' . $model->primaryKey] = $id;
+			$conditions[$model->Comment->alias . '.model'] = $model->alias;
 		}
 
 		if ($isAdmin) {
@@ -293,7 +292,7 @@ class CommentableBehavior extends ModelBehavior {
 		$spamField = $this->settings[$model->alias]['spamField'];
 
 		if ($model->Comment->hasField($spamField)) {
-			$conditions['Comment.' . $spamField] = $this->settings[$model->alias]['cleanValues'];
+			$conditions['Comment.' . $spamField] = array('clean', 'ham');
 		}
 		$model->Behaviors->enable('Containable');
 		$model->Comment->Behaviors->enable('Containable');

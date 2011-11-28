@@ -9,6 +9,15 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 ?>
+<?php 
+/**
+ * @params $displayOptions array
+ */
+ 
+ if (empty($displayOptions)) {
+	$displayOptions = array();
+ }
+?>
 <?php if (isset($messageTxt)): ?>
 <div class="message">
 	<?php echo $messageTxt; ?>
@@ -31,9 +40,9 @@
 			
 			echo $this->Html->scriptBlock('setTimeout(function () {' . $js->request(Router::url($url), array('method' => 'get', 'update' => $commentWidget->globalParams['target'])) . '}, 1500);');
 		else:
-			echo $commentWidget->display();
+			echo $commentWidget->display($displayOptions);
 		endif;
 	else:
-		echo $commentWidget->display();
+		echo $commentWidget->display($displayOptions);
 	endif;
 ?>

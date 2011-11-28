@@ -219,13 +219,13 @@ class CommentableTest extends CakeTestCase {
  * @return void
  */
 	public function testCommentToggleApprove() {
-		$comment = $this->Model->Comment->find('first');
+		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
 		$this->assertEqual($comment['Comment']['approved'], 1);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
-		$comment = $this->Model->Comment->find('first');
+		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
 		$this->assertEqual($comment['Comment']['approved'], 0);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
-		$comment = $this->Model->Comment->find('first');
+		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
 		$this->assertEqual($comment['Comment']['approved'], 1);
 
 		$this->assertFalse($this->Model->commentToggleApprove(21415));
@@ -288,7 +288,8 @@ class CommentableTest extends CakeTestCase {
 		$result = $this->Model->commentBeforeFind($options);
 		$expected = array(
 			'conditions' => array(
-					'Article.id' => 1,
+				'Comment.model' => 'Article',
+				'Article.id' => 1,
 			'Comment.is_spam' => array('clean', 'ham')));
 		$this->assertEqual($result, $expected);
 		$this->assertTrue($this->Model->Behaviors->enabled('Containable'));
