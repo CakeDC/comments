@@ -140,10 +140,10 @@ class Comment extends CommentsAppModel {
 							$result = $this->markAsSpam($id);
 							break;
 						case 'approve':
-							$result = $this->saveField('approved', 1);
+							$result = $this->approve($id);
 							break;
 						case 'disapprove':
-							$result = $this->saveField('approved', 0);
+							$result = $this->approve($id, false);
 							break;
 					}
 					switch($result) {
@@ -228,6 +228,37 @@ class Comment extends CommentsAppModel {
 				$success = true;
 			} else {
 				$this->changeCount($id, 'down');
+			}
+		}
+		return $success;
+	}
+
+/**
+ * Approve/Disapprove a comment
+ *
+ * @param string $id Id of the comment to (dis)approve
+ * @param boolean $approved Should the comment be approved or disapproved
+ * @return boolean Success / Fail
+ */
+	public function approve($id = null, $approved = true) {
+		$success = false;
+		if (!empty($id)) {
+			$this->id = $id;
+		}
+		$comment = $this->read(array($this->alias . '.' . $this->primaryKey, 'approved'));
+
+		if (!empty($comment)) {
+			if($comment[$this->alias]['approved'] == $approved) {
+				$success = true;
+			} else {
+				if ($this->saveField('approved', $approved)) {
+					$success = true;
+					if ($approved) {
+						$this->changeCount($this->id, 'up');
+					} else {
+						$this->changeCount($this->id, 'down');
+					}
+				}
 			}
 		}
 		return $success;

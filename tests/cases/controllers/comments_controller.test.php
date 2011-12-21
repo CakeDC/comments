@@ -246,6 +246,52 @@ class CommentsControllerTest extends CakeTestCase {
 	}
 
 /**
+ * Test admin_approve action
+ *
+ * @return void
+ */
+	public function testAdminApproved() {
+		$this->Comments->admin_approve('invalid-comment');
+		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), __d('comments', 'Wrong comment id', true));
+		$this->Comments->Session->delete('Message.flash.message');
+
+		$Article = ClassRegistry::init('Article');
+		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));
+		$this->Comments->admin_approve(3);
+		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), __d('comments', 'The comment has been approved', true));
+		$comment = $this->Comments->Comment->read(array('Comment.approved'), 3);
+		$this->assertTrue($comment['Comment']['approved']);
+		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));
+		$this->assertEqual($newCount, $oldCount + 1);
+		$this->Comments->Session->delete('Message.flash.message');
+	}
+
+/**
+ * Test admin_disapprove action
+ *
+ * @return void
+ */
+	public function testAdminDisapproved() {
+		$this->Comments->admin_disapprove('invalid-comment');
+		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), __d('comments', 'Wrong comment id', true));
+		$this->Comments->Session->delete('Message.flash.message');
+
+		$Article = ClassRegistry::init('Article');
+		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
+		$this->Comments->admin_disapprove(1);
+		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), __d('comments', 'The comment has been disapproved', true));
+		$comment = $this->Comments->Comment->read(array('Comment.approved'), 3);
+		$this->assertFalse($comment['Comment']['approved']);
+		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
+		$this->assertEqual($newCount, $oldCount - 1);
+		$this->Comments->Session->delete('Message.flash.message');
+	}
+
+/**
  * Test admin_view action
  *
  * @return void
