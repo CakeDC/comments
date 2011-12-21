@@ -140,10 +140,10 @@ class Comment extends CommentsAppModel {
 							$result = $this->markAsSpam($id);
 							break;
 						case 'approve':
-							$result = $this->saveField('approved', 1);
+							$result = $this->approve($id);
 							break;
 						case 'disapprove':
-							$result = $this->saveField('approved', 0);
+							$result = $this->approve($id, false);
 							break;
 					}
 					switch($result) {
