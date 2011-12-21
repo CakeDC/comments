@@ -234,6 +234,32 @@ class Comment extends CommentsAppModel {
 	}
 
 /**
+ * Approve/Disapprove a comment
+ *
+ * @param string $id Id of the comment to (dis)approve
+ * @param boolean $approved Should the comment be approved or disapproved
+ * @return boolean Success / Fail
+ */
+	public function approve($id = null, $approved = true) {
+		$success = false;
+		if (!empty($id)) {
+			$this->id = $id;
+		}
+
+		if ($this->exists()) {
+			if ($this->saveField('approved', $approved)) {
+				$success = true;
+				if ($approved) {
+					$this->changeCount($this->id, 'up');
+				} else {
+					$this->changeCount($this->id, 'down');
+				}
+			}
+		}
+		return $success;
+	}
+
+/**
  * Overrides AppModel::delete() method
  *
  * Automatically decrement comment count of related model
