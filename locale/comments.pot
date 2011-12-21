@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2011-01-04 18:02+0100\n"
+"POT-Creation-Date: 2011-12-21 12:51+0100\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -14,79 +14,87 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /controllers/comments_controller.php:122;139
+#: /controllers/comments_controller.php:136;153;170;187
 msgid "Wrong comment id"
 msgstr ""
 
-#: /controllers/comments_controller.php:124
+#: /controllers/comments_controller.php:138
 msgid "Antispam system informed about spam message."
 msgstr ""
 
-#: /controllers/comments_controller.php:126;143
+#: /controllers/comments_controller.php:140;157;174;191
 msgid "Error appear during save."
 msgstr ""
 
-#: /controllers/comments_controller.php:141
+#: /controllers/comments_controller.php:155
 msgid "Antispam system informed about ham message."
 msgstr ""
 
-#: /controllers/comments_controller.php:157;189
+#: /controllers/comments_controller.php:172
+msgid "The comment has been approved"
+msgstr ""
+
+#: /controllers/comments_controller.php:189
+msgid "The comment has been disapproved"
+msgstr ""
+
+#: /controllers/comments_controller.php:205;237
 msgid "Invalid Comment."
 msgstr ""
 
-#: /controllers/comments_controller.php:171
+#: /controllers/comments_controller.php:219
 msgid "Invalid id for Comment"
 msgstr ""
 
-#: /controllers/comments_controller.php:173
+#: /controllers/comments_controller.php:221
 msgid "Comment deleted"
 msgstr ""
 
-#: /controllers/comments_controller.php:175
+#: /controllers/comments_controller.php:223
 msgid "Impossible to delete the Comment. Please try again."
 msgstr ""
 
-#: /controllers/components/comments.php:448
+#: /controllers/components/comments.php:451
 msgid "The Comment has been saved."
 msgstr ""
 
-#: /controllers/components/comments.php:459
+#: /controllers/components/comments.php:462
 msgid "The Comment could not be saved. Please, try again."
 msgstr ""
 
-#: /controllers/components/comments.php:503
+#: /controllers/components/comments.php:506
 msgid "Nonrestricted operation"
 msgstr ""
 
-#: /controllers/components/comments.php:506
+#: /controllers/components/comments.php:509
 msgid "The Comment status has been updated."
 msgstr ""
 
-#: /controllers/components/comments.php:508
+#: /controllers/components/comments.php:511
 msgid "Error appear during comment status update. Try later."
 msgstr ""
 
-#: /controllers/components/comments.php:521
+#: /controllers/components/comments.php:524
 msgid "The Comment has been deleted."
 msgstr ""
 
-#: /controllers/components/comments.php:523
+#: /controllers/components/comments.php:526
 msgid "Error appear during comment deleting. Try later."
 msgstr ""
 
-#: /models/comment.php:104;145
+#: /models/comment.php:112;153
 msgid "Some errors appear during execution."
 msgstr ""
 
-#: /models/comment.php:108
+#: /models/comment.php:116
 msgid "Comments removed."
 msgstr ""
 
-#: /models/comment.php:150
+#: /models/comment.php:158
 msgid "Operation was performed. "
 msgstr ""
 
-#: /models/behaviors/commentable.php:156
+#: /models/behaviors/commentable.php:154
 msgid "Unallowed comment id"
 msgstr ""
 
@@ -143,7 +151,7 @@ msgid "Edit Comment"
 msgstr ""
 
 #: /views/comments/admin_edit.ctp:30
-#: /views/comments/admin_index.ctp:31;94
+#: /views/comments/admin_index.ctp:31;99
 #: /views/comments/admin_view.ctp:111
 #: /views/comments/edit.ctp:30
 #: /views/comments/index.ctp:72
@@ -152,7 +160,7 @@ msgid "Delete"
 msgstr ""
 
 #: /views/comments/admin_edit.ctp:30
-#: /views/comments/admin_index.ctp:94
+#: /views/comments/admin_index.ctp:99
 #: /views/comments/admin_view.ctp:65;111
 #: /views/comments/edit.ctp:30
 #: /views/comments/index.ctp:72
@@ -176,15 +184,15 @@ msgstr ""
 msgid "Filter good comments"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:29;90
+#: /views/comments/admin_index.ctp:29;95
 msgid "Mark as ham"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:30;89
+#: /views/comments/admin_index.ctp:30;94
 msgid "Mark as spam"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:32;88
+#: /views/comments/admin_index.ctp:32;93
 msgid "Approve"
 msgstr ""
 
@@ -192,30 +200,30 @@ msgstr ""
 msgid "Dispprove"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:45
+#: /views/comments/admin_index.ctp:46
 msgid "Select..."
 msgstr ""
 
-#: /views/comments/admin_index.ctp:46
+#: /views/comments/admin_index.ctp:47
 #: /views/comments/admin_view.ctp:88
 #: /views/comments/index.ctp:31
 #: /views/comments/view.ctp:88
 msgid "Actions"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:76
+#: /views/comments/admin_index.ctp:81
 msgid "Yes"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:76
+#: /views/comments/admin_index.ctp:81
 msgid "No"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:91
+#: /views/comments/admin_index.ctp:96
 msgid "Disapprove"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:92
+#: /views/comments/admin_index.ctp:97
 #: /views/comments/admin_view.ctp:109
 #: /views/comments/index.ctp:70
 #: /views/comments/view.ctp:109
@@ -225,7 +233,7 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: /views/comments/admin_index.ctp:93
+#: /views/comments/admin_index.ctp:98
 #: /views/comments/admin_view.ctp:110
 #: /views/comments/index.ctp:71
 #: /views/comments/view.ctp:110
