@@ -332,7 +332,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertNotEqual($created['Comment']['id'], 3);
 		ksort($result);
 		$this->assertEqual($result, $expected);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been saved.');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), __d('comments','The Comment has been saved.', true));
 		$this->assertEqual($this->Controller->redirectUrl, array('123', '#' => 'comment' . $created['Comment']['id']));
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
 		
@@ -383,7 +383,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertNotEqual($created['Comment']['id'], 3);
 		ksort($result);
 		$this->assertEqual($result, $expected);
-		$this->assertEqual($this->Controller->viewVars['messageTxt'], 'The Comment has been saved.');
+		$this->assertEqual($this->Controller->viewVars['messageTxt'], __d('comments','The Comment has been saved.', true));
 		$this->assertEqual($this->Controller->redirectUrl, null);
 		$this->assertEqual($this->Controller->viewVars['redirect'], null);
 		//array('123', '#' => 'comment' . $created['Comment']['id'])
@@ -426,12 +426,12 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->callback_toggleApprove(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertEqual($comment['Comment']['approved'], 0);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), __d('comments','The Comment status has been updated.', true));
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
 		$this->assertNull($this->Controller->redirectUrl);
 		
 		$this->Controller->Comments->callback_toggleApprove(1, 'unexisting-id');
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment status update. Try later.');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), __d('comments','Error appear during comment status update. Try later.',true));
 		$this->assertNull($this->Controller->redirectUrl);
 		
 		$this->__setupControllerData();
@@ -441,7 +441,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->callback_view('flat');
 		$comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertEqual($comment['Comment']['approved'], 1);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), __d('comments','The Comment status has been updated.', true));
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount);
 		$this->assertNull($this->Controller->redirectUrl);
 		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
@@ -465,12 +465,12 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->callback_delete(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertFalse($comment);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been deleted.');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), __d('comments', 'The Comment has been deleted.', true));
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
 		$this->assertEqual($this->Controller->redirectUrl, array());
 		
 		$this->Controller->Comments->callback_delete(1, 'unexisting-id');
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment deleting. Try later.');
+		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), __d('comments', 'Error appear during comment deleting. Try later.', true));
 		$this->assertEqual($this->Controller->redirectUrl, array());
 		
 		$this->Controller->Session->delete('Message.flash.message');
