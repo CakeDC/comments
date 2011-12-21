@@ -245,14 +245,19 @@ class Comment extends CommentsAppModel {
 		if (!empty($id)) {
 			$this->id = $id;
 		}
+		$comment = $this->read(array($this->alias . '.' . $this->primaryKey, 'approved'));
 
-		if ($this->exists()) {
-			if ($this->saveField('approved', $approved)) {
+		if (!empty($comment)) {
+			if($comment[$this->alias]['approved'] == $approved) {
 				$success = true;
-				if ($approved) {
-					$this->changeCount($this->id, 'up');
-				} else {
-					$this->changeCount($this->id, 'down');
+			} else {
+				if ($this->saveField('approved', $approved)) {
+					$success = true;
+					if ($approved) {
+						$this->changeCount($this->id, 'up');
+					} else {
+						$this->changeCount($this->id, 'down');
+					}
 				}
 			}
 		}

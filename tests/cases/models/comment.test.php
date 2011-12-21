@@ -184,6 +184,16 @@ class CommentTestCase extends CakeTestCase {
 	public function testApprove() {
 		$this->assertFalse($this->Comment->approve('invalid'));
 
+		//Approve already approved comment
+		$before = $this->Comment->Article->findById(1);
+		$this->Comment->id = 1;
+		$this->assertTrue($this->Comment->approve());
+		$after = $this->Comment->Article->findById(1);
+		$comment = $this->Comment->findById(1);
+
+		$this->assertEqual($after['Article']['comments'], $before['Article']['comments']);
+		$this->assertTrue($comment['Comment']['approved']);
+
 		//Disapprove
 		$before = $this->Comment->Article->findById(1);
 		$this->assertTrue($this->Comment->approve(1, false));
