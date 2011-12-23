@@ -160,6 +160,40 @@ class CommentsController extends CommentsAppController {
 	}
 
 /**
+ * Admin approve comment
+ *
+ * @param string UUID
+ */
+	public function admin_approve($id) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists(true)) {
+			$this->Session->setFlash(__d('comments', 'Wrong comment id',true));
+		} elseif ($this->Comment->approve()) {
+			$this->Session->setFlash(__d('comments', 'The comment has been approved', true));
+		} else {
+			$this->Session->setFlash(__d('comments', 'Error appear during save.', true));
+		}
+		$this->redirect(array('action' => 'index'));
+	}
+
+/**
+ * Admin approve comment
+ *
+ * @param string UUID
+ */
+	public function admin_disapprove($id) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists(true)) {
+			$this->Session->setFlash(__d('comments', 'Wrong comment id',true));
+		} elseif ($this->Comment->approve($id, false)) {
+			$this->Session->setFlash(__d('comments', 'The comment has been disapproved', true));
+		} else {
+			$this->Session->setFlash(__d('comments', 'Error appear during save.', true));
+		}
+		$this->redirect(array('action' => 'index'));
+	}
+
+/**
  * Admin View action
  *
  * @param string UUID
