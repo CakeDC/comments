@@ -119,9 +119,9 @@ class TreeHelper extends AppHelper {
         if ($indent === null && Configure::read()) {
             $indent = true;
         }
-        $view =& ClassRegistry:: getObject('view');
+ 
         if ($model === null) {
-            $model = Inflector::classify($view->params['models'][0]);
+            $model = Inflector::classify($this->_View->params['models'][0]);
         }
         if (!$model) {
             $model = '_NULL_';
@@ -211,7 +211,7 @@ class TreeHelper extends AppHelper {
             $this->__settings = array_merge($this->__settings, $elementData);
             /* Main Content */
             if ($element) {
-                $content = $view->element($element, $elementData);
+                $content = $this->_View->element($element, $elementData);
             } elseif ($callback) {
                 list($content) = array_map($callback, array($elementData));
             } else {
