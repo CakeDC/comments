@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  *
@@ -18,7 +18,7 @@
 			&nbsp;
 		</dd>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php echo __d('comments', 'Parent Comment'); ?></dt>
-		<dd<?php if ($i++ echo% 2 == 0) echo $class;?>>
+		<dd<?php if ($i++ % 2 == 0) echo $class;?>>
 			<?php echo $this->Html->link($comment['ParentComment']['id'], array('controller'=> 'comments', 'action'=>'view', $comment['ParentComment']['id'])); ?>
 			&nbsp;
 		</dd>
