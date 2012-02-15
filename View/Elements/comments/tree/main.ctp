@@ -25,7 +25,7 @@
 			endif;
 		else: ?>
 			<?php
-				echo sprintf(__d('comments', 'If you want to post comments, you need to login first.'), $html->link($this->Htmld('comments', 'login'), array('controller' => 'users', 'action' => 'login', 'prefix' => $adminRoute, $adminRoute => false)));
+				echo sprintf(__d('comments', 'If you want to post comments, you need to login first.'), $this->Html->link(__('comments', 'login'), array('controller' => 'users', 'action' => 'login', 'prefix' => $adminRoute, $adminRoute => false)));
 		endif;
 
 		echo $this->CommentWidget->element('paginator');
