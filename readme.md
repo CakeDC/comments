@@ -9,7 +9,7 @@ Comments plugin is a universal comment system that can be attached to any contro
 First created the needed tables in database. This plugin comes with two mechanisms to get your database tables setup:
 
 1. You can use the default CakePHP schema method from the console: `cake schema create -plugin comments -name app`
-2. You can use the CakeDC migrations plugin to import your database tables: `cake migration all -plugin comments`
+2. You can use the CakeDC migrations plugin to import your database tables: `cake migrations.migration all -plugin comments`
 
 If you choose the second method, please ensure you have first installed the [CakeDC migrations plugin](http://github.com/CakeDC/migrations) first.
 
