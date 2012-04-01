@@ -62,12 +62,12 @@ class CommentWidgetHelper extends AppHelper {
 	public $globalParams = array();
 
 /**
- * Initialize callback
+ * Constructor
  *
- * @return void
  */
-	public function initialize() {
+	public function __construct(View $View, $settings = array()) {
 		$this->options(array());
+		return parent::__construct($View, $settings);
 	}
 
 /**

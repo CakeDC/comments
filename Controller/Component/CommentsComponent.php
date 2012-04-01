@@ -185,8 +185,11 @@ class CommentsComponent extends Component {
 	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type', 'quote');
 
 /**
- * Constructor. 
+ * Constructor.
  *
+ * @param ComponentCollection $collcetion
+ * @param array $settings
+ * @return void
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings); 
@@ -214,8 +217,7 @@ class CommentsComponent extends Component {
 		if (empty($this->Auth) && !empty($this->Controller->Auth)) {
 			$this->Auth = $this->Controller->Auth;
 		}
-		
-		
+
 		$this->modelName = $controller->modelClass;
 		$this->modelAlias = $controller->{$this->modelName}->alias;
 		$this->viewVariable = Inflector::variable($this->modelName);
