@@ -120,7 +120,7 @@ class TreeHelper extends AppHelper {
             $indent = true;
         }
  
-        if ($model === null && !empty($this->_View->->request->params['models'])) {
+        if ($model === null && !empty($this->_View->request->params['models'])) {
             $model = current($this->_View->request->params['models']);
             $model = $model['className'];
         }
