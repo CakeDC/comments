@@ -229,12 +229,9 @@ class CommentWidgetHelper extends AppHelper {
 			$name = 'comments/' . $this->globalParams['theme'] . '/' . $name;
 		}
 		$params = Set::merge($this->globalParams, $params);
-		//debug($params);
-		//debug($View);
 		$response = $View->element($name, $params);
-		//debug($response);
 		if (is_null($response) || strpos($response, 'Not Found:') !== false) {
-			$response = $View->element($name, array_merge($params, array('plugin' => 'Comments')), array('plugin' => 'Comments'));
+			$response = $View->element($name, array_merge($params), array('plugin' => 'Comments'));
 		}
 		return $response;
 	}
@@ -258,7 +255,7 @@ class CommentWidgetHelper extends AppHelper {
 		if (!empty($this->globalParams['viewInstance'])) {
 			return $this->globalParams['viewInstance'];
 		} else {
-			return $this->_View;//ClassRegistry::getObject('view');
+			return $this->_View;
 		}
 	}
 }
