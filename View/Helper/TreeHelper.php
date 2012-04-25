@@ -31,28 +31,28 @@ class TreeHelper extends AppHelper {
  *
  * @var array
  */
-	private $__settings = array();
+	protected $__settings = array();
 
 /**
  * typeAttributes property
  *
  * @var array
  */
-	private $__typeAttributes = array();
+	protected $__typeAttributes = array();
 
 /**
  * typeAttributesNext property
  *
  * @var array
  */
-	private $__typeAttributesNext = array();
+	protected $__typeAttributesNext = array();
 
 /**
  * itemAttributes property
  *
  * @var array
  */
-	private $__itemAttributes = array();
+	protected $__itemAttributes = array();
 
 /**
  * helpers variable
@@ -116,7 +116,7 @@ class TreeHelper extends AppHelper {
             $this->__settings['autoPath'][2] = 'active';
         }
         extract($this->__settings);
-        if ($indent === null && Configure::read()) {
+        if ($indent === null && Configure::read('debug')) {
             $indent = true;
         }
  

@@ -12,10 +12,11 @@
 App::uses('Controller', 'Controller');
 App::uses('View', 'View');
 App::uses('JsHelper', 'View/Helper');
-App::import('Controller', 'Controller', false); 
-//App::import('Core', array('ClassRegistry', 'Controller', 'View', 'Model', 'Security'));
-App::import('Helper', array('Comments.CommentWidget', 'Html', 'Form', 'Session'));
-App::import('Component', array('Comments.Comments'));
+App::uses('CommentWidgetHelper', 'Comments.View/Helper');
+App::uses('HtmlHelper', 'View/Helper');
+App::uses('FormHelper', 'View/Helper');
+App::uses('SessionHelper', 'View/Helper');
+App::uses('CommentsComponent', 'Comments.Controller/Component');
 
 //Mock::generatePartial('AppHelper', 'JsHelper', array('link', 'get', 'effect'));
 
@@ -116,12 +117,6 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->Js = new JsHelper($this->View);
 		$this->CommentWidget->Js = $this->Js;
 		$this->CommentWidget->params['action'] = 'view';
-		
-		//ClassRegistry::addObject('view', $this->View);
-		
-		if (!in_array($method, array('testInitialize', 'testOptions'))) {
-			$this->CommentWidget->initialize();
-		}
 	}
 
 
@@ -144,17 +139,6 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->assertTrue(is_a($this->CommentWidget, 'CommentWidgetHelper'));
 	}
 	
-/**
- * Test initialize
- * 
- * @return void
- */
-	public function testInitialize() {
-		$this->assertTrue(empty($this->CommentWidget->globalParams));
-		$this->CommentWidget->initialize();
-		$this->assertFalse(empty($this->CommentWidget->globalParams));
-	}
-
 /**
  * Test beforeRender callback
  * 
@@ -300,7 +284,6 @@ class CommentWidgetHelperTest extends CakeTestCase {
 
 
 		// Test other cases
-		$this->CommentWidget->initialize();
 		$this->View->params['userslug'] = 'example-user';
 		unset($this->View->viewVars['article']);
 		$expectedParams[1] = array_merge($expectedParams[1], array(
@@ -536,10 +519,5 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->Js = new JsHelper($this->View);
 		$this->CommentWidget->Js = $this->Js;
 		$this->CommentWidget->params['action'] = 'view';
-		$this->CommentWidget->initialize();
-		
-		// debug($this->View);
-		// ClassRegistry::removeObject('view');
-		// ClassRegistry::addObject('view', $this->View);
 	}
 }

@@ -48,7 +48,7 @@ class CommentWidgetHelper extends AppHelper {
 	);
 
 /**
- * List of settings needed to be not empty in $this->params['Comments']
+ * List of settings needed to be not empty in $this->request->params['Comments']
  *
  * @var array
  */

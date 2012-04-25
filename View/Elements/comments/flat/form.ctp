@@ -9,7 +9,7 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-$_url = array_merge($url, array('controller' => $this->params['controller'], 'action' => str_replace(Configure::read('Routing.admin') . '_', '', $this->action)));
+$_url = array_merge($url, array('controller' => $this->request->params['controller'], 'action' => str_replace(Configure::read('Routing.admin') . '_', '', $this->request->action)));
 foreach (array('page', 'order', 'sort', 'direction') as $named) {
 	if (isset($this->passedArgs[$named])) {
 		$_url[$named] = $this->passedArgs[$named];
