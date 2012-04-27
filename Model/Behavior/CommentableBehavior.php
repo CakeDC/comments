@@ -157,7 +157,7 @@ class CommentableBehavior extends ModelBehavior {
 				'Comment.id' => $commentId,
 				'Comment.approved' => true,
 				'Comment.foreign_key' => $modelId)))) {
-				throw new BlackHoleException(__d('comments', 'Unallowed comment id', true));
+				throw new BlackHoleException(__d('comments', 'Unallowed comment id'));
 			}
 		}
 
