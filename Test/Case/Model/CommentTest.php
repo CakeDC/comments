@@ -9,7 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Core', 'ModelBehavior');
+App::uses('ModelBehavior', 'Model');
+App::uses('Comment', 'Comments.Model');
 //Mock::generatePartial('ModelBehavior', 'AntispamableBehavior', array('isSpam', 'setSpam', 'setHam'));
 
 /**
@@ -85,16 +86,16 @@ class CommentTestCase extends CakeTestCase {
 			'user_id'  => null,
 			'model'  => 'Article',
 			'foreign_key'  => '1',
-			'parent_id'  => '0',
-			'approved'  => 1,
+			'parent_id' => '0',
+			'approved' => true,
 			'name'  => null,
 			'title'  => '-',
 			'slug'  => '_',
 			'body'  => 'This is a comment',
-			'lft'  => 1,
-			'rght'  => 2,
-			'modified'  => '2008-12-22 16:39:19',
-			'created'  => '2008-12-22 16:39:19',
+			'lft'  => '1',
+			'rght'  => '2',
+			'modified' => '2008-12-22 16:39:19',
+			'created' => '2008-12-22 16:39:19',
 			'author_name' => 'mark story',
 			'author_email' => 'example@example.com',
 			'author_url' => 'http://example.com',

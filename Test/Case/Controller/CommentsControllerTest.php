@@ -9,8 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Controller', 'Comments.Comments');
-App::import('Model', 'Comments.Comment');
+App::uses('CommentsController', 'Comments.Controller');
+App::uses('Comment', 'Comments.Model');
 
 if (!class_exists('User')) {
 	class User extends CakeTestModel {
@@ -28,6 +28,16 @@ if (!class_exists('User')) {
  * @subpackage comments.tests.cases.controllers
  */
 class TestCommentsController extends CommentsController {
+
+/**
+ * Components
+ *
+ * @var array
+ */
+	public $components = array(
+		'RequestHandler',
+		'Paginator',
+		'Session');
 
 /**
  * Auto render
@@ -91,6 +101,13 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public $Comments = null;
 
+	public $paginate = array();
+
+	public $components = array(
+		'RequestHandler',
+		'Paginator',
+		'Session');
+
 /**
  * Fixtures
  *
@@ -105,14 +122,14 @@ class CommentsControllerTest extends CakeTestCase {
  * (non-PHPdoc)
  * @see cake/tests/lib/CakeTestCase#startTest($method)
  */
-	public function startTest($method) {
+	public function setUp() {
 		$this->Request = new CakeRequest();
 		$this->Request->params = array(
 			'named' => array(),
 			'pass' => array(),
 			'url' => array());
 		$this->Comments = new TestCommentsController($this->Request);
-		//$this->Comments->params = $this->Request->params;
+		$this->Comments->request->params = $this->Request->params;
 		$this->Comments->constructClasses();
 	}
 
@@ -148,7 +165,7 @@ class CommentsControllerTest extends CakeTestCase {
  * @return void
  */
 	public function _testAdminProcessDelete() {
-		$this->Comments->data['Comment'] = array(
+		$this->Comments->request->data['Comment'] = array(
 			'1' => 1,
 			'2' => 0,
 			'3' => 0,
@@ -315,7 +332,7 @@ class CommentsControllerTest extends CakeTestCase {
  * (non-PHPdoc)
  * @see cake/tests/lib/CakeTestCase#endTest($method)
  */
-	public function endTest($method) {
+	public function tearDown() {
 		unset($this->Comments);
 	}
 }
