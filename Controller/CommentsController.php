@@ -32,6 +32,7 @@ class CommentsController extends CommentsAppController {
  * @var string
  */
 	public $name = 'Comments';
+	public $paginate = array();
 
 /**
  * Components
@@ -96,18 +97,18 @@ class CommentsController extends CommentsAppController {
 		}
 		
 
-		$this->Paginator->paginate = array(
+		$this->paginate = array(
 			'Comment' => array(
 				'conditions' => $conditions,
 				'contain' => array('UserModel'),
 				'order' => 'Comment.created DESC'));
 		if ($type == 'spam') {
-			$this->Paginator->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
+			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
 		} elseif ($type == 'clean') {
-			$this->Paginator->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
+			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
 		}
 
-		$this->set('comments', $this->Paginator->paginate('Comment'));
+		$this->set('comments', $this->paginate('Comment'));
 	}
 
 
