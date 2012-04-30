@@ -149,14 +149,14 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public function testAdminIndex() {
 		$this->Comments->admin_index();
-		$this->assertEqual(count($this->Comments->viewVars['comments']), 4);
-		$this->assertEqual($this->Comments->viewVars['comments'][0]['Comment']['id'], 1);
+		$this->assertEquals(count($this->Comments->viewVars['comments']), 4);
+		$this->assertEquals($this->Comments->viewVars['comments'][0]['Comment']['id'], 1);
 
 		$this->Comments->admin_index('clean');
-		$this->assertEqual(count($this->Comments->viewVars['comments']), 3);
+		$this->assertEquals(count($this->Comments->viewVars['comments']), 3);
 
 		$this->Comments->admin_index(null);
-		$this->assertEqual(count($this->Comments->viewVars['comments']), 4);
+		$this->assertEquals(count($this->Comments->viewVars['comments']), 4);
 	}
 
 /**
@@ -184,7 +184,7 @@ class CommentsControllerTest extends CakeTestCase {
 			'action' => 'ham');
 		$this->Comments->admin_process();
 		$comment1 = $this->Comments->Comment->findById(1);
-		$this->assertEqual($comment1['Comment']['is_spam'], 'ham');
+		$this->assertEquals($comment1['Comment']['is_spam'], 'ham');
 	}
 
 	public function testAdminProcessSpam() {
@@ -194,7 +194,7 @@ class CommentsControllerTest extends CakeTestCase {
 			'action' => 'spam');
 		$this->Comments->admin_process();
 		$comment1 = $this->Comments->Comment->findById(1);
-		$this->assertEqual($comment1['Comment']['is_spam'], 'spammanual');
+		$this->assertEquals($comment1['Comment']['is_spam'], 'spammanual');
 	}
 
 	public function testAdminProcessApprove() {
@@ -204,7 +204,7 @@ class CommentsControllerTest extends CakeTestCase {
 			'action' => 'approve');
 		$this->Comments->admin_process();
 		$comment = $this->Comments->Comment->findById(3);
-		$this->assertEqual($comment['Comment']['approved'], 1);
+		$this->assertEquals($comment['Comment']['approved'], 1);
 	}
 
 	public function testAdminProcessDisapprove() {
@@ -214,7 +214,7 @@ class CommentsControllerTest extends CakeTestCase {
 			'action' => 'disapprove');
 		$this->Comments->admin_process();
 		$comment = $this->Comments->Comment->findById(1);
-		$this->assertEqual($comment['Comment']['approved'], 0);
+		$this->assertEquals($comment['Comment']['approved'], 0);
 	}
 
 /**
@@ -224,19 +224,19 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public function testAdminSpam() {
 		$this->Comments->admin_spam('invalid-comment');
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Wrong comment id');
+		$this->assertEquals($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEquals($this->Comments->Session->read('Message.flash.message'), 'Wrong comment id');
 		$this->Comments->Session->delete('Message.flash.message');
 
 		$Article = ClassRegistry::init('Article');
 		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
 		$this->Comments->admin_spam(1);
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Antispam system informed about spam message.');
+		$this->assertEquals($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEquals($this->Comments->Session->read('Message.flash.message'), 'Antispam system informed about spam message.');
 		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 1);
-		$this->assertEqual($commentFlag['Comment']['is_spam'], 'spammanual');
+		$this->assertEquals($commentFlag['Comment']['is_spam'], 'spammanual');
 		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
-		$this->assertEqual($newCount, $oldCount - 1);
+		$this->assertEquals($newCount, $oldCount - 1);
 		$this->Comments->Session->delete('Message.flash.message');
 	}
 
@@ -247,19 +247,19 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public function testAdminHam() {
 		$this->Comments->admin_ham('invalid-comment');
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Wrong comment id');
+		$this->assertEquals($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEquals($this->Comments->Session->read('Message.flash.message'), 'Wrong comment id');
 		$this->Comments->Session->delete('Message.flash.message');
 
 		$Article = ClassRegistry::init('Article');
 		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));
 		$this->Comments->admin_ham(3);
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Antispam system informed about ham message.');
+		$this->assertEquals($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEquals($this->Comments->Session->read('Message.flash.message'), 'Antispam system informed about ham message.');
 		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 3);
-		$this->assertEqual($commentFlag['Comment']['is_spam'], 'ham');
+		$this->assertEquals($commentFlag['Comment']['is_spam'], 'ham');
 		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));
-		$this->assertEqual($newCount, $oldCount + 1);
+		$this->assertEquals($newCount, $oldCount + 1);
 		$this->Comments->Session->delete('Message.flash.message');
 	}
 
@@ -270,12 +270,12 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public function testAdminView() {
 		$this->Comments->admin_view('invalid-comment');
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Invalid Comment.');
+		$this->assertEquals($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEquals($this->Comments->Session->read('Message.flash.message'), 'Invalid Comment.');
 		$this->Comments->Session->delete('Message.flash.message');
 
 		$this->Comments->admin_view(1);
-		$this->assertEqual($this->Comments->viewVars['comment']['Comment']['id'], 1);
+		$this->assertEquals($this->Comments->viewVars['comment']['Comment']['id'], 1);
 	}
 
 /**
@@ -285,17 +285,17 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public function testAdminDelete() {
 		$this->Comments->admin_delete('invalid-comment');
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Invalid id for Comment');
+		$this->assertEquals($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEquals($this->Comments->Session->read('Message.flash.message'), 'Invalid id for Comment');
 		$this->Comments->Session->delete('Message.flash.message');
 
 		$Article = ClassRegistry::init('Article');
 		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
 		$this->Comments->admin_delete(1);
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Comment deleted');
+		$this->assertEquals($this->Comments->redirectUrl, array('action' => 'index'));
+		$this->assertEquals($this->Comments->Session->read('Message.flash.message'), 'Comment deleted');
 		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
-		$this->assertEqual($newCount, $oldCount - 1);
+		$this->assertEquals($newCount, $oldCount - 1);
 		$this->Comments->Session->delete('Message.flash.message');
 	}
 
@@ -306,22 +306,22 @@ class CommentsControllerTest extends CakeTestCase {
  */
 	public function testRequestForUser() {
 		$this->Comments->requestForUser();
-		$this->assertEqual($this->Comments->cakeErrorMethod, '404');
+		$this->assertEquals($this->Comments->cakeErrorMethod, '404');
 
 		$this->Comments->params['requested'] = array();
 		$this->Comments->requestForUser();
 		$ids = Set::extract($this->Comments->viewVars['comments'], '/Comment/id');
-		$this->assertEqual($ids, array(1, 2));
-		$this->assertEqual($this->Comments->renderedView, 'comment');
+		$this->assertEquals($ids, array(1, 2));
+		$this->assertEquals($this->Comments->renderedView, 'comment');
 
 		$this->Comments->requestForUser(null, 1);
 		$ids = Set::extract($this->Comments->viewVars['comments'], '/Comment/id');
-		$this->assertEqual($ids, array(1));
+		$this->assertEquals($ids, array(1));
 
 		$this->Comments->requestForUser('47ea303a-3b2c-4251-b313-4816c0a800fa');
 		$ids = Set::extract($this->Comments->viewVars['comments'], '/Comment/id');
-		$this->assertEqual($ids, array(4));
-		$this->assertEqual($this->Comments->viewVars['userId'], '47ea303a-3b2c-4251-b313-4816c0a800fa');
+		$this->assertEquals($ids, array(4));
+		$this->assertEquals($this->Comments->viewVars['userId'], '47ea303a-3b2c-4251-b313-4816c0a800fa');
 
 		$this->Comments->params['named']['model'] = 'Other';
 		$this->Comments->requestForUser();

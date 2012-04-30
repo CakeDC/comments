@@ -122,10 +122,10 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->constructClasses();
 		$this->Controller->Components->init($this->Controller);
 		$this->Controller->Comments->initialize($this->Controller, array());
-		$this->assertEqual($this->Controller->helpers, array(
+		$this->assertEquals($this->Controller->helpers, array(
 			'Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
 		$this->assertTrue($this->Controller->Article->Behaviors->attached('Commentable'));
-		$this->assertEqual($this->Controller->Comments->modelName, 'Article');
+		$this->assertEquals($this->Controller->Comments->modelName, 'Article');
 	}
 
 /**
@@ -167,7 +167,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->beforeRender();
 		$this->assertTrue(isset($this->Controller->viewVars['commentParams']));
 		$this->assertTrue(is_array($this->Controller->viewVars['commentParams']));
-		$this->assertEqual($this->Controller->viewVars['commentParams'], array(
+		$this->assertEquals($this->Controller->viewVars['commentParams'], array(
 			'displayType' => 'flat',
 			'viewComments' => 'commentsData',
 			'modelName' => 'Article',
@@ -183,16 +183,16 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->initialize($this->Controller, array());
 		$this->Controller->Cookie->delete('Comments.Article');
 		$this->Controller->passedArgs['comment_view_type'] = 'invalid_type';
-		$this->assertEqual($this->Controller->Comments->callback_initType(), 'flat');
+		$this->assertEquals($this->Controller->Comments->callback_initType(), 'flat');
 
 		$this->Controller->passedArgs['comment_view_type'] = 'tree';
-		$this->assertEqual($this->Controller->Comments->callback_initType(), 'tree');
+		$this->assertEquals($this->Controller->Comments->callback_initType(), 'tree');
 
 		unset($this->Controller->passedArgs['comment_view_type']);
-		$this->assertEqual($this->Controller->Comments->callback_initType(), 'tree');
+		$this->assertEquals($this->Controller->Comments->callback_initType(), 'tree');
 
 		$this->Controller->Cookie->write('Comments.Article', 'invalid_type');
-		$this->assertEqual($this->Controller->Comments->callback_initType(), 'flat');
+		$this->assertEquals($this->Controller->Comments->callback_initType(), 'flat');
 	}
 
 /**
@@ -210,7 +210,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->__setupControllerData();
 		$this->Controller->Comments->callback_view('non-existing-type');
 		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
-		$this->assertEqual($this->Controller->viewVars['commentsData'], $dataFlat);
+		$this->assertEquals($this->Controller->viewVars['commentsData'], $dataFlat);
 
 		$this->__setupControllerData();
 		$this->Controller->viewVars = null;
@@ -243,8 +243,8 @@ class CommentsComponentTest extends CakeTestCase {
 		$result = $this->Controller->Comments->callback_fetchDataTree(array(
 			'id' => 1));
 		$this->assertTrue(!empty($result));
-		$this->assertEqual($result[0]['Comment']['model'], 'Article');
-		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
+		$this->assertEquals($result[0]['Comment']['model'], 'Article');
+		$this->assertEquals($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -258,8 +258,8 @@ class CommentsComponentTest extends CakeTestCase {
 		$result = $this->Controller->Comments->callback_fetchDataFlat(array(
 			'id' => 1));
 		$this->assertTrue(!empty($result));
-		$this->assertEqual($result[0]['Comment']['model'], 'Article');
-		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
+		$this->assertEquals($result[0]['Comment']['model'], 'Article');
+		$this->assertEquals($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -274,7 +274,7 @@ class CommentsComponentTest extends CakeTestCase {
 			'id' => 1));
 		$this->assertTrue(!empty($result));
 		$this->assertTrue(is_array($result[0]['children']));
-		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
+		$this->assertEquals($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -289,8 +289,8 @@ class CommentsComponentTest extends CakeTestCase {
 			'id' => 1));
 		// The behavior must be the same than callback_fetchDataFlat as it is just an alias
 		$this->assertTrue(!empty($result));
-		$this->assertEqual($result[0]['Comment']['model'], 'Article');
-		$this->assertEqual($result[0]['Comment']['foreign_key'], 1);
+		$this->assertEquals($result[0]['Comment']['model'], 'Article');
+		$this->assertEquals($result[0]['Comment']['foreign_key'], 1);
 	}
 
 /**
@@ -300,13 +300,13 @@ class CommentsComponentTest extends CakeTestCase {
  */
 	public function testCallback_prepareParams() {
 		$this->Controller->Comments->initialize($this->Controller, array());
-		$this->assertEqual($this->Controller->Comments->commentParams, array());
+		$this->assertEquals($this->Controller->Comments->commentParams, array());
 		$this->Controller->Comments->callback_prepareParams();
 		$expected = array(
 			'viewComments' => 'commentsData',
 			'modelName' => 'Article',
 			'userModel' => 'UserModel');
-		$this->assertEqual($this->Controller->Comments->commentParams, $expected);
+		$this->assertEquals($this->Controller->Comments->commentParams, $expected);
 
 		$this->__setupControllerData();
 		$this->Controller->passedArgs['comment_action'] = 'view';
@@ -314,7 +314,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$expected = array_merge($expected, array(
 			'userModel' => 'UserModel',
 			'comment_action' => 'view'));
-		$this->assertEqual($this->Controller->Comments->commentParams, $expected);
+		$this->assertEquals($this->Controller->Comments->commentParams, $expected);
 	}
 
 /**
@@ -357,10 +357,10 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertTrue(is_array($created));
 		$this->assertNotEqual($created['Comment']['id'], 3);
 		ksort($result);
-		$this->assertEqual($result, $expected);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been saved.');
-		$this->assertEqual($this->Controller->redirectUrl, array('123', '#' => 'comment' . $created['Comment']['id']));
-		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
+		$this->assertEquals($result, $expected);
+		$this->assertEquals($this->Controller->Session->read('Message.flash.message'), 'The Comment has been saved.');
+		$this->assertEquals($this->Controller->redirectUrl, array('123', '#' => 'comment' . $created['Comment']['id']));
+		$this->assertEquals($this->Controller->Article->field('comments'), $oldCount + 1);
 
 		$this->Controller->Session->delete('Message.flash.message');
 		$this->Controller->Session->delete('Auth');
@@ -409,12 +409,12 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertTrue(is_array($created));
 		$this->assertNotEqual($created['Comment']['id'], 3);
 		ksort($result);
-		$this->assertEqual($result, $expected);
-		$this->assertEqual($this->Controller->viewVars['messageTxt'], 'The Comment has been saved.');
-		$this->assertEqual($this->Controller->redirectUrl, null);
-		$this->assertEqual($this->Controller->viewVars['redirect'], null);
+		$this->assertEquals($result, $expected);
+		$this->assertEquals($this->Controller->viewVars['messageTxt'], 'The Comment has been saved.');
+		$this->assertEquals($this->Controller->redirectUrl, null);
+		$this->assertEquals($this->Controller->viewVars['redirect'], null);
 		//array('123', '#' => 'comment' . $created['Comment']['id'])
-		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
+		$this->assertEquals($this->Controller->Article->field('comments'), $oldCount + 1);
 
 		$this->Controller->Session->delete('Message.flash.message');
 		$this->Controller->Session->delete('Auth');
@@ -447,13 +447,13 @@ class CommentsComponentTest extends CakeTestCase {
 
 		$this->Controller->Comments->callback_toggleApprove(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
-		$this->assertEqual($comment['Comment']['approved'], false);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
-		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
+		$this->assertEquals($comment['Comment']['approved'], false);
+		$this->assertEquals($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEquals($this->Controller->Article->field('comments'), $oldCount - 1);
 		$this->assertNull($this->Controller->redirectUrl);
 
 		$this->Controller->Comments->callback_toggleApprove(1, 'unexisting-id');
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment status update. Try later.');
+		$this->assertEquals($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment status update. Try later.');
 		$this->assertNull($this->Controller->redirectUrl);
 
 		$this->__setupControllerData();
@@ -462,9 +462,9 @@ class CommentsComponentTest extends CakeTestCase {
 
 		$this->Controller->Comments->callback_view('flat');
 		$comment = $this->Controller->Article->Comment->findById(1);
-		$this->assertEqual($comment['Comment']['approved'], true);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
-		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount);
+		$this->assertEquals($comment['Comment']['approved'], true);
+		$this->assertEquals($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEquals($this->Controller->Article->field('comments'), $oldCount);
 		$this->assertNull($this->Controller->redirectUrl);
 		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
 
@@ -500,13 +500,13 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->callback_delete(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertFalse($comment);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been deleted.');
-		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
-		$this->assertEqual($this->Controller->redirectUrl, array());
+		$this->assertEquals($this->Controller->Session->read('Message.flash.message'), 'The Comment has been deleted.');
+		$this->assertEquals($this->Controller->Article->field('comments'), $oldCount - 1);
+		$this->assertEquals($this->Controller->redirectUrl, array());
 
 		$this->Controller->Comments->callback_delete(1, 'unexisting-id');
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment deleting. Try later.');
-		$this->assertEqual($this->Controller->redirectUrl, array());
+		$this->assertEquals($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment deleting. Try later.');
+		$this->assertEquals($this->Controller->redirectUrl, array());
 
 		$this->Controller->Session->delete('Message.flash.message');
 	}
@@ -522,11 +522,11 @@ class CommentsComponentTest extends CakeTestCase {
 
 		$this->Controller->params['isAjax'] = false;
 		$this->Controller->Comments->flash($message);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), $message);
+		$this->assertEquals($this->Controller->Session->read('Message.flash.message'), $message);
 
 		$this->Controller->params['isAjax'] = true;
 		$this->Controller->Comments->flash('Test Message');
-		$this->assertEqual($this->Controller->viewVars['messageTxt'], $message);
+		$this->assertEquals($this->Controller->viewVars['messageTxt'], $message);
 	}
 
 /**
@@ -540,12 +540,12 @@ class CommentsComponentTest extends CakeTestCase {
 
 		$this->Controller->params['isAjax'] = false;
 		$this->Controller->Comments->redirect($url);
-		$this->assertEqual($this->Controller->redirectUrl, $url);
+		$this->assertEquals($this->Controller->redirectUrl, $url);
 
 		$this->Controller->params['isAjax'] = true;
 		$this->Controller->Comments->redirect($url);
-		$this->assertEqual($this->Controller->viewVars['redirect'], $url);
-		$this->assertEqual($this->Controller->viewVars['ajaxMode'], true);
+		$this->assertEquals($this->Controller->viewVars['redirect'], $url);
+		$this->assertEquals($this->Controller->viewVars['ajaxMode'], true);
 	}
 
 /**
@@ -564,12 +564,12 @@ class CommentsComponentTest extends CakeTestCase {
 
 		$this->Controller->params['isAjax'] = false;
 		$this->Controller->Comments->redirect($url);
-		$this->assertEqual($this->Controller->redirectUrl, $expected);
+		$this->assertEquals($this->Controller->redirectUrl, $expected);
 
 		$this->Controller->params['isAjax'] = true;
 		$this->Controller->Comments->redirect($url);
-		$this->assertEqual($this->Controller->viewVars['redirect'], $expected);
-		$this->assertEqual($this->Controller->viewVars['ajaxMode'], true);
+		$this->assertEquals($this->Controller->viewVars['redirect'], $expected);
+		$this->assertEquals($this->Controller->viewVars['ajaxMode'], true);
 	}
 
 /**
@@ -600,7 +600,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$result = $this->Controller->Comments->permalink();
 		$expected = 'http://' . env('HTTP_HOST') . '/articles/view/testnamed:test';
 		debug(array($result, $expected));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 	}
 
 /**
