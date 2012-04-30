@@ -32,7 +32,7 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 	public $description = '';
 
 /**
- * Migration array
+ * Migration Up and Down Setup
  * 
  * @var array $migration
  */
@@ -40,26 +40,26 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 		'up' => array(
 			'create_table' => array(
 				'comments' => array(
-					'id' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36, 'key' => 'primary'),
-					'parent_id' => array('type'=>'string', 'null' => true, 'default' => NULL, 'length' => 36),
-					'foreign_key' => array('type'=>'string', 'null' => false, 'default' => NULL, 'length' => 36),
-					'user_id' => array('type'=>'string', 'null' => true, 'default' => NULL, 'length' => 36),
-					'lft' => array('type'=>'integer', 'null' => false, 'default' => NULL, 'length' => 10),
-					'rght' => array('type'=>'integer', 'null' => false, 'default' => NULL, 'length' => 10),
-					'model' => array('type'=>'string', 'null' => false, 'default' => NULL),
-					'approved' => array('type'=>'boolean', 'null' => false, 'default' => '1'),
-					'is_spam' => array('type'=>'boolean', 'null' => false, 'default' => '0'),
-					'title' => array('type'=>'string', 'null' => true, 'default' => NULL),
-					'slug' => array('type'=>'string', 'null' => true, 'default' => NULL),
-					'body' => array('type'=>'text', 'null' => true, 'default' => NULL),
-					'author_name' => array('type'=>'string', 'null' => true, 'default' => NULL),
-					'author_url' => array('type'=>'string', 'null' => true, 'default' => NULL),
+					'id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'primary'),
+					'parent_id' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 36),
+					'foreign_key' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36),
+					'user_id' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 36),
+					'lft' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+					'rght' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
+					'model' => array('type' => 'string', 'null' => false, 'default' => null),
+					'approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
+					'is_spam' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+					'title' => array('type' => 'string', 'null' => true, 'default' => null),
+					'slug' => array('type' => 'string', 'null' => true, 'default' => null),
+					'body' => array('type' => 'text', 'null' => true, 'default' => null),
+					'author_name' => array('type' => 'string', 'null' => true, 'default' => null),
+					'author_url' => array('type' => 'string', 'null' => true, 'default' => null),
 					'author_email' => array('type' => 'string', 'length' => 128, 'default' => '', 'null' => false),
-					'language' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 6),
+					'language' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 6),
 					'is_spam' => array('type' => 'string', 'length' => 20, 'default' => 'clean', 'null' => false), // possible values: clean, spam, ham, spammanual
 					'comment_type' => array('type' => 'string', 'length' => 32, 'default' => 'comment', 'null' => false), // possible values: comment, trackback, pingback
-					'created' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
-					'modified' => array('type'=>'datetime', 'null' => true, 'default' => NULL),
+					'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+					'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
 					'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1))
 				),
 			),
