@@ -8,7 +8,7 @@
  * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-App::uses('CommentsAppController', 'Comments.Controller');
+
 /**
  * Comments Controller
  *
@@ -23,6 +23,7 @@ App::uses('CommentsAppController', 'Comments.Controller');
  * @property RequestHandlerComponent RequestHandler
  */
 App::uses('CommentsAppController', 'Comments.Controller');
+
 class CommentsController extends CommentsAppController {
 
 /**
@@ -31,6 +32,7 @@ class CommentsController extends CommentsAppController {
  * @var string
  */
 	public $name = 'Comments';
+	public $paginate = array();
 
 /**
  * Components
@@ -82,8 +84,8 @@ class CommentsController extends CommentsAppController {
 					'foreignKey' => 'user_id'))), false);
 		$conditions = array();
 
-		if (App::import('Component', 'Search.Prg')) {
-			$this->Comment->Behaviors->load('Search.Searchable');
+		if (App::uses('PrgComponent', 'Search.Controller/Component')) {
+			$this->Comment->Behaviors->attach('Search.Searchable');
 			$this->Comment->filterArgs = array(
 				array('name' => 'is_spam', 'type' => 'value'),
 				array('name' => 'approved', 'type' => 'value'));
@@ -95,18 +97,18 @@ class CommentsController extends CommentsAppController {
 		}
 		
 
-		$this->Paginator->paginate = array(
+		$this->paginate = array(
 			'Comment' => array(
 				'conditions' => $conditions,
 				'contain' => array('UserModel'),
 				'order' => 'Comment.created DESC'));
 		if ($type == 'spam') {
-			$this->Paginator->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
+			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
 		} elseif ($type == 'clean') {
-			$this->Paginator->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
+			$this->paginate['Comment']['conditions'] = array('Comment.is_spam' => array('ham', 'clean'));
 		}
 
-		$this->set('comments', $this->Paginator->paginate('Comment'));
+		$this->set('comments', $this->paginate('Comment'));
 	}
 
 
@@ -163,6 +165,53 @@ class CommentsController extends CommentsAppController {
 			$this->Session->setFlash(__d('comments', 'Error appear during save.'));
 		}
 		$this->redirect(array('action' => 'index'));
+	}
+
+/**
+ * add method
+ *
+ * @return void
+ */
+	public function admin_add() {
+		if ($this->request->is('post')) {
+			$this->Comment->create();
+			if ($this->Comment->save($this->request->data)) {
+				$this->Session->setFlash(__('The comment has been saved'));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The comment could not be saved. Please, try again.'));
+			}
+		}
+		$this->loadModel('Users.User');
+		$userList = $this->User->find('list');
+		$commentList = $this->Comment->find('list');
+		$this->set(compact('commentList', 'userList'));
+	}
+
+/**
+ * Admin Edit action
+ *
+ * @param string UUID
+ */
+	public function admin_edit($id = null) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists()) {
+			throw new NotFoundException(__('Invalid comment'));
+		}
+		if ($this->request->is('post') || $this->request->is('put')) {
+			if ($this->Comment->save($this->request->data)) {
+				$this->Session->setFlash(__('The comment has been saved'));
+				$this->redirect(array('action' => 'index'));
+			} else {
+				$this->Session->setFlash(__('The comment could not be saved. Please, try again.'));
+			}
+		} else {
+			$this->request->data = $this->Comment->read(null, $id);
+			$this->loadModel('Users.User');
+			$userList = $this->User->find('list');
+			$commentList = $this->Comment->find('list');
+			$this->set(compact('commentList', 'userList'));
+		}
 	}
 
 /**

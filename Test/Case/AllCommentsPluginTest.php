@@ -15,7 +15,7 @@ class AllCommentsPluginTest extends PHPUnit_Framework_TestSuite {
 		// controllers
 		$suite->addTestFile($basePath . 'Controller' . DS . 'Component' . DS . 'CommentsComponentTest.php');
 		// behaviors
-		$suite->addTestFile($basePath . 'Model' . DS . 'Behavior' . DS . 'CommentableBehaviorTest.php');
+		$suite->addTestFile($basePath . 'Model' . DS . 'Behavior' . DS . 'CommentableTest.php');
 		// models
 		$suite->addTestFile($basePath . 'Model' . DS . 'CommentTest.php');
 		// helpers

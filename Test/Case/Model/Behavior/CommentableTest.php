@@ -125,7 +125,7 @@ class CommentableTest extends CakeTestCase {
  *
  * @return void
  */
-	public function startTest() {
+	public function setUp() {
 		$this->Model = Classregistry::init('Article');
 		$this->Model->Comment->bindModel(array(
 			'belongsTo' => array(
@@ -137,7 +137,7 @@ class CommentableTest extends CakeTestCase {
  *
  * @return void
  */
-	public function endTest() {
+	public function tearDown() {
 		unset($this->Model);
 		ClassRegistry::flush();
 	}
@@ -265,9 +265,16 @@ class CommentableTest extends CakeTestCase {
 		$this->assertTrue($this->Model->changeCommentCount('1', 'down'));
 		$article = $this->Model->findById(1);
 		$this->assertEqual($article['Article']['comments'], 2);
+	}
 
+/**
+ * commentDelete
+ *
+ * @return void
+ */
+	public function testChangeCommentCountInvalid() {
 		$this->assertFalse($this->Model->changeCommentCount('1', 'invalid'));
-		$this->assertFalse($this->Model->changeCommentCount('invalid!', 'up'));
+		$this->assertFalse($this->Model->changeCommentCount(null, 'up'));
 	}
 
 /**
@@ -292,8 +299,8 @@ class CommentableTest extends CakeTestCase {
 		$result = $this->Model->commentBeforeFind($options);
 		$expected = array(
 			'conditions' => array(
+				'Comment.foreign_key' => 1,
 				'Comment.model' => 'Article',
-				'Article.id' => 1,
 			'Comment.is_spam' => array('clean', 'ham')));
 		$this->assertEqual($result, $expected);
 		$this->assertTrue($this->Model->Behaviors->enabled('Containable'));

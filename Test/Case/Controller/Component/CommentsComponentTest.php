@@ -9,8 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Controller', 'Controller', false);
-App::import('Component', 'Comments.Comments');
+App::uses('Controller', 'Controller');
+App::uses('CommentsComponent', 'Comments.Controller/Component');
 
 if (!class_exists('ArticlesTestController')) {
 	class ArticlesTestController extends Controller {
@@ -80,7 +80,8 @@ class CommentsComponentTest extends CakeTestCase {
  *
  * @return void
  */
-	function startTest($method) {
+	function setUp() {
+		parent::setUp();
 		if (!defined('FULL_BASE_URL')) {
 			define('FULL_BASE_URL', 'http://');
 		}
@@ -90,9 +91,9 @@ class CommentsComponentTest extends CakeTestCase {
 
 		// $this->Collection = $this->getMock('ComponentCollection');
 		// if (!class_exists('MockAuthComponent2')) {
-			// $this->getMock('AuthComponent', array('user'), array($this->Collection), 'MockAuthComponent2');
+		//	 $this->getMock('AuthComponent', array('user'), array(&$this->Collection), 'MockAuthComponent2');
 		// }
-
+		//
 		// $this->AuthComponent = new MockAuthComponent2($this->Collection);
 		// $this->AuthComponent->enabled = true;
 		// $this->Controller->Auth = $this->AuthComponent;
@@ -117,12 +118,12 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testInitialize() {
-		// $this->Controller = new ArticlesTestController();
-		// $this->Controller->constructClasses();
-		// $this->Controller->Components->init($this->Controller);
+		$this->Controller = new ArticlesTestController();
+		$this->Controller->constructClasses();
+		$this->Controller->Components->init($this->Controller);
 		$this->Controller->Comments->initialize($this->Controller, array());
 		$this->assertEqual($this->Controller->helpers, array(
-			'Session', 'Html', 'Form', 'Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
+			'Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
 		$this->assertTrue($this->Controller->Article->Behaviors->attached('Commentable'));
 		$this->assertEqual($this->Controller->Comments->modelName, 'Article');
 	}
@@ -134,13 +135,13 @@ class CommentsComponentTest extends CakeTestCase {
  */
 	public function testStartup() {
 		$this->Controller->Comments->initialize($this->Controller, array());
-		//debug($this->Controller->Article->hasMany);
-		//$this->assertTrue(isset($this->Controller->Article->hasMany['Comment']));
+		// debug($this->Controller->Article->hasMany);
+		$this->assertTrue(isset($this->Controller->Article->hasMany['Comment']));
 		$this->Controller->Comments->unbindAssoc = true;
-		//debug($this->Controller->Comments);
+		// debug($this->Controller->Comments);
 		$this->Controller->Comments->startup($this->Controller);
 		$this->assertFalse(isset($this->Controller->Article->hasMany['Comment']));
-		//debug($this->Controller->Article->hasMany);
+		// debug($this->Controller->Article->hasMany);
 
 		$User = ClassRegistry::init('User');
 
@@ -442,7 +443,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
 		
 		$User = ClassRegistry::init('User');
-		//$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
 
 		$this->Controller->Comments->callback_toggleApprove(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
@@ -577,12 +578,29 @@ class CommentsComponentTest extends CakeTestCase {
  * @return void
  */
 	public function testPermalink() {
-		$this->Controller->params = array(
-			'named' => array(
+		$this->Request = new CakeRequest('/articles/view/1');
+		$this->Controller = new ArticlesTestController($this->Request);
+		$this->Controller->constructClasses();
+		$this->__setupControllerData();
+		debug($this->Controller);
+		$this->Controller->request->params = array(
+			'name' => array(
 				'controller' => 'articles',
-				'action' => 'view',
+				'action' => 'view'),
+			'named' => array(
 				'testnamed' => 'test'));
-		$this->assertEqual($this->Controller->Comments->permalink(), 'http://' . env('HTTP_HOST') . '/articles/view/testnamed:test');
+		$this->Controller->params = array(
+			'url' => '/articles/view/1',
+			'name' => array(
+				'controller' => 'articles',
+				'action' => 'view'),
+			'named' => array(
+				'testnamed' => 'test'));
+		$this->Controller->Comments->initialize($this->Controller, array());
+		$result = $this->Controller->Comments->permalink();
+		$expected = 'http://' . env('HTTP_HOST') . '/articles/view/testnamed:test';
+		debug(array($result, $expected));
+		$this->assertEqual($result, $expected);
 	}
 
 /**

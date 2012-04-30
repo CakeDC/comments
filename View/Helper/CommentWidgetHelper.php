@@ -15,6 +15,7 @@
  * @package comments
  * @subpackage comments.views.helpers
  */
+App::uses('AppHelper', 'View/Helper');
 class CommentWidgetHelper extends AppHelper {
 
 /**
@@ -55,6 +56,13 @@ class CommentWidgetHelper extends AppHelper {
 	protected $__passedParams = array('displayType', 'viewComments');
 
 /**
+ * List of settings needed to be not empty in $this->request->params['Comments']
+ *
+ * @var array
+ */
+	protected $_View = null;
+
+/**
  * Global widget parameters
  *
  * @var string
@@ -67,6 +75,7 @@ class CommentWidgetHelper extends AppHelper {
  */
 	public function __construct(View $View, $settings = array()) {
 		$this->options(array());
+		$this->_View = $View;
 		return parent::__construct($View, $settings);
 	}
 

@@ -600,8 +600,8 @@ class CommentsComponent extends Component {
 	public function permalink() {
 		$params = array();
 		foreach (array('admin', 'controller', 'action', 'plugin') as $name) {
-			if (isset($this->Controller->request->params['name'])) {
-				$params[$name] = $this->Controller->request->params['name'];
+			if (isset($this->Controller->request->params[$name])) {
+				$params[$name] = $this->Controller->request->params[$name];
 			}
 		}
 

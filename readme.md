@@ -38,11 +38,11 @@ First let us add the following code in the PostsController:
 
 By default the component assumes that the action that will be used for comments is named 'view', but we can override it inside the beforeFilter method.
 
-Inside the view (in our case it will views/posts/view.ctp) we will add the next lines at the end of the view file.
+Inside the view (in our case it will View/Posts/view.ctp) we will add the next lines at the end of the view file.
 
 	<div id="post-comments">
-		<?php $commentWidget->options(array('allowAnonymousComment' => false));?>
-		<?php echo $commentWidget->display();?>
+		<?php $this->CommentWidget->options(array('allowAnonymousComment' => false));?>
+		<?php echo $this->CommentWidget->display();?>
 	</div>
 
 ## How it works ##
@@ -60,7 +60,7 @@ To work properly, the component needs a specific variable to be set in every act
 
 		$this->set('post', $this->Post->read(null, $id));
 
-If you plan to attach comments plugin to model that stored in some plugin highly recommended to define Model::$fullName property for your model in ClassRegistry format.
+If you plan to attach comments plugin to model that stored in some plugin its highly recommended to define Model::$fullName property for your model in ClassRegistry format.
 For example for Post model of Blogs plugin set $fullName = 'Blogs.Post'.
 It is also possible to define a permalink() function in your Post model. This method should return the correct url to the view page where comments displayed.
 This required by most antispam systems if you plan to use it.
@@ -84,14 +84,14 @@ Callbacks:
 Extend or override any callback without changing component code.
 
 	public function callback_commentsAdd($modelId, $commentId, $displayType, $data = array()) {
-		if (!empty($this->data)) {
+		if (!empty($this->request->data)) {
 			...
 			///perform some validation and field manipulations here. all value need to store into the $data.
 			$data['Comment']['author_name'] = $this->Auth->user('username');
 			$data['Comment']['author_email'] = $this->Auth->user('email');
 
 			$valid = true;
-			if (empty($this->data['Comment']['author_name'])) {
+			if (empty($this->request->data['Comment']['author_name'])) {
 				$valid = false;
 			}
 			if (!$valid) {
@@ -197,7 +197,7 @@ The plugin was tested with jquery engine. Since cakephp js helper support many e
 
 To turn on ajax mode you need set pass two parameters to the helper:
 
-	<?php $thic->CommentWidget->options(array(
+	<?php $this->CommentWidget->options(array(
 		'target' => '#comments',
 		'ajaxAction' => 'comments'));
 	?>

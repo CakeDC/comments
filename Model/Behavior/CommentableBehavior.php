@@ -230,6 +230,9 @@ class CommentableBehavior extends ModelBehavior {
  * @return null
  */
 	public function changeCommentCount(Model $model, $id = null, $direction = 'up') {
+		if (!$model->findById($id)) {
+			return false;
+		}
 		if ($model->hasField('comments')) {
 			if ($direction == 'up') {
 				$direction = '+ 1';
@@ -286,7 +289,7 @@ class CommentableBehavior extends ModelBehavior {
 		$model->Comment->belongsTo[$userModel]['fields'] = array('id', $model->Comment->{$userModel}->displayField, 'slug');
 		$conditions = array('Comment.approved' => 1);
 		if (isset($id)) {
-			$conditions[$model->alias . '.' . $model->primaryKey] = $id;
+			$conditions['Comment.foreign_key'] = $id;
 			$conditions[$model->Comment->alias . '.model'] = $model->alias;
 		}
 

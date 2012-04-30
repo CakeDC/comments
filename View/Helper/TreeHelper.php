@@ -17,6 +17,7 @@
  * @package comments
  * @subpackage comments.views.helpers
  */
+App::uses('AppHelper', 'View/Helper');
 class TreeHelper extends AppHelper {
 
 /**
