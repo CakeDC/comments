@@ -192,7 +192,7 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
-		parent::__construct($collection, $settings); 
+		parent::__construct($collection, $settings);
 		foreach ($settings as $setting => $value) {
 			if (isset($this->{$setting})) {
 				$this->{$setting} = $value;
@@ -304,12 +304,13 @@ class CommentsComponent extends Component {
  * Handle controllers action like list/add related comments
  *
  * @param string $displayType
+ * @throws Exception when passed params are incorrect
  * @return void
  */
 	public function callback_view($displayType, $processActions = true) {
 		if (!isset($this->Controller->{$this->modelName}) ||
 			(!array_key_exists($this->assocName, array_merge($this->Controller->{$this->modelName}->hasOne, $this->Controller->{$this->modelName}->hasMany)))) {
-			throw new Exception('CommentsComponent: model '.$this->modelName.' or association '.$this->assocName.' doesn\'t exist');
+			throw new Exception('CommentsComponent: model ' . $this->modelName . ' or association ' . $this->assocName . ' doesn\'t exist');
 		}
 
 		$primaryKey = $this->Controller->{$this->modelName}->primaryKey;
@@ -344,8 +345,8 @@ class CommentsComponent extends Component {
 		$paginate = $settings;
 		$paginate['limit'] = 10;
 
-		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
-		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate); 
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();
+		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate);
 		$data = $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
@@ -366,8 +367,8 @@ class CommentsComponent extends Component {
 	public function callback_fetchDataFlat($options) {
 		$paginate = $this->_prepareModel($options);
 
-		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
-		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate); 
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();
+		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate);
 		return $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 	}
 
@@ -490,7 +491,7 @@ class CommentsComponent extends Component {
 		} else {
 			if (!empty($this->Controller->passedArgs['quote'])) {
 				if (!empty($this->Controller->passedArgs['comment'])) {
-					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));;
+					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));
 					if (!empty($message)) {
 						$this->Controller->request->data['Comment']['body'] = $message;
 					}
@@ -523,6 +524,7 @@ class CommentsComponent extends Component {
  *
  * @param string $modelId
  * @param string $commentId
+ * @throws BlackHoleException
  * @return void
  */
 	public function callback_toggleApprove($modelId, $commentId) {
@@ -624,11 +626,12 @@ class CommentsComponent extends Component {
  *
  * @param string $method
  * @param array $args
+ * @throws BadMethodCallException
  * @return mixed
  */
 	protected function _call($method, $args = array()) {
-		$methodName = 'callback_comments' .  Inflector::camelize(Inflector::underscore($method));
-		$localMethodName = 'callback_' .  $method;
+		$methodName = 'callback_comments' . Inflector::camelize(Inflector::underscore($method));
+		$localMethodName = 'callback_' . $method;
 		if (method_exists($this->Controller, $methodName)) {
 			return call_user_func_array(array(&$this->Controller, $methodName), $args);
 		} elseif (method_exists($this, $localMethodName)) {
@@ -650,7 +653,7 @@ class CommentsComponent extends Component {
 			if ($this->allowAnonymousComment || $this->Auth->user()) {
 				if (isset($this->Controller->passedArgs['comment_action'])) {
 					$commentAction = $this->Controller->passedArgs['comment_action'];
-					$isAdmin = (bool) $this->Auth->user('is_admin');
+					$isAdmin = (bool)$this->Auth->user('is_admin');
 					if (!$isAdmin) {
 						if (in_array($commentAction, array('delete'))) {
 							call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
@@ -682,10 +685,9 @@ class CommentsComponent extends Component {
  * @param string $settings
  * @return string
  */
-	function cleanHtml($text, $settings = 'full') {
+	public function cleanHtml($text, $settings = 'full') {
 		App::uses('CleanerHelper', 'Comments.View/Helper');
 		$cleaner = & new CleanerHelper(new View($this->Controller));
 		return $cleaner->clean($text, $settings);
 	}
 }
-

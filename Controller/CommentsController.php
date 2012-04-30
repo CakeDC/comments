@@ -32,6 +32,7 @@ class CommentsController extends CommentsAppController {
  * @var string
  */
 	public $name = 'Comments';
+
 	public $paginate = array();
 
 /**
@@ -95,7 +96,6 @@ class CommentsController extends CommentsAppController {
 			$conditions = $this->Comment->parseCriteria($this->passedArgs);
 			$this->set('searchEnabled', true);
 		}
-		
 
 		$this->paginate = array(
 			'Comment' => array(
@@ -110,7 +110,6 @@ class CommentsController extends CommentsAppController {
 
 		$this->set('comments', $this->paginate('Comment'));
 	}
-
 
 /**
  * Processes mailbox folders
@@ -128,7 +127,7 @@ class CommentsController extends CommentsAppController {
 			}
 			$this->Session->setFlash($message);
 		}
-		$url = array('plugin'=>'comments', 'action' => 'index', 'admin' => true);
+		$url = array('plugin' => 'comments', 'action' => 'index', 'admin' => true);
 		$url = Set::merge($url, $this->request->params['pass']);
 		$this->redirect(Set::merge($url, $this->request->params['named']));
 	}
@@ -192,6 +191,7 @@ class CommentsController extends CommentsAppController {
  * Admin Edit action
  *
  * @param string UUID
+ * @throws NotFoundException
  */
 	public function admin_edit($id = null) {
 		$this->Comment->id = $id;
@@ -224,7 +224,7 @@ class CommentsController extends CommentsAppController {
 		$comment = $this->Comment->read(null, $id);
 		if (empty($comment)) {
 			$this->Session->setFlash(__d('comments', 'Invalid Comment.'));
-			return $this->redirect(array('action'=>'index'));
+			return $this->redirect(array('action' => 'index'));
 		}
 		$this->set('comment', $comment);
 	}
@@ -243,7 +243,7 @@ class CommentsController extends CommentsAppController {
 		} else {
 			$this->Session->setFlash(__d('comments', 'Impossible to delete the Comment. Please try again.'));
 		}
-		$this->redirect(array('action'=>'index'));
+		$this->redirect(array('action' => 'index'));
 	}
 
 /**
@@ -256,7 +256,7 @@ class CommentsController extends CommentsAppController {
 		$comment = $this->Comment->read(null, $id);
 		if (empty($comment)) {
 			$this->Session->setFlash(__d('comments', 'Invalid Comment.'));
-			return $this->redirect(array('action'=>'index'));
+			return $this->redirect(array('action' => 'index'));
 		}
 		$this->set('comment', $comment);
 	}
