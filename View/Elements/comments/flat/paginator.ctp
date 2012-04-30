@@ -9,21 +9,21 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-$pager = $this->Paginator;
+$this->loadHelper('Paginator');
 if ($this->CommentWidget->globalParams['target']) {
-	$pager->options(array_merge(
+	$this->Paginator->options(array_merge(
 		array('url' => $this->CommentWidget->prepareUrl($url)),
 		$this->CommentWidget->globalParams['ajaxOptions']));
 } else {
-	$pager->options(array('url' => $url));
+	$this->Paginator->options(array('url' => $url));
 }
-$paging = $pager->params('Comment');
+$paging = $this->Paginator->params('Comment');
 ?>
 
 <?php if (!empty(${$viewComments})): ?>
 	<div class="paging">
-		<?php echo $pager->prev('<< '.__d('comments', 'Most Recent'), array(), null, array('class'=>'disabled'));?>
-	 | 	<?php echo $pager->numbers();?>
-		<?php echo $pager->next(__d('comments', 'Oldest').' >>', array(), null, array('class'=>'disabled'));?>
+		<?php echo $this->Paginator->prev('<< '.__d('comments', 'Most Recent'), array(), null, array('class'=>'disabled'));?>
+	 | 	<?php echo $this->Paginator->numbers();?>
+		<?php echo $this->Paginator->next(__d('comments', 'Oldest').' >>', array(), null, array('class'=>'disabled'));?>
 	</div>
 <?php endif; ?>
