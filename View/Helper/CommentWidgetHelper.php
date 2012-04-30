@@ -16,6 +16,7 @@
  * @subpackage comments.views.helpers
  */
 App::uses('AppHelper', 'View/Helper');
+
 class CommentWidgetHelper extends AppHelper {
 
 /**
@@ -151,7 +152,7 @@ class CommentWidgetHelper extends AppHelper {
 				$theme = 'flat';
 			}
 
-			if (!is_null($this->globalParams['url'])){
+			if (!is_null($this->globalParams['url'])) {
 				$url = array();
 			} else {
 				$url = array();
@@ -218,7 +219,7 @@ class CommentWidgetHelper extends AppHelper {
 		if ($this->globalParams['target']) {
 			if (is_string($this->globalParams['ajaxAction'])) {
 				$url['action'] = $this->globalParams['ajaxAction'];
-			} elseif(is_array($this->globalParams['ajaxAction'])) {
+			} elseif (is_array($this->globalParams['ajaxAction'])) {
 				$url = array_merge($url, $this->globalParams['ajaxAction']);
 			}
 		}
@@ -260,7 +261,7 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @return object, View class
  */
-	private function __view() {
+	protected function __view() {
 		if (!empty($this->globalParams['viewInstance'])) {
 			return $this->globalParams['viewInstance'];
 		} else {
