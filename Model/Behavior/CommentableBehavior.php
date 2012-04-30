@@ -24,10 +24,14 @@
 
 CakePlugin::load('Utils');
 
-class BlackHoleException extends Exception {}
-class NoActionException extends Exception {}
+class BlackHoleException extends Exception {
+}
+
+class NoActionException extends Exception {
+}
 
 class CommentableBehavior extends ModelBehavior {
+
 /**
  * Settings array
  *
@@ -57,9 +61,9 @@ class CommentableBehavior extends ModelBehavior {
 			$this->settings[$model->alias] = $this->defaults;
 		}
 		if (!is_array($settings)) {
-			$settings = (array) $settings;
+			$settings = (array)$settings;
 		}
-			
+
 		$this->settings[$model->alias] = array_merge($this->settings[$model->alias], $settings);
 
 		$cfg = $this->settings[$model->alias];
@@ -141,6 +145,7 @@ class CommentableBehavior extends ModelBehavior {
  * @param AppModel $model Object of the related model class
  * @param mixed $commentId parent comment id, 0 for none
  * @param array $options extra information and comment statistics
+ * @throws BlackHoleException
  * @return boolean
  */
 	public function commentAdd(Model $model, $commentId = null, $options = array()) {
@@ -175,15 +180,15 @@ class CommentableBehavior extends ModelBehavior {
 			}
 
 			if (!empty($data['Other'])) {
-				foreach($data['Other'] as $spam) {
-					if(!empty($spam)) {
+				foreach ($data['Other'] as $spam) {
+					if (!empty($spam)) {
 						return false;
 					}
 				}
 			}
 
 			if (method_exists($model, 'beforeComment')) {
-				if (!$model->beforeComment(&$data)) {
+				if (!$model->beforeComment( & $data)) {
 					return false;
 				}
 			}

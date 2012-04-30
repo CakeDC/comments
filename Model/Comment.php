@@ -59,8 +59,7 @@ class Comment extends CommentsAppModel {
  *
  * @var array
  */
-    public $filterArgs = array();
-
+	public $filterArgs = array();
 
 /**
  * beforeSave
@@ -101,14 +100,14 @@ class Comment extends CommentsAppModel {
  * @return boolean Success / Fail
  */
 	public function process($action, $data) {
-		$message = $addInfo = 	'';
+		$message = $addInfo = '';
 		if (!empty($action) && $action == 'delete') {
 			$keys = array_keys($data['Comment']);
 			foreach ($keys as $id) {
 				$value = $data['Comment'][$id];
 				if ((is_string($id) && strlen($id) == 36 || is_numeric($id)) && $value) {
 					$result = $this->delete($id);
-					if(!$result) {
+					if (!$result) {
 						$addInfo = __d('comments', 'Some errors appear during execution.');
 					}
 				}
@@ -177,7 +176,7 @@ class Comment extends CommentsAppModel {
 			$sign = ($direction == 'up') ? '+' : '-';
 			$associated['Model']->recursive = -1;
 			$success = $associated['Model']->updateAll(
-				array('comments' => $associated['Model']->alias.".comments $sign 1"),
+				array('comments' => $associated['Model']->alias . ".comments $sign 1"),
 				array($associated['Model']->alias . '.id' => $associated['id']));
 		}
 		return $success;
@@ -264,7 +263,7 @@ class Comment extends CommentsAppModel {
  * @param string $newType New spam type for the comment (valid values: cf $isSpamValues)
  * @return boolean Success of the update
  */
-	private function __updateSpamType($id, $newType) {
+	protected function __updateSpamType($id, $newType) {
 		$success = false;
 		if (in_array($newType, $this->isSpamValues)) {
 			$success = $this->updateAll(
@@ -282,7 +281,7 @@ class Comment extends CommentsAppModel {
  * 	- Model: Associated model object
  *  - id: Id of the related row
  */
-	private function __getCommentedRow($id) {
+	protected function __getCommentedRow($id) {
 		$result = false;
 		$comment = $this->find('first', array(
 			'recursive' => -1,
