@@ -223,13 +223,13 @@ class CommentWidgetHelper extends AppHelper {
  * @param array $params
  * @return string, rendered element
  */
-	public function element($name, $params = array()) {
+	public function element($name, $params = array(), $extra = array()) {
 		$View = $this->__view();
 		if (strpos($name, '/') === false) {
 			$name = 'comments/' . $this->globalParams['theme'] . '/' . $name;
 		}
 		$params = Set::merge($this->globalParams, $params);
-		$response = $View->element($name, $params);
+		$response = $View->element($name, $params, $extra);
 		if (is_null($response) || strpos($response, 'Not Found:') !== false) {
 			$response = $View->element($name, array_merge($params), array('plugin' => 'Comments'));
 		}
