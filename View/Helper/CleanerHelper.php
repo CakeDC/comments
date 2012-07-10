@@ -15,6 +15,7 @@
  * @package comments
  * @subpackage comments.views.helpers
  */
+App::uses('AppHelper', 'View/Helper');
 class CleanerHelper extends AppHelper {
 
 /**
@@ -22,7 +23,7 @@ class CleanerHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Javascript');
+	public $helpers = array('Html', 'Js');
 
 /**
  * Replace image thumb
@@ -69,11 +70,11 @@ class CleanerHelper extends AppHelper {
  * Constructor
  *
  */
-	public function __contruct() {
+	public function __construct(View $View, $settings = array()) {
 		foreach ($this->config['full'] as $key => $value) {
 			$this->{$key} = $value;
 		}
-		return parent::__construct();
+		return parent::__construct($View, $settings);
 	}
 
 /**
@@ -84,7 +85,6 @@ class CleanerHelper extends AppHelper {
 	public function configure($options) {
 		if (is_null($options)) {
 			return;
-			//$options = 'full';
 		}
 		if (is_string($options) && isset($this->config[$options])) {
 			foreach ($this->config[$options] as $key => $value) {
@@ -116,7 +116,7 @@ class CleanerHelper extends AppHelper {
 		// $cleaned = parent::clean($data);
 
 		if (is_array($cleaned)) {
-			foreach($cleaned as $key => $value) {
+			foreach ($cleaned as $key => $value) {
 				if (is_string($value)) {
 					$cleaned[$key] = $this->__remove($value);
 				}
@@ -135,7 +135,7 @@ class CleanerHelper extends AppHelper {
  * @param string $cleaned 
  * @return string
  */
-	function __remove($cleaned) {
+	protected function __remove($cleaned) {
 		do {
 			$oldstring = $cleaned;
 			$cleaned = $this->__tagsFilter($cleaned);
@@ -149,11 +149,11 @@ class CleanerHelper extends AppHelper {
  * @param string $cleaned 
  * @return string
  */
-	function __tagsFilter($cleaned) {
-		$beforeTag = NULL;
+	protected function __tagsFilter($cleaned) {
+		$beforeTag = null;
 		$afterTag = $cleaned;
 		$tagOpenStart = strpos($cleaned, '<');
-		while($tagOpenStart !== false) {
+		while ($tagOpenStart !== false) {
 			$beforeTag .= substr($afterTag, 0, $tagOpenStart);
 			$afterTag = substr($afterTag, $tagOpenStart);
 			$fromTagOpen = substr($afterTag, 1);
@@ -163,8 +163,8 @@ class CleanerHelper extends AppHelper {
 			}
 			$tagOpenNested = strpos($fromTagOpen, '<');
 			if (($tagOpenNested !== false) && ($tagOpenNested < $tagOpenEnd)) {
-				$beforeTag .= substr($afterTag, 0, ($tagOpenNested+1));
-				$afterTag = substr($afterTag, ($tagOpenNested+1));
+				$beforeTag .= substr($afterTag, 0, ($tagOpenNested + 1));
+				$afterTag = substr($afterTag, ($tagOpenNested + 1));
 				$tagOpenStart = strpos($afterTag, '<');
 				continue;
 			}
@@ -197,10 +197,9 @@ class CleanerHelper extends AppHelper {
 				$openQuotes = strpos($fromSpace, '"');
 				$closeQuotes = strpos(substr($fromSpace, ($openQuotes + 1)), '"') + $openQuotes + 1;
 				if (strpos($fromSpace, '=') !== false) {
-					if (($openQuotes !== false) && (strpos(substr($fromSpace, ($openQuotes+1)), '"') !== false)) {
+					if (($openQuotes !== false) && (strpos(substr($fromSpace, ($openQuotes + 1)), '"') !== false)) {
 						$attribute = substr($fromSpace, 0, ($closeQuotes + 1));
-					}
-					else {
+					} else {
 						$attribute = substr($fromSpace, 0, $nextSpace);
 					}
 				} else {
@@ -218,7 +217,8 @@ class CleanerHelper extends AppHelper {
 				if (!$isCloseTag) {
 					if ($this->__filterAttr($attributeSet, strtolower($tagName))) {
 						$beforeTag .= '<' . $tagName;
-						for ($i = 0; $i < count($attributeSet); $i++) {
+						$total = count($attributeSet);
+						for ($i = 0; $i < $total; $i++) {
 							$beforeTag .= ' ' . $attributeSet[$i];
 						}
 						if (strpos($fromTagOpen, "</" . $tagName)) {
@@ -245,14 +245,15 @@ class CleanerHelper extends AppHelper {
  * @param string $tag 
  * @return string
  */
-	function __filterAttr(&$attributeSet, $tag) {
+	protected function __filterAttr(&$attributeSet, $tag) {
 		$newAttrSet = array();
-		for ($i = 0; $i <count($attributeSet); $i++) {
+		$total = count($attributeSet);
+		for ($i = 0; $i < $total; $i++) {
 			if (!$attributeSet[$i]) {
 				continue;
 			}
 			$attributeSubSet = explode('=', trim($attributeSet[$i]));
-			if (count($attributeSubSet)>2) {
+			if (count($attributeSubSet) > 2) {
 				$attributeSubSetTmp = $attributeSubSet;
 				$attributeSubSetTmp = array_reverse($attributeSubSetTmp);
 				array_pop($attributeSubSetTmp);
@@ -301,7 +302,7 @@ class CleanerHelper extends AppHelper {
  * @param string $attrval 
  * @return boolean
  */
-	function __checkPos($attrval) {
+	protected function __checkPos($attrval) {
 		$checkList = array('javascript:', 'behaviour:', 'vbscript:', 'mocha:', 'livescript:');
 		$result = false;
 		foreach ($checkList as $check) {
@@ -318,7 +319,7 @@ class CleanerHelper extends AppHelper {
  * @param string $attributeValue 
  * @return boolean
  */
-	function __postFilter($tag, $attribute, &$attributeValue) {
+	protected function __postFilter($tag, $attribute, &$attributeValue) {
 		if ($tag == 'img' && $attribute == 'src') {
 			if (substr($attributeValue, 0, 1) != '/' && strpos($attributeValue, FULL_BASE_URL) === false) {
 				return false;
@@ -338,12 +339,12 @@ class CleanerHelper extends AppHelper {
  * @param string $showVideo 
  * @return string
  */
-	function replaceAllImageTags($text, $showVideo = true) {
+	public function replaceAllImageTags($text, $showVideo = true) {
 		$text = $this->bbcode2js($text, $showVideo);
 		//while (preg_match('/src="(\/media\/display\/)([0-9a-z-]{36})"/', $text, $matches)) {
 		//		$name = 'src="' . $matches[1] . $matches[2] . '"';
 		//		$newName = 'src="' . $matches[1] . 'thumb/' . $matches[2] . '"';
-		//		$text = r($name, $newName, $text);
+		//		$text = str_replace($name, $newName, $text);
 		//	}
 		return $text;
 	}
@@ -355,7 +356,7 @@ class CleanerHelper extends AppHelper {
  * @param string $show 
  * @return string
  */
-	function bbcode2js($text, $show = true) {
+	public function bbcode2js($text, $show = true) {
 		do {
 			$oldstring = $text;
 			$text = $this->__bb2js($text, $show);
@@ -370,8 +371,8 @@ class CleanerHelper extends AppHelper {
  * @param string $show 
  * @return string
  */
-	function __bb2js($text, $show = true) {
-		if(preg_match('/\[googlevideo\]/', $text)) {
+	protected function __bb2js($text, $show = true) {
+		if (preg_match('/\[googlevideo\]/', $text)) {
 			$vid = null;
 			if (preg_match('/(?:docid=)([-a-z0-9]+)/i', $text, $found)) {
 				if (isset($found[1])) {
@@ -379,11 +380,11 @@ class CleanerHelper extends AppHelper {
 				}
 			}
 			if ($vid) {
-				$this->Javascript->link('vipers-video-quicktags', false);
-				$this->Javascript->codeBlock('vvq_googlevideo("vvq_' . $vid . '", "325", "265", "' . $vid . '");', array('inline' => false), true);
+				$this->Html->script('vipers-video-quicktags', false);
+				$this->Js->codeBlock('vvq_googlevideo("vvq_' . $vid . '", "325", "265", "' . $vid . '");', array('inline' => false), true);
 
 				$content = "<p id=\"vvq_$vid\">";
-				$content .= '<a href="http://video.google.com/videoplay?docid=' . $vid .'">';
+				$content .= '<a href="http://video.google.com/videoplay?docid=' . $vid . '">';
 				$content .= 'http://video.google.com/videoplay?docid=' . $vid . '</a></p><br />';
 				if (!$show) {
 					$content = '';
@@ -403,8 +404,8 @@ class CleanerHelper extends AppHelper {
 				}
 			}
 			if ($vid) {
-				$this->Javascript->link('vipers-video-quicktags', false);
-				$this->Javascript->codeBlock('vvq_youtube("vvq_' . $vid . '", "325", "271", "' . $vid . '");', array('inline' => false), true);
+				$this->Html->script('vipers-video-quicktags', false);
+				$this->Js->codeBlock('vvq_youtube("vvq_' . $vid . '", "325", "271", "' . $vid . '");', array('inline' => false), true);
 
 				$content = "<p id=\"vvq_$vid\">";
 				$content .= '<a href="http://www.youtube.com/watch?v=' . $vid . '">';

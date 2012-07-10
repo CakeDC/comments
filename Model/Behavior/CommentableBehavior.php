@@ -24,10 +24,14 @@
 
 CakePlugin::load('Utils');
 
-class BlackHoleException extends Exception {}
-class NoActionException extends Exception {}
+class BlackHoleException extends Exception {
+}
+
+class NoActionException extends Exception {
+}
 
 class CommentableBehavior extends ModelBehavior {
+
 /**
  * Settings array
  *
@@ -57,9 +61,9 @@ class CommentableBehavior extends ModelBehavior {
 			$this->settings[$model->alias] = $this->defaults;
 		}
 		if (!is_array($settings)) {
-			$settings = (array) $settings;
+			$settings = (array)$settings;
 		}
-			
+
 		$this->settings[$model->alias] = array_merge($this->settings[$model->alias], $settings);
 
 		$cfg = $this->settings[$model->alias];
@@ -141,6 +145,7 @@ class CommentableBehavior extends ModelBehavior {
  * @param AppModel $model Object of the related model class
  * @param mixed $commentId parent comment id, 0 for none
  * @param array $options extra information and comment statistics
+ * @throws BlackHoleException
  * @return boolean
  */
 	public function commentAdd(Model $model, $commentId = null, $options = array()) {
@@ -157,7 +162,7 @@ class CommentableBehavior extends ModelBehavior {
 				'Comment.id' => $commentId,
 				'Comment.approved' => true,
 				'Comment.foreign_key' => $modelId)))) {
-				throw new BlackHoleException(__d('comments', 'Unallowed comment id', true));
+				throw new BlackHoleException(__d('comments', 'Unallowed comment id'));
 			}
 		}
 
@@ -175,15 +180,15 @@ class CommentableBehavior extends ModelBehavior {
 			}
 
 			if (!empty($data['Other'])) {
-				foreach($data['Other'] as $spam) {
-					if(!empty($spam)) {
+				foreach ($data['Other'] as $spam) {
+					if (!empty($spam)) {
 						return false;
 					}
 				}
 			}
 
 			if (method_exists($model, 'beforeComment')) {
-				if (!$model->beforeComment(&$data)) {
+				if (!$model->beforeComment( & $data)) {
 					return false;
 				}
 			}
@@ -230,6 +235,9 @@ class CommentableBehavior extends ModelBehavior {
  * @return null
  */
 	public function changeCommentCount(Model $model, $id = null, $direction = 'up') {
+		if (!$model->findById($id)) {
+			return false;
+		}
 		if ($model->hasField('comments')) {
 			if ($direction == 'up') {
 				$direction = '+ 1';
@@ -286,7 +294,7 @@ class CommentableBehavior extends ModelBehavior {
 		$model->Comment->belongsTo[$userModel]['fields'] = array('id', $model->Comment->{$userModel}->displayField, 'slug');
 		$conditions = array('Comment.approved' => 1);
 		if (isset($id)) {
-			$conditions[$model->alias . '.' . $model->primaryKey] = $id;
+			$conditions['Comment.foreign_key'] = $id;
 			$conditions[$model->Comment->alias . '.model'] = $model->alias;
 		}
 

@@ -12,10 +12,11 @@
 App::uses('Controller', 'Controller');
 App::uses('View', 'View');
 App::uses('JsHelper', 'View/Helper');
-App::import('Controller', 'Controller', false); 
-//App::import('Core', array('ClassRegistry', 'Controller', 'View', 'Model', 'Security'));
-App::import('Helper', array('Comments.CommentWidget', 'Html', 'Form', 'Session'));
-App::import('Component', array('Comments.Comments'));
+App::uses('CommentWidgetHelper', 'Comments.View/Helper');
+App::uses('HtmlHelper', 'View/Helper');
+App::uses('FormHelper', 'View/Helper');
+App::uses('SessionHelper', 'View/Helper');
+App::uses('CommentsComponent', 'Comments.Controller/Component');
 
 //Mock::generatePartial('AppHelper', 'JsHelper', array('link', 'get', 'effect'));
 
@@ -116,12 +117,6 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->Js = new JsHelper($this->View);
 		$this->CommentWidget->Js = $this->Js;
 		$this->CommentWidget->params['action'] = 'view';
-		
-		//ClassRegistry::addObject('view', $this->View);
-		
-		if (!in_array($method, array('testInitialize', 'testOptions'))) {
-			$this->CommentWidget->initialize();
-		}
 	}
 
 
@@ -144,17 +139,6 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->assertTrue(is_a($this->CommentWidget, 'CommentWidgetHelper'));
 	}
 	
-/**
- * Test initialize
- * 
- * @return void
- */
-	public function testInitialize() {
-		$this->assertTrue(empty($this->CommentWidget->globalParams));
-		$this->CommentWidget->initialize();
-		$this->assertFalse(empty($this->CommentWidget->globalParams));
-	}
-
 /**
  * Test beforeRender callback
  * 
@@ -191,14 +175,14 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'foo' => 'bar');
 
 		$this->CommentWidget->options($options);
-		$this->assertEqual(count($this->CommentWidget->globalParams), 9);
-		$this->assertEqual($this->CommentWidget->globalParams['target'], 'test');
-		$this->assertEqual($this->CommentWidget->globalParams['foo'], 'bar');
+		$this->assertEquals(count($this->CommentWidget->globalParams), 9);
+		$this->assertEquals($this->CommentWidget->globalParams['target'], 'test');
+		$this->assertEquals($this->CommentWidget->globalParams['foo'], 'bar');
 		
 		$this->CommentWidget->options(array());
-		$this->assertEqual(count($this->CommentWidget->globalParams), 9);
+		$this->assertEquals(count($this->CommentWidget->globalParams), 9);
 		$this->assertFalse($this->CommentWidget->globalParams['target']);
-		$this->assertEqual($this->CommentWidget->globalParams['foo'], 'bar');
+		$this->assertEquals($this->CommentWidget->globalParams['foo'], 'bar');
 	}
 	
 /**
@@ -208,7 +192,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
  */
 	public function testDisplay() {
 		$this->CommentWidget->enabled = false;
-		$this->assertEqual($this->CommentWidget->display(), '');
+		$this->assertEquals($this->CommentWidget->display(), '');
 
 		$this->__mockView();
 		$this->CommentWidget->enabled = true;
@@ -275,7 +259,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
 		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$result = $this->CommentWidget->display();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 
 
 		// Test a display call with options
@@ -296,11 +280,10 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'displayType' => 'threaded',
 			'subtheme' => 'custom');
 		$result = $this->CommentWidget->display($options);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 
 
 		// Test other cases
-		$this->CommentWidget->initialize();
 		$this->View->params['userslug'] = 'example-user';
 		unset($this->View->viewVars['article']);
 		$expectedParams[1] = array_merge($expectedParams[1], array(
@@ -315,7 +298,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
 		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$result = $this->CommentWidget->display($options);
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 
 		// $this->View->expectCallCount('element', $countElementCall);
 	}
@@ -372,7 +355,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
 		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$result = $this->CommentWidget->display();
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 	}
 
 /**
@@ -401,7 +384,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		);
 		$this->Js->setReturnValueAt(0, 'link', '/ajaxFoo');
 		$result = $this->CommentWidget->link('Foobar', '/foo', array('class' => 'bar'));
-		$this->assertEqual($result, '/ajaxFoo');
+		$this->assertEquals($result, '/ajaxFoo');
 	}
 	
 /**
@@ -414,7 +397,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'controller' => 'articles',
 			'action' => 'view',
 			'my-first-article');
-		$this->assertEqual($this->CommentWidget->prepareUrl($url), $expected);
+		$this->assertEquals($this->CommentWidget->prepareUrl($url), $expected);
 
 		$this->Js->setReturnValue('get', $this->Js);
 		$this->Js->setReturnValue('effect', '');
@@ -423,7 +406,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'target' => 'placeholder',
 			'ajaxAction' => 'add'));
 		$expected['action'] = 'add';
-		$this->assertEqual($this->CommentWidget->prepareUrl($url), $expected);
+		$this->assertEquals($this->CommentWidget->prepareUrl($url), $expected);
 		
 		$this->CommentWidget->options(array(
 			'target' => 'placeholder',
@@ -434,7 +417,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'controller' => 'comments',
 			'action' => 'add',
 			'my-first-article');
-		$this->assertEqual($this->CommentWidget->prepareUrl($url), $expected);
+		$this->assertEquals($this->CommentWidget->prepareUrl($url), $expected);
 	}
 	
 /**
@@ -480,7 +463,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		
 		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
 		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
-		$this->assertEqual($this->CommentWidget->element('view'), $expected);
+		$this->assertEquals($this->CommentWidget->element('view'), $expected);
 		
 		// Test missing element in project elements path. The helper must try to search the element from the comments plugin
 		
@@ -500,7 +483,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 
 		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
 		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
-		$this->assertEqual($this->CommentWidget->element('view'), $expected);
+		$this->assertEquals($this->CommentWidget->element('view'), $expected);
 		unset($expectedParams[1]['plugin']);
 		
 		// Test params: they must be passed to the element "as is". Note that the theme has not effect on the element being fetched
@@ -514,7 +497,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 
 		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
 		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
-		$this->assertEqual($this->CommentWidget->element('view', array('target' => 'wrapper', 'theme' => 'threaded')), $expected);
+		$this->assertEquals($this->CommentWidget->element('view', array('target' => 'wrapper', 'theme' => 'threaded')), $expected);
 		
 		$this->View->expectCallCount('element', $countElementCall);
 	}
@@ -536,10 +519,5 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->Js = new JsHelper($this->View);
 		$this->CommentWidget->Js = $this->Js;
 		$this->CommentWidget->params['action'] = 'view';
-		$this->CommentWidget->initialize();
-		
-		// debug($this->View);
-		// ClassRegistry::removeObject('view');
-		// ClassRegistry::addObject('view', $this->View);
 	}
 }

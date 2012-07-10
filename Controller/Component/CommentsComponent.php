@@ -21,7 +21,7 @@
  *
  * It is also usable to define (in controller, to not fetch unnecessary data
  * in used Controller::paginate() method):
- * var $paginate = array('Comment' => array(
+ * public $paginate = array('Comment' => array(
  *	'order' => array('Comment.created' => 'desc'),
  *	'recursive' => 0,
  *	'limit' => 10
@@ -192,7 +192,7 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
-		parent::__construct($collection, $settings); 
+		parent::__construct($collection, $settings);
 		foreach ($settings as $setting => $value) {
 			if (isset($this->{$setting})) {
 				$this->{$setting} = $value;
@@ -304,12 +304,13 @@ class CommentsComponent extends Component {
  * Handle controllers action like list/add related comments
  *
  * @param string $displayType
+ * @throws Exception when passed params are incorrect
  * @return void
  */
 	public function callback_view($displayType, $processActions = true) {
 		if (!isset($this->Controller->{$this->modelName}) ||
 			(!array_key_exists($this->assocName, array_merge($this->Controller->{$this->modelName}->hasOne, $this->Controller->{$this->modelName}->hasMany)))) {
-			throw new Exception('CommentsComponent: model '.$this->modelName.' or association '.$this->assocName.' doesn\'t exist');
+			throw new Exception('CommentsComponent: model ' . $this->modelName . ' or association ' . $this->assocName . ' doesn\'t exist');
 		}
 
 		$primaryKey = $this->Controller->{$this->modelName}->primaryKey;
@@ -344,8 +345,8 @@ class CommentsComponent extends Component {
 		$paginate = $settings;
 		$paginate['limit'] = 10;
 
-		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
-		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate); 
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();
+		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate);
 		$data = $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
@@ -366,8 +367,8 @@ class CommentsComponent extends Component {
 	public function callback_fetchDataFlat($options) {
 		$paginate = $this->_prepareModel($options);
 
-		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
-		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate); 
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();
+		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate);
 		return $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
 	}
 
@@ -444,11 +445,11 @@ class CommentsComponent extends Component {
  * @param string $displayType
  */
 	public function callback_add($modelId, $commentId, $displayType, $data = array()) {
-		if (!empty($this->Controller->data)) {
-			if (!empty($this->Controller->data['Comment']['title'])) {
-				$data['Comment']['title'] = $this->cleanHtml($this->Controller->data['Comment']['title']);
+		if (!empty($this->Controller->request->data)) {
+			if (!empty($this->Controller->request->data['Comment']['title'])) {
+				$data['Comment']['title'] = $this->cleanHtml($this->Controller->request->data['Comment']['title']);
 			}
-			$data['Comment']['body'] = $this->cleanHtml($this->Controller->data['Comment']['body']);
+			$data['Comment']['body'] = $this->cleanHtml($this->Controller->request->data['Comment']['body']);
 			$modelName = $this->Controller->{$this->modelName}->alias;
 			if (!empty($this->Controller->{$this->modelName}->fullName)) {
 				$modelName = $this->Controller->{$this->modelName}->fullName;
@@ -473,7 +474,7 @@ class CommentsComponent extends Component {
 						$this->_call('afterAdd', array($options));
 					} catch (BadMethodCallException $exception) {
 					}
-					$this->flash(__d('comments', 'The Comment has been saved.', true));
+					$this->flash(__d('comments', 'The Comment has been saved.'));
 					$this->redirect(array('#' => 'comment' . $result));
 					if (!empty($this->ajaxMode)) {
 						$this->ajaxMode = null;
@@ -484,13 +485,13 @@ class CommentsComponent extends Component {
 						$this->_call('view', array($this->commentParams['displayType'], false));
 					}
 				} else {
-					$this->flash(__d('comments', 'The Comment could not be saved. Please, try again.', true));
+					$this->flash(__d('comments', 'The Comment could not be saved. Please, try again.'));
 				}
 			}
 		} else {
 			if (!empty($this->Controller->passedArgs['quote'])) {
 				if (!empty($this->Controller->passedArgs['comment'])) {
-					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));;
+					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));
 					if (!empty($message)) {
 						$this->Controller->request->data['Comment']['body'] = $message;
 					}
@@ -523,17 +524,18 @@ class CommentsComponent extends Component {
  *
  * @param string $modelId
  * @param string $commentId
+ * @throws BlackHoleException
  * @return void
  */
 	public function callback_toggleApprove($modelId, $commentId) {
 		if (!isset($this->Controller->passedArgs['comment_action'])
 			|| !($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
-			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation', true));
+			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation'));
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
-			$this->flash(__d('comments', 'The Comment status has been updated.', true));
+			$this->flash(__d('comments', 'The Comment status has been updated.'));
 		} else {
-			$this->flash(__d('comments', 'Error appear during comment status update. Try later.', true));
+			$this->flash(__d('comments', 'Error appear during comment status update. Try later.'));
 		}
 	}
 
@@ -546,9 +548,9 @@ class CommentsComponent extends Component {
  */
 	public function callback_delete($modelId, $commentId) {
 		if ($this->Controller->{$this->modelName}->commentDelete($commentId)) {
-			$this->flash(__d('comments', 'The Comment has been deleted.', true));
+			$this->flash(__d('comments', 'The Comment has been deleted.'));
 		} else {
-			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.', true));
+			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.'));
 		}
 		$this->redirect();
 	}
@@ -559,7 +561,7 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function flash($message) {
-		$isAjax = isset($this->Controller->params['isAjax']) ? $this->Controller->params['isAjax'] : false;
+		$isAjax = isset($this->Controller->request->params['isAjax']) ? $this->Controller->request->params['isAjax'] : false;
 		if ($isAjax) {
 			$this->Controller->set('messageTxt',$message);
 		} else {
@@ -576,7 +578,7 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function redirect($urlBase = array()) {
-		$isAjax = isset($this->Controller->params['isAjax']) ? $this->Controller->params['isAjax'] : false;
+		$isAjax = isset($this->Controller->request->params['isAjax']) ? $this->Controller->request->params['isAjax'] : false;
 
 		$url = array_merge(
 			array_diff_key($this->Controller->passedArgs, array_flip($this->_supportNamedParams)),
@@ -600,17 +602,17 @@ class CommentsComponent extends Component {
 	public function permalink() {
 		$params = array();
 		foreach (array('admin', 'controller', 'action', 'plugin') as $name) {
-			if (isset($this->Controller->params['name'])) {
-				$params[$name] = $this->Controller->params['name'];
+			if (isset($this->Controller->request->params[$name])) {
+				$params[$name] = $this->Controller->request->params[$name];
 			}
 		}
 
-		if (isset($this->Controller->params['pass'])) {
-			$params = array_merge($params, $this->Controller->params['pass']);
+		if (isset($this->Controller->request->params['pass'])) {
+			$params = array_merge($params, $this->Controller->request->params['pass']);
 		}
 
-		if (isset($this->Controller->params['named'])) {
-			foreach ($this->Controller->params['named'] as $k => $v) {
+		if (isset($this->Controller->request->params['named'])) {
+			foreach ($this->Controller->request->params['named'] as $k => $v) {
 				if (!in_array($k, $this->_supportNamedParams)) {
 					$params[$k] = $v;
 				}
@@ -624,11 +626,12 @@ class CommentsComponent extends Component {
  *
  * @param string $method
  * @param array $args
+ * @throws BadMethodCallException
  * @return mixed
  */
 	protected function _call($method, $args = array()) {
-		$methodName = 'callback_comments' .  Inflector::camelize(Inflector::underscore($method));
-		$localMethodName = 'callback_' .  $method;
+		$methodName = 'callback_comments' . Inflector::camelize(Inflector::underscore($method));
+		$localMethodName = 'callback_' . $method;
 		if (method_exists($this->Controller, $methodName)) {
 			return call_user_func_array(array(&$this->Controller, $methodName), $args);
 		} elseif (method_exists($this, $localMethodName)) {
@@ -650,7 +653,7 @@ class CommentsComponent extends Component {
 			if ($this->allowAnonymousComment || $this->Auth->user()) {
 				if (isset($this->Controller->passedArgs['comment_action'])) {
 					$commentAction = $this->Controller->passedArgs['comment_action'];
-					$isAdmin = (bool) $this->Auth->user('is_admin');
+					$isAdmin = (bool)$this->Auth->user('is_admin');
 					if (!$isAdmin) {
 						if (in_array($commentAction, array('delete'))) {
 							call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
@@ -669,7 +672,7 @@ class CommentsComponent extends Component {
 					$this->_call('add', array($id, $parent, $displayType));
 				}
 			} else {
-				$this->Controller->Session->write('Auth.redirect', $this->Controller->params['url']['url']);
+				$this->Controller->Session->write('Auth.redirect', $this->Controller->request->url);
 				$this->Controller->redirect($this->Controller->Auth->loginAction);
 			}
 		}
@@ -682,10 +685,9 @@ class CommentsComponent extends Component {
  * @param string $settings
  * @return string
  */
-	function cleanHtml($text, $settings = 'full') {
-		App::import('Helper', 'Comments.Cleaner');
+	public function cleanHtml($text, $settings = 'full') {
+		App::uses('CleanerHelper', 'Comments.View/Helper');
 		$cleaner = & new CleanerHelper(new View($this->Controller));
 		return $cleaner->clean($text, $settings);
 	}
 }
-

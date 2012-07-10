@@ -13,7 +13,7 @@
 
 <?php if (isset($searchEnabled)) : ?>
 	<div class="finder">
-		<?php echo $this->element('comments/finder'); ?>
+		<?php echo $this->element('Comments.comments/finder'); ?>
 	</div>
 <?php endif;?>
 
@@ -22,7 +22,7 @@
 	<li><?php echo $this->Html->link(__d('comments', 'Filter good comments'), array('action' => 'index', 'clean'));?></li>
 </ul>
 
-<?php echo $this->Form->create('Comment',array('id' => 'CommentForm', 'name' => 'CommentForm', 'url' => Set::merge(array('action' => 'process'), $this->params['named']) ));?>
+<?php echo $this->Form->create('Comment',array('id' => 'CommentForm', 'name' => 'CommentForm', 'url' => Set::merge(array('action' => 'process'), $this->request->params['named']) ));?>
 <?php echo $this->Form->input('Comment.action', array(
 				'type' => 'select', 
 				'options' => array(
@@ -103,7 +103,7 @@
 </table>
 <?php echo $this->Form->end(); ?>
 
-<?php echo $this->element('paging'); ?>
+<?php echo $this->element('Comments.paging'); ?>
 
 <script type="text/javascript">
     $("td div.hidden").show();
