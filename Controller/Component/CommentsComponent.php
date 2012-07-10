@@ -473,7 +473,7 @@ class CommentsComponent extends Component {
 						$this->_call('afterAdd', array($options));
 					} catch (BadMethodCallException $exception) {
 					}
-					$this->flash(__d('comments', 'The Comment has been saved.', true));
+					$this->flash(__d('comments', 'The Comment has been saved.'));
 					$this->redirect(array('#' => 'comment' . $result));
 					if (!empty($this->ajaxMode)) {
 						$this->ajaxMode = null;
@@ -484,7 +484,7 @@ class CommentsComponent extends Component {
 						$this->_call('view', array($this->commentParams['displayType'], false));
 					}
 				} else {
-					$this->flash(__d('comments', 'The Comment could not be saved. Please, try again.', true));
+					$this->flash(__d('comments', 'The Comment could not be saved. Please, try again.'));
 				}
 			}
 		} else {
@@ -526,14 +526,14 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-		if (!isset($this->Controller->passedArgs['comment_action'])
+        if (!isset($this->Controller->passedArgs['comment_action'])
 			|| !($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
-			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation', true));
+			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation'));
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
-			$this->flash(__d('comments', 'The Comment status has been updated.', true));
+			$this->flash(__d('comments', 'The Comment status has been updated.'));
 		} else {
-			$this->flash(__d('comments', 'Error appear during comment status update. Try later.', true));
+			$this->flash(__d('comments', 'Error appear during comment status update. Try later.'));
 		}
 	}
 
@@ -546,9 +546,9 @@ class CommentsComponent extends Component {
  */
 	public function callback_delete($modelId, $commentId) {
 		if ($this->Controller->{$this->modelName}->commentDelete($commentId)) {
-			$this->flash(__d('comments', 'The Comment has been deleted.', true));
+			$this->flash(__d('comments', 'The Comment has been deleted.'));
 		} else {
-			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.', true));
+			$this->flash(__d('comments', 'Error appear during comment deleting. Try later.'));
 		}
 		$this->redirect();
 	}
@@ -599,18 +599,18 @@ class CommentsComponent extends Component {
  */
 	public function permalink() {
 		$params = array();
-		foreach (array('admin', 'controller', 'action', 'plugin') as $name) {
-			if (isset($this->Controller->params['name'])) {
-				$params[$name] = $this->Controller->params['name'];
+        foreach (array('admin', 'controller', 'action', 'plugin') as $name) {
+			if (isset($this->Controller->request->params['name'])) {
+				$params[$name] = $this->Controller->request->params['name'];
 			}
 		}
 
-		if (isset($this->Controller->params['pass'])) {
+		if (isset($this->Controller->request->params['pass'])) {
 			$params = array_merge($params, $this->Controller->params['pass']);
 		}
 
-		if (isset($this->Controller->params['named'])) {
-			foreach ($this->Controller->params['named'] as $k => $v) {
+		if (isset($this->Controller->request->params['named'])) {
+			foreach ($this->Controller->request->params['named'] as $k => $v) {
 				if (!in_array($k, $this->_supportNamedParams)) {
 					$params[$k] = $v;
 				}

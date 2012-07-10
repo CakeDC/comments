@@ -30,7 +30,7 @@
 				unset($redirect['#']);
 			}
 		
-			$url = Router::parse($this->here);
+			$url = Router::parse($this->request->here);
 			$url = array_merge($url, $url['named'], $url['pass']);
 			unset($url['named']);
 			unset($url['pass']);

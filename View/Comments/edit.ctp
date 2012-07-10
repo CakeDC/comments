@@ -30,7 +30,7 @@
 		<li><?php echo $this->Html->link(__d('comments', 'Delete'), array('action'=>'delete', $this->Form->value('Comment.id')), null, sprintf(__d('comments', 'Are you sure you want to delete # %s?'), $this->Form->value('Comment.id'))); ?></li>
 		<li><?php echo $this->Html->link(__d('comments', 'List Comments'), array('action'=>'index'));?></li>
 		<li><?php echo $this->Html->link(__d('comments', 'List Comments'), array('controller'=> 'comments', 'action'=>'index')); ?> </li>
-		<li><?php echo $this->Html->link(__d('comments', 'New Parent Comment', true), array('controller'=> 'comments', 'action'=>'add')); ?> </li>
+		<li><?php echo $this->Html->link(__d('comments', 'New Parent Comment'), array('controller'=> 'comments', 'action'=>'add')); ?> </li>
 		<li><?php echo $this->Html->link(__d('comments', 'List Users'), array('controller'=> 'users', 'action'=>'index')); ?> </li>
 		<li><?php echo $this->Html->link(__d('comments', 'New User'), array('controller'=> 'users', 'action'=>'add')); ?> </li>
 	</ul>

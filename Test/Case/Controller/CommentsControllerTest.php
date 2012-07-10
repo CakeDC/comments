@@ -306,7 +306,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($ids, array(4));
 		$this->assertEqual($this->Comments->viewVars['userId'], '47ea303a-3b2c-4251-b313-4816c0a800fa');
 
-		$this->Comments->params['named']['model'] = 'Other';
+		$this->Comments->request->params['named']['model'] = 'Other';
 		$this->Comments->requestForUser();
 		$this->assertTrue(empty($this->Comments->viewVars['comments']));
 	}
