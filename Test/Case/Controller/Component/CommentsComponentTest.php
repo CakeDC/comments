@@ -440,19 +440,30 @@ class CommentsComponentTest extends CakeTestCase {
 			//$this->pass();
 		}
 
-		$this->Controller->request->params['named']['comment_action'] = 'toggle_approve';
-        $this->Controller->Comments->Controller = $this->Controller;
-        $User = ClassRegistry::init('User');
-		//$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+        $this->Controller->passedArgs['comment_action'] = 'toggle_approve';
+        try {
+            $this->Controller->Comments->callback_toggleApprove(1, 1);
+            $this->fail();
+        } catch (BlackHoleException $e) {
+            //$this->pass();
+        }
 
-		$this->Controller->Comments->callback_toggleApprove(1, 1);
+        //$User = ClassRegistry::init('User');
+        //$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+        $this->Collection = $this->getMock('ComponentCollection');
+        $this->Controller->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));
+        $this->Controller->Auth->staticExpects($this->any())
+            ->method('user')
+            ->with('is_admin')
+            ->will($this->returnValue(true));
+        $this->Controller->Comments->callback_toggleApprove(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertEqual($comment['Comment']['approved'], false);
 		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
 		$this->assertNull($this->Controller->redirectUrl);
 
-		$this->Controller->Comments->callback_toggleApprove(1, 'unexisting-id');
+        $this->Controller->Comments->callback_toggleApprove(1, 'unexisting-id');
 		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment status update. Try later.');
 		$this->assertNull($this->Controller->redirectUrl);
 
@@ -460,30 +471,14 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
 		$this->Controller->passedArgs['comment'] = 1;
 
-		$this->Controller->Comments->callback_view('flat');
-		$comment = $this->Controller->Article->Comment->findById(1);
+        $this->Controller->Comments->callback_toggleApprove(1, 1);
+        $comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertEqual($comment['Comment']['approved'], true);
 		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount);
 		$this->assertNull($this->Controller->redirectUrl);
-		$this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
-
-
-		// user1 is admin
-		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
-		try {
-			//$this->Controller->Comments->callback_toggleApprove(1, 1);
-		} catch (BlackHoleException $e) {
-			$this->fail('Fail toggle approve 1,1');
-			//$this->pass();
-		}
-
-		
-		$this->Controller->Session->delete('Message.flash.message');
-		$this->Controller->Session->delete('Auth');
-		unset($User);
-		
-		
+        $this->Controller->Comments->callback_view('flat');
+        $this->assertTrue(is_array($this->Controller->viewVars['commentsData']));
 	}
 
 /**

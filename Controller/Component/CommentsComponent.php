@@ -669,7 +669,7 @@ class CommentsComponent extends Component {
 					$this->_call('add', array($id, $parent, $displayType));
 				}
 			} else {
-				$this->Controller->Session->write('Auth.redirect', $this->Controller->params['url']['url']);
+                $this->Controller->Session->write('Auth.redirect', $this->Controller->request['url']);
 				$this->Controller->redirect($this->Controller->Auth->loginAction);
 			}
 		}

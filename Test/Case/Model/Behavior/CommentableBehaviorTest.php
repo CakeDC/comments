@@ -267,7 +267,8 @@ class CommentableTest extends CakeTestCase {
 		$this->assertEqual($article['Article']['comments'], 2);
 
 		$this->assertFalse($this->Model->changeCommentCount('1', 'invalid'));
-		$this->assertFalse($this->Model->changeCommentCount('invalid!', 'up'));
+        //Invalid comment returns true because of update all statement
+		$this->assertTrue($this->Model->changeCommentCount('invalid!', 'up'));
 	}
 
 /**

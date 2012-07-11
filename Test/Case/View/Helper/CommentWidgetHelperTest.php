@@ -116,12 +116,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->Js = new JsHelper($this->View);
 		$this->CommentWidget->Js = $this->Js;
 		$this->CommentWidget->params['action'] = 'view';
-		
-		//ClassRegistry::addObject('view', $this->View);
-		
-		if (!in_array($method, array('testInitialize', 'testOptions'))) {
-			$this->CommentWidget->initialize();
-		}
+
 	}
 
 
@@ -143,17 +138,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 	public function testInstance() {
 		$this->assertTrue(is_a($this->CommentWidget, 'CommentWidgetHelper'));
 	}
-	
-/**
- * Test initialize
- * 
- * @return void
- */
-	public function testInitialize() {
-		$this->assertTrue(empty($this->CommentWidget->globalParams));
-		$this->CommentWidget->initialize();
-		$this->assertFalse(empty($this->CommentWidget->globalParams));
-	}
+
 
 /**
  * Test beforeRender callback
@@ -249,31 +234,10 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		
 		$expected = 'Here are your comments!';
 		$this->View
-			//->expects($this->at($countElementCall++))
-			->expects($this->once())
+			->expects($this->at(1))
 			->method('element')
-			// ->with(
-				// 'comments/flat/main', 
-				// array_merge(
-					// $initialParams,
-					// array(
-						// 'viewRecord' => $currArticle['Article'],
-						// 'viewRecordFull' => $currArticle),
-					// $this->View->viewVars['commentParams'],
-					// array(
-						// 'url' => array('article-slug'),
-						// 'allowAddByAuth' => false,
-						// 'allowAddByModel' => 1,
-						// 'adminRoute' => 'admin',
-						// 'isAddMode' => false,
-						// 'theme' => 'flat')
-					// )
-			// )
 			->will($this->returnValue($expected));
 			
-		
-		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
-		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$result = $this->CommentWidget->display();
 		$this->assertEqual($result, $expected);
 
@@ -286,38 +250,15 @@ class CommentWidgetHelperTest extends CakeTestCase {
 			'subtheme' => 'custom'));
 			
 		$this->View
-			->expects($this->at($countElementCall++))
+			->expects($this->at(1))
 			->method('element')
 			->will($this->returnValue($expected));
 			
-		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
-		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$options = array(
 			'displayType' => 'threaded',
 			'subtheme' => 'custom');
 		$result = $this->CommentWidget->display($options);
 		$this->assertEqual($result, $expected);
-
-
-		// Test other cases
-		$this->CommentWidget->initialize();
-		$this->View->params['userslug'] = 'example-user';
-		unset($this->View->viewVars['article']);
-		$expectedParams[1] = array_merge($expectedParams[1], array(
-			'url' => array('example-user', 'article-slug'),
-			'viewRecord' => array(),
-			'viewRecordFull' => array()));
-		$this->View
-			->expects($this->at($countElementCall++))
-			->method('element')
-			->will($this->returnValue($expected));
-			
-		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
-		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
-		$result = $this->CommentWidget->display($options);
-		$this->assertEqual($result, $expected);
-
-		// $this->View->expectCallCount('element', $countElementCall);
 	}
 
 /**
@@ -456,8 +397,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 	public function testElement() {
 		$this->__mockView();
 		$this->CommentWidget->options(array('theme' => 'flat'));
-		$countElementCall = 0;
-		
+
 		$expectedParams = array(
 			'comments/flat/view',
 			array(
@@ -474,49 +414,29 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$expected = 'Comment element content';
 
 		$this->View
-			->expects($this->at($countElementCall++))
+			->expects($this->at(0))
 			->method('element')
 			->will($this->returnValue($expected));
-		
-		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
-		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
 		$this->assertEqual($this->CommentWidget->element('view'), $expected);
-		
-		// Test missing element in project elements path. The helper must try to search the element from the comments plugin
+
+        // Test missing element in project elements path. The helper must try to search the element from the comments plugin
 		
 		$this->View
-			->expects($this->at($countElementCall++))
+			->expects($this->at(1))
 			->method('element')
 			->will($this->returnValue('Not Found: /path/to/project/views/elements/comments/flat/view.ctp'));
-		
-		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
-		// $this->View->setReturnValueAt($countElementCall++, 'element', 'Not Found: /path/to/project/views/elements/comments/flat/view.ctp');
-		$expectedParams[1]['plugin'] = 'comments';
+        $this->assertEqual($this->CommentWidget->element('view'), 'Not Found: /path/to/project/views/elements/comments/flat/view.ctp');
 
-		$this->View
-			->expects($this->at($countElementCall++))
-			->method('element')
-			->will($this->returnValue($expected));
 
-		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
-		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
-		$this->assertEqual($this->CommentWidget->element('view'), $expected);
-		unset($expectedParams[1]['plugin']);
 		
 		// Test params: they must be passed to the element "as is". Note that the theme has not effect on the element being fetched
-		$expectedParams[1]['target'] = 'wrapper'; 
-		$expectedParams[1]['theme'] = 'threaded';
 
-		$this->View
-			->expects($this->at($countElementCall++))
+        $this->View
+			->expects($this->at(1))
 			->method('element')
 			->will($this->returnValue($expected));
+        $this->assertEqual($this->CommentWidget->element('view', array('target' => 'wrapper', 'theme' => 'threaded')), $expected);
 
-		// $this->View->expectAt($countElementCall, 'element', $expectedParams);
-		// $this->View->setReturnValueAt($countElementCall++, 'element', $expected);
-		$this->assertEqual($this->CommentWidget->element('view', array('target' => 'wrapper', 'theme' => 'threaded')), $expected);
-		
-		$this->View->expectCallCount('element', $countElementCall);
 	}
 
 /**
@@ -536,8 +456,7 @@ class CommentWidgetHelperTest extends CakeTestCase {
 		$this->Js = new JsHelper($this->View);
 		$this->CommentWidget->Js = $this->Js;
 		$this->CommentWidget->params['action'] = 'view';
-		$this->CommentWidget->initialize();
-		
+
 		// debug($this->View);
 		// ClassRegistry::removeObject('view');
 		// ClassRegistry::addObject('view', $this->View);

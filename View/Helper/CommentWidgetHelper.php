@@ -230,8 +230,8 @@ class CommentWidgetHelper extends AppHelper {
 		}
 		$params = Set::merge($this->globalParams, $params);
 		$response = $View->element($name, $params, $extra);
-		if (is_null($response) || strpos($response, 'Not Found:') !== false) {
-			$response = $View->element($name, array_merge($params), array('plugin' => 'Comments'));
+        if (is_null($response) || strpos($response, 'Not Found:') !== false) {
+			$response = $View->element('Comments' . $name, array_merge($params));
 		}
 		return $response;
 	}
