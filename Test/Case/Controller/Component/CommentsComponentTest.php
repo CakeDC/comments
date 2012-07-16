@@ -9,8 +9,9 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::import('Controller', 'Controller', false);
-App::import('Component', 'Comments.Comments');
+App::uses('Controller', 'Controller');
+App::uses('Component', 'Comments.Comments');
+App::uses('AuthComponent', 'Controller/Component');
 
 if (!class_exists('ArticlesTestController')) {
 	class ArticlesTestController extends Controller {
@@ -87,17 +88,8 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Request = new CakeRequest();
 		$this->Controller = new ArticlesTestController($this->Request);
 		$this->Controller->constructClasses();
-
-		// $this->Collection = $this->getMock('ComponentCollection');
-		// if (!class_exists('MockAuthComponent2')) {
-			// $this->getMock('AuthComponent', array('user'), array($this->Collection), 'MockAuthComponent2');
-		// }
-
-		// $this->AuthComponent = new MockAuthComponent2($this->Collection);
-		// $this->AuthComponent->enabled = true;
-		// $this->Controller->Auth = $this->AuthComponent;
-
-
+		$this->Collection = $this->getMock('ComponentCollection');
+		$this->Controller->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
 	}
 
 /**
@@ -116,10 +108,7 @@ class CommentsComponentTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testInitialize() {
-		// $this->Controller = new ArticlesTestController();
-		// $this->Controller->constructClasses();
-		// $this->Controller->Components->init($this->Controller);
+	public function testInitialize() {	
         $currentHelpers = $this->Controller->helpers;
         $this->Controller->Comments->initialize($this->Controller, array());
         $currentHelpers = array_merge($currentHelpers,  array('Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
@@ -133,21 +122,21 @@ class CommentsComponentTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testStartup() {
-		$this->Controller->Comments->initialize($this->Controller, array());
-		//debug($this->Controller->Article->hasMany);
-		//$this->assertTrue(isset($this->Controller->Article->hasMany['Comment']));
-		$this->Controller->Comments->unbindAssoc = true;
-		//debug($this->Controller->Comments);
+	public function testStartup() {			
+				
+		$this->Controller->Comments->initialize($this->Controller, array());	
+		$this->Controller->Comments->unbindAssoc = true;	
 		$this->Controller->Comments->startup($this->Controller);
 		$this->assertFalse(isset($this->Controller->Article->hasMany['Comment']));
-		//debug($this->Controller->Article->hasMany);
-
+		
 		$User = ClassRegistry::init('User');
+		$userData = $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa')));		
+		$this->Collection = $this->getMock('ComponentCollection');
+		$this->Controller->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));
+		$this->Controller->Auth->staticExpects($this->any())
+            ->method('user')
+            ->will($this->returnValue($userData));		
 
-		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
-
-		//$this->assertFalse(isset($this->Controller->viewVars['isAuthorized']));
 		$this->Controller->Comments->unbindAssoc = false;
 		$this->Controller->Comments->startup($this->Controller);
 		$this->assertTrue($this->Controller->viewVars['isAuthorized']);
@@ -333,9 +322,20 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->data = $data;
 		$User = ClassRegistry::init('User');
 		$this->Controller->passedArgs[1] = '123';
-		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+		
+		$this->Collection = $this->getMock('ComponentCollection');
+		$this->Controller->Comments->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));
+		$this->Controller->Comments->Auth->staticExpects($this->any())
+            ->method('user')
+            ->with('id')
+            ->will($this->returnValue('47ea303a-3b2c-4251-b313-4816c0a800fa'));	
+		
 		$this->Controller->Article->id = 1;
 		$oldCount = $this->Controller->Article->field('comments');
+		
+		$this->Controller->Comments->Session->expects($this->once())
+            ->method('setFlash')
+            ->with(__d('comments', 'The Comment has been saved.'));
 
 		$this->Controller->Comments->callback_add(1, 1, 'flat');
 		$created = $this->Controller->Article->Comment->find('first', array('order' => 'created DESC'));
@@ -358,13 +358,9 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertNotEqual($created['Comment']['id'], 3);
 		ksort($result);
 		$this->assertEqual($result, $expected);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been saved.');
 		$this->assertEqual($this->Controller->redirectUrl, array('123', '#' => 'comment' . $created['Comment']['id']));
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
-
-		$this->Controller->Session->delete('Message.flash.message');
-		$this->Controller->Session->delete('Auth');
-		unset($User);
+		
 	}
 
 /**
@@ -380,15 +376,23 @@ class CommentsComponentTest extends CakeTestCase {
 				'body' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')
 		);
 		$this->__setupControllerData();
-		$this->Controller->data = $data;
-		$User = ClassRegistry::init('User');
+		$this->Controller->data = $data;		
 		$this->Controller->passedArgs[1] = '123';
-		$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+		
+		$this->Collection = $this->getMock('ComponentCollection');
+		$this->Controller->Comments->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));		
+
+		$this->Controller->Comments->Auth->staticExpects($this->at(0))
+            ->method('user')
+            ->with('id')
+            ->will($this->returnValue('47ea303a-3b2c-4251-b313-4816c0a800fa'));	
+		
 		$this->Controller->Article->id = 1;
 		$oldCount = $this->Controller->Article->field('comments');
 
 		$this->Controller->params['isAjax'] = true;
 		$this->Controller->Comments->commentParams['displayType'] = 'flat';
+
 		$this->Controller->Comments->callback_add(1, 1, 'flat');
 		$created = $this->Controller->Article->Comment->find('first', array('order' => 'Comment.created DESC'));
 		$expected = array(
@@ -409,17 +413,12 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->assertTrue(is_array($created));
 		$this->assertNotEqual($created['Comment']['id'], 3);
 		ksort($result);
-		$this->assertEqual($result, $expected);
-		$this->assertEqual($this->Controller->viewVars['messageTxt'], 'The Comment has been saved.');
+		$this->assertEqual($result, $expected);		
+		
 		$this->assertEqual($this->Controller->redirectUrl, null);
 		$this->assertEqual($this->Controller->viewVars['redirect'], null);
 		//array('123', '#' => 'comment' . $created['Comment']['id'])
-		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);
-
-		$this->Controller->Session->delete('Message.flash.message');
-		$this->Controller->Session->delete('Auth');
-		unset($User);
-		unset($this->Controller->params['isAjax']);
+		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount + 1);		
 	}
 
 /**
@@ -447,34 +446,42 @@ class CommentsComponentTest extends CakeTestCase {
         } catch (BlackHoleException $e) {
             //$this->pass();
         }
-
-        //$User = ClassRegistry::init('User');
-        //$this->Controller->Session->write('Auth', $User->find('first', array('conditions' => array('id' => '47ea303a-3b2c-4251-b313-4816c0a800fa'))));
+        
         $this->Collection = $this->getMock('ComponentCollection');
         $this->Controller->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));
         $this->Controller->Auth->staticExpects($this->any())
             ->method('user')
             ->with('is_admin')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true));	
+	
+        $this->Controller->Comments->Session->expects($this->any())
+            ->method('setFlash')
+            ->with(__d('comments', 'The Comment status has been updated.'));
+		
         $this->Controller->Comments->callback_toggleApprove(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
-		$this->assertEqual($comment['Comment']['approved'], false);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEqual($comment['Comment']['approved'], false);		
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
 		$this->assertNull($this->Controller->redirectUrl);
-
-        $this->Controller->Comments->callback_toggleApprove(1, 'unexisting-id');
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment status update. Try later.');
+		$this->Controller->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
+        $this->Controller->Comments->Session->expects($this->any())
+            ->method('setFlash')
+            ->with(__d('comments', 'Error appear during comment status update. Try later.'));
+        $this->Controller->Comments->callback_toggleApprove(1, 'unexisting-id');		
 		$this->assertNull($this->Controller->redirectUrl);
 
 		$this->__setupControllerData();
 		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
-		$this->Controller->passedArgs['comment'] = 1;
-
+		$this->Controller->passedArgs['comment'] = 1;		
+		
+		$this->Controller->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
+		$this->Controller->Comments->Session->expects($this->any())
+            ->method('setFlash')
+            ->with(__d('comments', 'The Comment status has been updated.'));
         $this->Controller->Comments->callback_toggleApprove(1, 1);
         $comment = $this->Controller->Article->Comment->findById(1);
-		$this->assertEqual($comment['Comment']['approved'], true);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment status has been updated.');
+		$this->assertEqual($comment['Comment']['approved'], true);	
+		
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount);
 		$this->assertNull($this->Controller->redirectUrl);
         $this->Controller->Comments->callback_view('flat');
@@ -490,20 +497,25 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->initialize($this->Controller, array());
 		$this->__setupControllerData();
 		$this->Controller->Article->id = 1;
-		$oldCount = $this->Controller->Article->field('comments');
+		$oldCount = $this->Controller->Article->field('comments');		
+		$this->Controller->Comments->Session->expects($this->any())
+            ->method('setFlash')
+            ->with(__d('comments', 'The Comment has been deleted.'));
 
 		$this->Controller->Comments->callback_delete(1, 1);
 		$comment = $this->Controller->Article->Comment->findById(1);
 		$this->assertFalse($comment);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'The Comment has been deleted.');
 		$this->assertEqual($this->Controller->Article->field('comments'), $oldCount - 1);
+		$this->assertEqual($this->Controller->redirectUrl, array());	
+		$this->Controller->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
+		$this->Controller->Comments->Session->expects($this->any())
+            ->method('setFlash')
+            ->with(__d('comments', 'Error appear during comment deleting. Try later.'));
+
+		$this->Controller->Comments->callback_delete(1, 'unexisting-id');		
 		$this->assertEqual($this->Controller->redirectUrl, array());
 
-		$this->Controller->Comments->callback_delete(1, 'unexisting-id');
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), 'Error appear during comment deleting. Try later.');
-		$this->assertEqual($this->Controller->redirectUrl, array());
-
-		$this->Controller->Session->delete('Message.flash.message');
+		
 	}
 
 /**
@@ -516,8 +528,10 @@ class CommentsComponentTest extends CakeTestCase {
 		$message = 'Test Message';
 
 		$this->Controller->params['isAjax'] = false;
-		$this->Controller->Comments->flash($message);
-		$this->assertEqual($this->Controller->Session->read('Message.flash.message'), $message);
+		$this->Controller->Comments->Session->expects($this->any())
+            ->method('setFlash')
+            ->with(__d('messageTxt', $message));
+		$this->Controller->Comments->flash($message);		
 
 		$this->Controller->params['isAjax'] = true;
 		$this->Controller->Comments->flash('Test Message');
@@ -568,7 +582,7 @@ class CommentsComponentTest extends CakeTestCase {
 	}
 
 /**
- * testFlash
+ * testPermalink
  *
  * @return void
  */
@@ -579,7 +593,9 @@ class CommentsComponentTest extends CakeTestCase {
 				'action' => 'view',
 				'testnamed' => 'test'));
         $this->Controller->Comments->initialize($this->Controller, array());
-        $this->assertEqual($this->Controller->Comments->permalink(), 'http://' . env('HTTP_HOST') . '/articles/view/testnamed:test');
+		$url = '/articles/view/testnamed:test';
+		$permalink = $this->Controller->Comments->permalink();				
+        $this->assertTrue(strpos($permalink,$url) > 0);
 	}
 
 /**
