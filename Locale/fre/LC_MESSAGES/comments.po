@@ -1,0 +1,430 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CakePHP Comments Plugin\n"
+"POT-Creation-Date: 2010-09-15 15:02+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Pierre MARTIN <contact@pierre-martin.fr>\n"
+"Language-Team: CakeDC <contact@cakedc.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+
+#: /controllers/comments_controller.php:132;150
+msgid "Wrong comment id"
+msgstr "Id de commentaire incorrect"
+
+#: /controllers/comments_controller.php:134
+msgid "Antispam system informed about spam message."
+msgstr "Système antispam informé du message de spam."
+
+#: /controllers/comments_controller.php:136;154
+msgid "Error appear during save."
+msgstr "Une erreur est apparue lors de la sauvegarde."
+
+#: /controllers/comments_controller.php:152
+msgid "Antispam system informed about ham message."
+msgstr "Système antispam informé du message non spam."
+
+#: /controllers/comments_controller.php:169;203
+msgid "Invalid Comment."
+msgstr "Commentaire invalide."
+
+#: /controllers/comments_controller.php:184
+msgid "Invalid id for Comment"
+msgstr "Id invalide pour le Commentaire"
+
+#: /controllers/comments_controller.php:186
+msgid "Comment deleted"
+msgstr "Commentaire supprimé"
+
+#: /controllers/comments_controller.php:188
+msgid "Impossible to delete the Comment. Please try again."
+msgstr "Impossible de supprimer le Commentaire. Merci de réessayer."
+
+#: /controllers/components/comments.php:479
+msgid "The Comment has been saved."
+msgstr "Le Commentaire a été sauvegardé"
+
+#: /controllers/components/comments.php:490
+msgid "The Comment could not be saved. Please, try again."
+msgstr "Le Commentaire ne peut être sauvegardé. Merci de réessayer."
+
+#: /controllers/components/comments.php:535
+msgid "Nonrestricted operation"
+msgstr "Opération non restreinte"
+
+#: /controllers/components/comments.php:538
+msgid "The Comment status has been updated."
+msgstr "Le statut du Commentaire a été mis à jour."
+
+#: /controllers/components/comments.php:540
+msgid "Error appear during comment status update. Try later."
+msgstr "Une erreur est apparue lors de la mise à jour du statut. Réessayez plus tard."
+
+#: /controllers/components/comments.php:554
+msgid "The Comment has been deleted."
+msgstr "Le Commentaire a été supprimé."
+
+#: /controllers/components/comments.php:556
+msgid "Error appear during comment deleting. Try later."
+msgstr "Une erreur est apparue lors de la suppression du commentaire. Réessayez plus tard."
+
+#: /models/comment.php:132;173
+msgid "Some errors appear during execution."
+msgstr "Des erreurs sont survenues lors de l'exécution."
+
+#: /models/comment.php:136
+msgid "Comments removed."
+msgstr "Commentaires supprimés."
+
+#: /models/comment.php:178
+msgid "Operation was performed. "
+msgstr "L'opération a été exécutée."
+
+#: /models/behaviors/commentable.php:162
+msgid "Unallowed comment id"
+msgstr "Id de commentaire non autorisé"
+
+#: /views/comments/add.ctp:14
+#: /views/comments/admin_add.ctp:14
+msgid "Add Comment"
+msgstr "Ajouter un Commentaire"
+
+#: /views/comments/add.ctp:28;29
+#: /views/comments/admin_add.ctp:28;29
+#: /views/comments/admin_edit.ctp:30;31
+#: /views/comments/admin_view.ctp:65;67
+#: /views/comments/edit.ctp:30;31
+#: /views/comments/index.ctp:85
+#: /views/comments/view.ctp:65;67
+msgid "List Comments"
+msgstr "Lister les Commentaires"
+
+#: /views/comments/add.ctp:30
+#: /views/comments/admin_add.ctp:30
+#: /views/comments/admin_edit.ctp:32
+#: /views/comments/admin_view.ctp:68
+#: /views/comments/edit.ctp:32
+#: /views/comments/index.ctp:86
+#: /views/comments/view.ctp:68
+msgid "New Parent Comment"
+msgstr "Nouveau Commentaire parent"
+
+#: /views/comments/add.ctp:31
+#: /views/comments/admin_add.ctp:31
+#: /views/comments/admin_edit.ctp:33
+#: /views/comments/admin_view.ctp:69
+#: /views/comments/edit.ctp:33
+#: /views/comments/index.ctp:87
+#: /views/comments/view.ctp:69
+msgid "List Users"
+msgstr "Lister les Utilisateurs"
+
+#: /views/comments/add.ctp:32
+#: /views/comments/admin_add.ctp:32
+#: /views/comments/admin_edit.ctp:34
+#: /views/comments/admin_view.ctp:70
+#: /views/comments/edit.ctp:34
+#: /views/comments/index.ctp:88
+#: /views/comments/view.ctp:70
+msgid "New User"
+msgstr "Nouvel Utilisateur"
+
+#: /views/comments/admin_edit.ctp:14
+#: /views/comments/admin_view.ctp:63
+#: /views/comments/edit.ctp:14
+#: /views/comments/view.ctp:63
+msgid "Edit Comment"
+msgstr "Modifier le Commentaire"
+
+#: /views/comments/admin_edit.ctp:29
+#: /views/comments/admin_index.ctp:18;81
+#: /views/comments/admin_view.ctp:110
+#: /views/comments/edit.ctp:29
+#: /views/comments/index.ctp:71
+#: /views/comments/view.ctp:110
+msgid "Delete"
+msgstr "Supprimer"
+
+#: /views/comments/admin_edit.ctp:29
+#: /views/comments/admin_index.ctp:81
+#: /views/comments/admin_view.ctp:64;110
+#: /views/comments/edit.ctp:29
+#: /views/comments/index.ctp:71
+#: /views/comments/view.ctp:64;110
+msgid "Are you sure you want to delete # %s?"
+msgstr "Etes-vous sûr de vouloir supprimer # %s ?"
+
+#: /views/comments/admin_index.ctp:1
+#: /views/comments/index.ctp:12
+#: /views/elements/comments/flat/main.ctp:24
+#: /views/elements/comments/threaded/main.ctp:24
+#: /views/elements/comments/tree/main.ctp:13
+msgid "Comments"
+msgstr "Commentaires"
+
+#: /views/comments/admin_index.ctp:8
+msgid "Filter spam comments"
+msgstr "Filtrer les commentaires spam"
+
+#: /views/comments/admin_index.ctp:9
+msgid "Filter good comments"
+msgstr "Filtrer les commentaires valides"
+
+#: /views/comments/admin_index.ctp:16;77
+msgid "Mark as ham"
+msgstr "Marquer comme non spam"
+
+#: /views/comments/admin_index.ctp:17;76
+msgid "Mark as spam"
+msgstr "Marquer comme spam"
+
+#: /views/comments/admin_index.ctp:19;75
+msgid "Approve"
+msgstr "Approuver"
+
+#: /views/comments/admin_index.ctp:20
+msgid "Dispprove"
+msgstr "Désapprouver"
+
+#: /views/comments/admin_index.ctp:32
+msgid "Select..."
+msgstr "Sélectionner..."
+
+#: /views/comments/admin_index.ctp:33
+#: /views/comments/admin_view.ctp:87
+#: /views/comments/index.ctp:30
+#: /views/comments/view.ctp:87
+msgid "Actions"
+msgstr "Actions"
+
+#: /views/comments/admin_index.ctp:63
+msgid "Yes"
+msgstr "Oui"
+
+#: /views/comments/admin_index.ctp:63
+msgid "No"
+msgstr "Non"
+
+#: /views/comments/admin_index.ctp:78
+msgid "Disapprove"
+msgstr "Désapprouver"
+
+#: /views/comments/admin_index.ctp:79
+#: /views/comments/admin_view.ctp:108
+#: /views/comments/index.ctp:69
+#: /views/comments/view.ctp:108
+#: /views/elements/comments/flat/item.ctp:14
+#: /views/elements/comments/threaded/item.ctp:14
+#: /views/elements/comments/tree/item.ctp:14
+msgid "View"
+msgstr "Voir"
+
+#: /views/comments/admin_index.ctp:80
+#: /views/comments/admin_view.ctp:109
+#: /views/comments/index.ctp:70
+#: /views/comments/view.ctp:109
+msgid "Edit"
+msgstr "Modifier"
+
+#: /views/comments/admin_view.ctp:12
+#: /views/comments/view.ctp:12
+msgid "Comment"
+msgstr "Commentaire"
+
+#: /views/comments/admin_view.ctp:14;78
+#: /views/comments/view.ctp:14;78
+msgid "Id"
+msgstr "Id"
+
+#: /views/comments/admin_view.ctp:19
+#: /views/comments/view.ctp:19
+msgid "Parent Comment"
+msgstr "Commentaire parent"
+
+#: /views/comments/admin_view.ctp:24
+#: /views/comments/view.ctp:24
+msgid "Commented On"
+msgstr "Commenté le"
+
+#: /views/comments/admin_view.ctp:29
+#: /views/comments/view.ctp:29
+msgid "User"
+msgstr "Utilisateur"
+
+#: /views/comments/admin_view.ctp:34;82
+#: /views/comments/view.ctp:34;82
+msgid "Model"
+msgstr "Modèle"
+
+#: /views/comments/admin_view.ctp:39;83
+#: /views/comments/view.ctp:39;83
+#: /views/elements/comments/finder.ctp:8
+msgid "Approved"
+msgstr "Approuvé"
+
+#: /views/comments/admin_view.ctp:44;84
+#: /views/comments/view.ctp:44;84
+msgid "Body"
+msgstr "Corps"
+
+#: /views/comments/admin_view.ctp:49;85
+#: /views/comments/view.ctp:49;85
+msgid "Created"
+msgstr "Créé"
+
+#: /views/comments/admin_view.ctp:54;86
+#: /views/comments/view.ctp:54;86
+msgid "Modified"
+msgstr "Modifié"
+
+#: /views/comments/admin_view.ctp:64
+#: /views/comments/view.ctp:64
+msgid "Delete Comment"
+msgstr "Effacer le commentaire"
+
+#: /views/comments/admin_view.ctp:66
+#: /views/comments/index.ctp:84
+#: /views/comments/view.ctp:66
+msgid "New Comment"
+msgstr "Nouveau Commentaire"
+
+#: /views/comments/admin_view.ctp:74
+#: /views/comments/view.ctp:74
+msgid "Related Comments"
+msgstr "Commentaires liés"
+
+#: /views/comments/admin_view.ctp:79
+#: /views/comments/view.ctp:79
+msgid "Comment Id"
+msgstr "Id du Commentaire"
+
+#: /views/comments/admin_view.ctp:80
+#: /views/comments/view.ctp:80
+msgid "Foreign Key"
+msgstr "Clé Étrangère"
+
+#: /views/comments/admin_view.ctp:81
+#: /views/comments/view.ctp:81
+msgid "User Id"
+msgstr "Id d'Utilisateur"
+
+#: /views/comments/admin_view.ctp:119
+#: /views/comments/view.ctp:119
+msgid "New Child Comment"
+msgstr "Nouveau Commentaire fils"
+
+#: /views/comments/index.ctp:16
+msgid "Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%"
+msgstr "Page %page% sur %pages%, affiche %current% enregistrements sur un total de %count%, commençant à l'enregistrement %start%, s'arrêtant au %end%"
+
+#: /views/comments/index.ctp:78
+msgid "previous"
+msgstr "précédent"
+
+#: /views/comments/index.ctp:80
+msgid "next"
+msgstr "suivant"
+
+#: /views/elements/comments/finder.ctp:1
+msgid "Filter comments"
+msgstr "Filtrer les commentaires"
+
+#: /views/elements/comments/finder.ctp:10;18
+msgid "...select..."
+msgstr "... sélectionner ..."
+
+#: /views/elements/comments/finder.ctp:16
+msgid "spam state"
+msgstr "état de spam"
+
+#: /views/elements/comments/finder.ctp:23
+msgid "Search"
+msgstr "Recherche"
+
+#: /views/elements/comments/flat/form.ctp:28
+#: /views/elements/comments/threaded/form.ctp:28
+#: /views/elements/comments/tree/form.ctp:28
+msgid "This field cannot be left blank"
+msgstr "Ce champ doit être rempli"
+
+#: /views/elements/comments/flat/form.ctp:29
+#: /views/elements/comments/threaded/form.ctp:29
+#: /views/elements/comments/tree/form.ctp:29
+msgid "You can use only headings from %s to %s"
+msgstr "Vous ne pouvez utiliser que des entêtes de %s à %s"
+
+#: /views/elements/comments/flat/form.ctp:36;38
+#: /views/elements/comments/threaded/form.ctp:36;38
+#: /views/elements/comments/tree/form.ctp:36;38
+msgid "Submit"
+msgstr "Envoyer"
+
+#: /views/elements/comments/flat/item.ctp:18
+#: /views/elements/comments/threaded/item.ctp:18
+#: /views/elements/comments/tree/item.ctp:18
+msgid "Reply"
+msgstr "Répondre"
+
+#: /views/elements/comments/flat/item.ctp:19
+#: /views/elements/comments/threaded/item.ctp:19
+#: /views/elements/comments/tree/item.ctp:19
+msgid "Quote"
+msgstr "Citer"
+
+#: /views/elements/comments/flat/item.ctp:22
+#: /views/elements/comments/threaded/item.ctp:22
+#: /views/elements/comments/tree/item.ctp:22
+msgid "Publish"
+msgstr "Publier"
+
+#: /views/elements/comments/flat/item.ctp:24
+#: /views/elements/comments/threaded/item.ctp:24
+#: /views/elements/comments/tree/item.ctp:24
+msgid "Unpublish"
+msgstr "Dépublier"
+
+#: /views/elements/comments/flat/item.ctp:37
+#: /views/elements/comments/threaded/item.ctp:37
+#: /views/elements/comments/tree/item.ctp:36
+msgid "posted"
+msgstr "posté"
+
+#: /views/elements/comments/flat/main.ctp:15
+#: /views/elements/comments/threaded/main.ctp:15
+#: /views/elements/comments/tree/main.ctp:17
+msgid "Add New Comment"
+msgstr "Ajouter un nouveau Commentaire"
+
+#: /views/elements/comments/flat/main.ctp:20
+#: /views/elements/comments/tree/main.ctp:22
+msgid "Add comment"
+msgstr "Ajouter un commentaire"
+
+#: /views/elements/comments/flat/main.ctp:26
+#: /views/elements/comments/threaded/main.ctp:26
+#: /views/elements/comments/tree/main.ctp:27
+msgid "If you want to post comments, you need to login first."
+msgstr "Vous devez vous connecter avant de pouvoir poster des commentaires."
+
+#: /views/elements/comments/flat/main.ctp:26
+#: /views/elements/comments/threaded/main.ctp:26
+#: /views/elements/comments/tree/main.ctp:27
+msgid "login"
+msgstr "login"
+
+#: /views/elements/comments/flat/paginator.ctp:25
+#: /views/elements/comments/tree/paginator.ctp:25
+msgid "Most Recent"
+msgstr "Plus récents"
+
+#: /views/elements/comments/flat/paginator.ctp:27
+#: /views/elements/comments/tree/paginator.ctp:27
+msgid "Oldest"
+msgstr "Les plus anciens"
+
+#: /views/elements/comments/threaded/main.ctp:20
+msgid "ADD COMMENT"
+msgstr "AJOUTER UN COMMENTAIRE"
+
