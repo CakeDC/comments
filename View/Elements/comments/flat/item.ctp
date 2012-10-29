@@ -31,7 +31,7 @@ $_userLink = $comment[$userModel]['username'];
 ?>
 <div class="comment">
 	<div class="header">
-		<a name="comment<?php echo $comment['Comment']['id'];?>"><?php echo $comment['Comment']['title'];?></a>
+		<a id="comment<?php echo $comment['Comment']['id'];?>"><?php echo $comment['Comment']['title'];?></a>
 		<span style="float: right"><?php echo join('&nbsp;', $_actionLinks);?></span>
 		<br/>
 		<span><?php echo $_userLink; ?> &nbsp; <?php echo __d('comments', 'posted'); ?> &nbsp; <?php echo $this->Time->timeAgoInWords($comment['Comment']['created']); ?></span>
