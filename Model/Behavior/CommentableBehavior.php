@@ -2,14 +2,14 @@
 /**
  * CakePHP Comments
  *
- * Copyright 2009 - 2010, Cake Development Corporation
+ * Copyright 2009 - 2013, Cake Development Corporation
  *                        1785 E. Sahara Avenue, Suite 490-423
  *                        Las Vegas, Nevada 89104
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright 2009 - 2010, Cake Development Corporation
+ * @copyright 2009 - 2013, Cake Development Corporation
  * @link      http://codaset.com/cakedc/migrations/
  * @package   plugins.comments
  * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -282,7 +282,7 @@ class CommentableBehavior extends ModelBehavior {
 			$model->Comment->unbindModel($unbind, false);
 		}
 
-		$model->Comment->belongsTo[$model->alias]['fields'] = array('id');
+		$model->Comment->belongsTo[$model->alias]['fields'] = array($model->primaryKey);
 		$model->Comment->belongsTo[$userModel]['fields'] = array('id', $model->Comment->{$userModel}->displayField, 'slug');
 		$conditions = array('Comment.approved' => 1);
 		if (isset($id)) {

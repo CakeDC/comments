@@ -39,6 +39,20 @@ if (!class_exists('Article')) {
 	}
 }
 
+if (!class_exists('ArticleIdNotDefault')) {
+	class ArticleIdNotDefault extends CakeTestModel {
+		public $callbackData = array();
+		public $actsAs = array(
+			'Comments.Commentable' => array(
+				'commentModel' => 'Comments.Comment',
+				'userModelAlias' => 'UserModel',
+				'userModel' => 'User'));
+		public $useTable = 'articles_not_default_id';
+		public $name = 'ArticleIdNotDefault';
+		public $primaryKey = 'articleidnotdefault_id';
+	}
+}
+
 if (!class_exists('Article2')) {
 	class Article2 extends CakeTestModel {
 
@@ -301,6 +315,21 @@ class CommentableTest extends CakeTestCase {
 		$this->assertTrue($this->Model->Comment->Behaviors->enabled('Containable'));
 	}
 
+/**
+ * testCommentBeforeFindIdNotDefault
+ *
+ * @return void
+ */
+	public function testCommentBeforeFindIdNotDefault() {
+		$this->Model = Classregistry::init('ArticleIdNotDefault');
+		$this->Model->Comment->bindModel(array(
+			'belongsTo' => array(
+				'User')));
+		$options = array('userModel' => 'User');
+		$result = $this->Model->commentBeforeFind($options);
+		$this->assertEquals('articleidnotdefault_id', $this->Model->Comment->belongsTo['ArticleIdNotDefault']['fields'][0]);
+	}
+	
 /**
  * testBeforeAndAfterCallbacks
  *
