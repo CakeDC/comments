@@ -59,7 +59,7 @@ class CommentableBehavior extends ModelBehavior {
 		if (!is_array($settings)) {
 			$settings = (array) $settings;
 		}
-			
+
 		$this->settings[$model->alias] = array_merge($this->settings[$model->alias], $settings);
 
 		$cfg = $this->settings[$model->alias];
@@ -183,7 +183,7 @@ class CommentableBehavior extends ModelBehavior {
 			}
 
 			if (method_exists($model, 'beforeComment')) {
-				if (!$model->beforeComment(&$data)) {
+				if (!$model->beforeComment($data)) {
 					return false;
 				}
 			}
@@ -282,7 +282,7 @@ class CommentableBehavior extends ModelBehavior {
 			$model->Comment->unbindModel($unbind, false);
 		}
 
-		$model->Comment->belongsTo[$model->alias]['fields'] = array('id');
+		$model->Comment->belongsTo[$model->alias]['fields'] = array($model->primaryKey);
 		$model->Comment->belongsTo[$userModel]['fields'] = array('id', $model->Comment->{$userModel}->displayField, 'slug');
 		$conditions = array('Comment.approved' => 1);
 		if (isset($id)) {

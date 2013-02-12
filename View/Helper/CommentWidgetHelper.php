@@ -232,7 +232,7 @@ class CommentWidgetHelper extends AppHelper {
 		$extra['ignoreMissing'] = true;
 		$response = $View->element($name, $params, $extra);
 		if (is_null($response) || strpos($response, 'Not Found:') !== false) {
-			$response = $View->element('Comments' . $name, array_merge($params));
+			$response = $View->element('Comments.' . $name, array_merge($params));
 		}
 		return $response;
 	}

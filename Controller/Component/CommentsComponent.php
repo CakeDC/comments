@@ -257,7 +257,7 @@ class CommentsComponent extends Component {
  *
  * @return void
  */
-	public function beforeRender() {
+	public function beforeRender(Controller $controller) {
 		try {
 			if ($this->enabled && in_array($this->Controller->request->action, $this->actionNames)) {
 				$type = $this->_call('initType');

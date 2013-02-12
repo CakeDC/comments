@@ -153,7 +153,7 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Comments->initialize($this->Controller, array());
 		$this->__setupControllerData();
 		$this->Controller->request->action = 'view';
-		$this->Controller->Comments->beforeRender();
+		$this->Controller->Comments->beforeRender($this->Controller);
 		$this->assertTrue(isset($this->Controller->viewVars['commentParams']));
 		$this->assertTrue(is_array($this->Controller->viewVars['commentParams']));
 		$this->assertEqual($this->Controller->viewVars['commentParams'], array(
