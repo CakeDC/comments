@@ -14,7 +14,7 @@
  * @package   plugins.comments
  * @license   MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+App::uses('ModelBehavior', 'Model');
 /**
  * Short description for class.
  *
