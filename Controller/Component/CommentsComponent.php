@@ -344,9 +344,9 @@ class CommentsComponent extends Component {
 		$paginate = $settings;
 		$paginate['limit'] = 10;
 
-		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
-		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate); 
-		$data = $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();
+		$this->Controller->Paginator->settings['Comment'] = array_merge($paginate, $overloadPaginate);
+		$data = $this->Controller->Paginator->paginate($this->Controller->{$this->modelName}->Comment);
 		$parents = array();
 		if (isset($data[0]['Comment'])) {
 			$rec = $data[0]['Comment'];
@@ -366,9 +366,9 @@ class CommentsComponent extends Component {
 	public function callback_fetchDataFlat($options) {
 		$paginate = $this->_prepareModel($options);
 
-		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();		
-		$this->Controller->paginate = array_merge(array('Comment' => $paginate), $overloadPaginate); 
-		return $this->Controller->paginate($this->Controller->{$this->modelName}->Comment);
+		$overloadPaginate = !empty($this->Controller->paginate['Comment']) ? $this->Controller->paginate['Comment'] : array();
+		$this->Controller->Paginator->settings['Comment'] = array_merge($paginate, $overloadPaginate);
+		return $this->Controller->Paginator->paginate($this->Controller->{$this->modelName}->Comment);
 	}
 
 /**
@@ -384,10 +384,14 @@ class CommentsComponent extends Component {
 			'Comment.author_email', 'Comment.author_name', 'Comment.author_url',
 			'Comment.id', 'Comment.user_id', 'Comment.foreign_key', 'Comment.parent_id', 'Comment.approved',
 			'Comment.title', 'Comment.body', 'Comment.slug', 'Comment.created',
-			$this->Controller->{$this->modelName}->alias . '.id',
-			$this->userModel . '.id',
-			$this->userModel . '.' . $Comment->{$this->userModel}->displayField,
-			$this->userModel . '.slug');
+			$this->Controller->{$this->modelName}->alias . '.' . $this->Controller->{$this->modelName}->primaryKey,
+			$this->userModel . '.' . $Comment->{$this->userModel}->primaryKey,
+			$this->userModel . '.' . $Comment->{$this->userModel}->displayField);
+
+		if ($Comment->{$this->userModel}->hasField('slug')) {
+			$settings['fields'][] = $this->userModel . '.slug';
+		}
+
 		$settings += array('order' => array(
 			'Comment.parent_id' => 'asc',
 			'Comment.created' => 'asc'));

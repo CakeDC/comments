@@ -227,12 +227,12 @@ class CommentsController extends CommentsAppController {
 			$conditions['Comment.model'] = $this->request->params['named']['model'];
 		}
 		$conditions['Comment.is_spam'] = array('ham','clean');
-		$this->paginate = array(
+		$this->Paginator->settings = array(
 			'conditions' => $conditions,
 			'order' => 'Comment.created DESC',
 			'limit' => $amount);
 
-		$this->set('comments', $this->paginate());
+		$this->set('comments', $this->Paginator->paginate());
 		$this->set('userId', $userId);
 
 		$this->viewPath = 'elements/comments';
