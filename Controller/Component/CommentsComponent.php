@@ -178,6 +178,22 @@ class CommentsComponent extends Component {
 	public $allowAnonymousComment = false;
 
 /**
+ * Settings to use when CommentsComponent needs to do a flash message with SessionComponent::setFlash().
+ * Available keys are:
+ *
+ * - `element` - The element to use, defaults to 'default'.
+ * - `key` - The key to use, defaults to 'flash'
+ * - `params` - The array of additional params to use, defaults to array()
+ *
+ * @var array
+ */
+	public $flash = array(
+		'element' => 'default',
+		'key' => 'flash',
+		'params' => array()
+	);
+
+/**
  * Named params used internally by the component
  *
  * @var array
@@ -558,16 +574,18 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Flash message - Special behavior for ajax queries
+ * Flash message - for ajax queries, sets 'messageTxt' view vairable,
+ * otherwise uses the Session component and values from CommentsComponent::$flash.
  *
+ * @param string $message The message to set.
  * @return void
  */
 	public function flash($message) {
 		$isAjax = isset($this->Controller->params['isAjax']) ? $this->Controller->params['isAjax'] : false;
 		if ($isAjax) {
-			$this->Controller->set('messageTxt',$message);
+			$this->Controller->set('messageTxt', $message);
 		} else {
-			$this->Session->setFlash($message);
+			$this->Session->setFlash($message, $this->flash['element'], $this->flash['params'], $this->flash['key']);
 		}
 	}
 

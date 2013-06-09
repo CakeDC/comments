@@ -39,7 +39,11 @@ class CommentsController extends CommentsAppController {
 	public $components = array(
 		'RequestHandler',
 		'Paginator',
-		'Session');
+		'Session',
+		'Comments.Comments' => array(
+			'enabled' => false,
+		),
+	);
 
 /**
  * Helpers
@@ -123,7 +127,7 @@ class CommentsController extends CommentsAppController {
 			} catch (Exception $ex) {
 				$message = $ex->getMessage();
 			}
-			$this->Session->setFlash($message);
+			$this->Comments->flash($message);
 		}
 		$url = array('plugin'=>'comments', 'action' => 'index', 'admin' => true);
 		$url = Set::merge($url, $this->request->params['pass']);
@@ -138,11 +142,11 @@ class CommentsController extends CommentsAppController {
 	public function admin_spam($id) {
 		$this->Comment->id = $id;
 		if (!$this->Comment->exists()) {
-			$this->Session->setFlash(__d('comments', 'Wrong comment id'));
+			$this->Comments->flash(__d('comments', 'Wrong comment id'));
 		} elseif ($this->Comment->markAsSpam()) {
-			$this->Session->setFlash(__d('comments', 'Antispam system informed about spam message.'));
+			$this->Comments->flash(__d('comments', 'Antispam system informed about spam message.'));
 		} else {
-			$this->Session->setFlash(__d('comments', 'Error appear during save.'));
+			$this->Comments->flash(__d('comments', 'Error appear during save.'));
 		}
 		$this->redirect(array('action' => 'index'));
 	}
@@ -155,11 +159,11 @@ class CommentsController extends CommentsAppController {
 	public function admin_ham($id) {
 		$this->Comment->id = $id;
 		if (!$this->Comment->exists()) {
-			$this->Session->setFlash(__d('comments', 'Wrong comment id'));
+			$this->Comments->flash(__d('comments', 'Wrong comment id'));
 		} elseif ($this->Comment->markAsHam()) {
-			$this->Session->setFlash(__d('comments', 'Antispam system informed about ham message.'));
+			$this->Comments->flash(__d('comments', 'Antispam system informed about ham message.'));
 		} else {
-			$this->Session->setFlash(__d('comments', 'Error appear during save.'));
+			$this->Comments->flash(__d('comments', 'Error appear during save.'));
 		}
 		$this->redirect(array('action' => 'index'));
 	}
@@ -173,7 +177,7 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->id = $id;
 		$comment = $this->Comment->read(null, $id);
 		if (empty($comment)) {
-			$this->Session->setFlash(__d('comments', 'Invalid Comment.'));
+			$this->Comments->flash(__d('comments', 'Invalid Comment.'));
 			return $this->redirect(array('action'=>'index'));
 		}
 		$this->set('comment', $comment);
@@ -187,11 +191,11 @@ class CommentsController extends CommentsAppController {
 	public function admin_delete($id = null) {
 		$this->Comment->id = $id;
         if (!$this->Comment->exists()) {
-			$this->Session->setFlash(__d('comments', 'Invalid id for Comment'));
+			$this->Comments->flash(__d('comments', 'Invalid id for Comment'));
 		} elseif ($this->Comment->delete()) {
-			$this->Session->setFlash(__d('comments', 'Comment deleted'));
+			$this->Comments->flash(__d('comments', 'Comment deleted'));
 		} else {
-			$this->Session->setFlash(__d('comments', 'Impossible to delete the Comment. Please try again.'));
+			$this->Comments->flash(__d('comments', 'Impossible to delete the Comment. Please try again.'));
 		}
 		$this->redirect(array('action'=>'index'));
 	}
@@ -205,7 +209,7 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->id = $id;
 		$comment = $this->Comment->read(null, $id);
 		if (empty($comment)) {
-			$this->Session->setFlash(__d('comments', 'Invalid Comment.'));
+			$this->Comments->flash(__d('comments', 'Invalid Comment.'));
 			return $this->redirect(array('action'=>'index'));
 		}
 		$this->set('comment', $comment);
