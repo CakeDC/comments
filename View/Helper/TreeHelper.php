@@ -78,7 +78,7 @@ class TreeHelper extends AppHelper {
  *    'id' => id for top level 'type'
  *    'class' => class for top level 'type'
  *    'element' => path to an element to render to get node contents.
- *    'callback' => callback to use to get node contents. e.g. array(&$anObject, 'methodName') or 'floatingMethod'
+ *    'callback' => callback to use to get node contents. e.g. array($anObject, 'methodName') or 'floatingMethod'
  *    'autoPath' =>  array($left, $right [$classToAdd = 'active']) if set any item in the path will have the class $classToAdd added. MPTT only.
  *    'left' => name of the 'lft' field if not lft. only applies to MPTT data
  *    'right' => name of the 'rght' field if not lft. only applies to MPTT data
