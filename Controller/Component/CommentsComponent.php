@@ -630,9 +630,9 @@ class CommentsComponent extends Component {
 		$methodName = 'callback_comments' .  Inflector::camelize(Inflector::underscore($method));
 		$localMethodName = 'callback_' .  $method;
 		if (method_exists($this->Controller, $methodName)) {
-			return call_user_func_array(array(&$this->Controller, $methodName), $args);
+			return call_user_func_array(array($this->Controller, $methodName), $args);
 		} elseif (method_exists($this, $localMethodName)) {
-			return call_user_func_array(array(&$this, $localMethodName), $args);
+			return call_user_func_array(array($this, $localMethodName), $args);
 		} else {
 			throw new BadMethodCallException();
 		}
@@ -653,7 +653,7 @@ class CommentsComponent extends Component {
 					$isAdmin = (bool) $this->Auth->user('is_admin');
 					if (!$isAdmin) {
 						if (in_array($commentAction, array('delete'))) {
-							call_user_func(array(&$this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
+							call_user_func(array($this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
 							return;
 						} else {
 							return $this->Controller->blackHole("CommentsComponent: comment_Action '$commentAction' is for admins only");
