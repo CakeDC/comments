@@ -29,7 +29,7 @@ endif;
 
 //echo $this->CommentWidget->element('paginator');
 echo $this->Tree->generate(${$viewComments}, array(
-	'callback' => array(&$this->CommentWidget, 'treeCallback'),
+	'callback' => array($this->CommentWidget, 'treeCallback'),
 	'model' => 'Comment',
 	'class' => 'tree-block'));
 
