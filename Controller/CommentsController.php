@@ -17,10 +17,11 @@ App::uses('CommentsAppController', 'Comments.Controller');
  */
 
 /**
- * @property Comment Comment
- * @property PrgComponent Prg
- * @property SessionComponent  Session
- * @property RequestHandlerComponent RequestHandler
+ * @property Comment $Comment
+ * @property PrgComponent $Prg
+ * @property SessionComponent  $Session
+ * @property RequestHandlerComponent $RequestHandler
+ * @property CommentsComponent  $Comments
  */
 class CommentsController extends CommentsAppController {
 
@@ -41,7 +42,7 @@ class CommentsController extends CommentsAppController {
 		'Paginator',
 		'Session',
 		'Comments.Comments' => array(
-			'enabled' => false,
+			'active' => false,
 		),
 	);
 
@@ -88,15 +89,15 @@ class CommentsController extends CommentsAppController {
 		if (App::import('Component', 'Search.Prg')) {
 			$this->Comment->Behaviors->load('Search.Searchable');
 			$this->Comment->filterArgs = array(
-				array('name' => 'is_spam', 'type' => 'value'),
-				array('name' => 'approved', 'type' => 'value'));
+				array('field' => 'is_spam', 'name' => 'is_spam', 'type' => 'value'),
+				array('field' => 'approved', 'name' => 'approved', 'type' => 'value'));
+			$this->presetVars = true;
 			$this->Prg = new PrgComponent($this->Components, array());
 			$this->Prg->initialize($this);
 			$this->Prg->commonProcess();
 			$conditions = $this->Comment->parseCriteria($this->passedArgs);
 			$this->set('searchEnabled', true);
 		}
-		
 
 		$this->Paginator->settings = array(
 			'Comment' => array(
@@ -111,7 +112,6 @@ class CommentsController extends CommentsAppController {
 
 		$this->set('comments', $this->Paginator->paginate('Comment'));
 	}
-
 
 /**
  * Processes mailbox folders
@@ -190,9 +190,10 @@ class CommentsController extends CommentsAppController {
  */
 	public function admin_delete($id = null) {
 		$this->Comment->id = $id;
+		$this->Comment->recursive = -1;
         if (!$this->Comment->exists()) {
 			$this->Comments->flash(__d('comments', 'Invalid id for Comment'));
-		} elseif ($this->Comment->delete()) {
+		} elseif ($this->Comment->delete($id, false)) {
 			$this->Comments->flash(__d('comments', 'Comment deleted'));
 		} else {
 			$this->Comments->flash(__d('comments', 'Impossible to delete the Comment. Please try again.'));
@@ -218,11 +219,12 @@ class CommentsController extends CommentsAppController {
 /**
  * Request comments
  *
- * @param string user UUID
+ * @param string $userId UUID
+ * @param int $amount
  * @return void
  */
 	public function requestForUser($userId = null, $amount = 5) {
-		if (!$this->RequestHandler->isAjax() && !$this->_isRequestedAction()) {
+		if (!$this->request->is('ajax') && !$this->request->is('requested')) {
 			return $this->cakeError('404');
 		}
 

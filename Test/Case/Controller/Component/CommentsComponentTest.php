@@ -447,7 +447,11 @@ class CommentsComponentTest extends CakeTestCase {
 
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Controller->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));
-		$this->Controller->Auth->staticExpects($this->any())
+		$this->Controller->Auth->staticExpects($this->at(0))
+			->method('user')
+			->with('is_admin')
+			->will($this->returnValue(true));
+		$this->Controller->Auth->staticExpects($this->at(1))
 			->method('user')
 			->with('is_admin')
 			->will($this->returnValue(true));

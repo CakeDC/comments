@@ -63,7 +63,7 @@ class CommentsComponent extends Component {
  *
  * @var boolean $enabled
  */
-	public $enabled = true;
+	public $active = true;
 
 /**
  * Controller
@@ -233,6 +233,9 @@ class CommentsComponent extends Component {
 		if (empty($this->Auth) && !empty($this->Controller->Auth)) {
 			$this->Auth = $this->Controller->Auth;
 		}
+		if (!$this->active) {
+			return;
+		}
 
 		$this->modelName = $controller->modelClass;
 		$this->modelAlias = $controller->{$this->modelName}->alias;
@@ -251,8 +254,12 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function startup(Controller $controller) {
+		$this->Controller = $controller;
+		if (!$this->active) {
+			return;
+		}
 		$this->Auth = $this->Controller->Auth;
-		if ($this->Auth->user()) {
+		if (!empty($this->Auth) && $this->Auth->user()) {
 			$controller->set('isAuthorized', ($this->Auth->user('id') != ''));
 		}
 
@@ -276,7 +283,7 @@ class CommentsComponent extends Component {
  */
 	public function beforeRender(Controller $controller) {
 		try {
-			if ($this->enabled && in_array($this->Controller->request->action, $this->actionNames)) {
+			if ($this->active && in_array($this->Controller->request->action, $this->actionNames)) {
 				$type = $this->_call('initType');
 				$this->commentParams = array_merge($this->commentParams, array('displayType' => $type));
 				$this->_call('view', array($type));
@@ -590,7 +597,7 @@ class CommentsComponent extends Component {
 		if ($isAjax) {
 			$this->Controller->set('messageTxt', $message);
 		} else {
-			$this->Session->setFlash($message, $this->flash['element'], $this->flash['params'], $this->flash['key']);
+			$this->Controller->Session->setFlash($message, $this->flash['element'], $this->flash['params'], $this->flash['key']);
 		}
 	}
 

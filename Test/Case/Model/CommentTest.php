@@ -42,7 +42,7 @@ class CommentTestCase extends CakeTestCase {
  *
  * @return void
  */
-	public function startTest() {
+	public function startTest($method) {
 		$this->Comment = ClassRegistry::init('Comments.Comment');
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
@@ -56,7 +56,7 @@ class CommentTestCase extends CakeTestCase {
  *
  * @return void
  */
-	public function endTest() {
+	public function endTest($method) {
 		parent::tearDown();
 		unset($this->Comment);
 		ClassRegistry::flush(); 
@@ -226,7 +226,7 @@ class CommentTestCase extends CakeTestCase {
 			'3' => 0);
 		$this->Comment->process('delete', $data);
 		$comment1 = $this->Comment->find('first', array('conditions' => array('Comment.id' => 1)));
-		$this->assertFalse($comment1);
+		$this->assertEmpty($comment1);
 		$comment2 = $this->Comment->find('first', array('conditions' => array('Comment.id' => 2)));
 		$this->assertTrue(is_array($comment2));
 	}
