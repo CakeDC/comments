@@ -49,7 +49,7 @@ class CommentableBehavior extends ModelBehavior {
 /**
  * Setup
  *
- * @param AppModel $model
+ * @param Model $model
  * @param array $settings
  */
 	public function setup(Model $model, $settings = array()) {
@@ -100,9 +100,9 @@ class CommentableBehavior extends ModelBehavior {
  * Toggle approved field in model record and increment or decrement the associated
  * models comment count appopriately.
  *
- * @param AppModel $model
- * @param mixed commentId
- * @param array $options
+ * @param Model $model
+ * @param string $commentId
+ * @param array   $options
  * @return boolean
  */
 	public function commentToggleApprove(Model $model, $commentId, $options = array()) {
@@ -127,33 +127,34 @@ class CommentableBehavior extends ModelBehavior {
 /**
  * Delete comment
  *
- * @param AppModel $model
- * @param mixed commentId
+ * @param Model $Model
+ * @param string $commentId
  * @return boolean
  */
-	public function commentDelete(Model $model, $commentId = null) {
-		return $model->Comment->delete($commentId);
+	public function commentDelete(Model $Model, $commentId = null) {
+		return $Model->Comment->delete($commentId);
 	}
 
 /**
  * Handle adding comments
  *
- * @param AppModel $model Object of the related model class
+ * @param Model $Model     Object of the related model class
  * @param mixed $commentId parent comment id, 0 for none
- * @param array $options extra information and comment statistics
+ * @param array $options   extra information and comment statistics
+ * @throws BlackHoleException
  * @return boolean
  */
-	public function commentAdd(Model $model, $commentId = null, $options = array()) {
+	public function commentAdd(Model $Model, $commentId = null, $options = array()) {
 		$options = array_merge(array('defaultTitle' => '', 'modelId' => null, 'userId' => null, 'data' => array(), 'permalink' => ''), (array)$options);
 		extract($options);
 		if (isset($options['permalink'])) {
-			$model->Comment->permalink = $options['permalink'];
+			$Model->Comment->permalink = $options['permalink'];
 		}
 
-		$model->Comment->recursive = -1;
+		$Model->Comment->recursive = -1;
 		if (!empty($commentId)) {
-			$model->Comment->id = $commentId;
-			if (!$model->Comment->find('count', array('conditions' => array(
+			$Model->Comment->id = $commentId;
+			if (!$Model->Comment->find('count', array('conditions' => array(
 				'Comment.id' => $commentId,
 				'Comment.approved' => true,
 				'Comment.foreign_key' => $modelId)))) {
@@ -182,15 +183,17 @@ class CommentableBehavior extends ModelBehavior {
 				}
 			}
 
-			if (method_exists($model, 'beforeComment')) {
-				if (!$model->beforeComment($data)) {
-					return false;
-				}
+			$event = new CakeEvent('Behavior.Commentable.beforeCreateComment', $Model, $data);
+			CakeEventManager::instance()->dispatch($event);
+			if ($event->isStopped() && !$event->result) {
+				return false;
+			} elseif ($event->result) {
+				$data = $event->result;
 			}
 
-			$model->Comment->create($data);
+			$Model->Comment->create($data);
 
-			if ($model->Comment->Behaviors->enabled('Tree')) {
+			if ($Model->Comment->Behaviors->enabled('Tree')) {
 				if (isset($data['Comment']['foreign_key'])) {
 					$fk = $data['Comment']['foreign_key'];
 				} elseif (isset($data['foreign_key'])) {
@@ -198,21 +201,25 @@ class CommentableBehavior extends ModelBehavior {
 				} else {
 					$fk = null;
 				}
-				$model->Comment->Behaviors->attach('Tree', array('scope' => array('Comment.foreign_key' => $fk)));
+				$Model->Comment->Behaviors->load('Tree', array(
+					'scope' => array('Comment.foreign_key' => $fk))
+				);
 			}
 
-			if ($model->Comment->save()) {
-				$id = $model->Comment->id;
+			if ($Model->Comment->save()) {
+				$id = $Model->Comment->id;
 				$data['Comment']['id'] = $id;
-				$model->Comment->data[$model->Comment->alias]['id'] = $id;
+				$Model->Comment->data[$Model->Comment->alias]['id'] = $id;
 				if (!isset($data['Comment']['approved']) || $data['Comment']['approved'] == true) {
-					$this->changeCommentCount($model, $modelId);
+					$this->changeCommentCount($Model, $modelId);
 				}
-				if (method_exists($model, 'afterComment')) {
-					if (!$model->afterComment($data)) {
-						return false;
-					}
+
+				$event = new CakeEvent('Behavior.Commentable.afterCreateComment', $Model, $Model->Comment->data);
+				CakeEventManager::instance()->dispatch($event);
+				if ($event->isStopped() && !$event->result) {
+					return false;
 				}
+
 				return $id;
 			} else {
 				return false;
@@ -224,13 +231,13 @@ class CommentableBehavior extends ModelBehavior {
 /**
  * Increment or decrement the comment count cache on the associated model
  *
- * @param Object $model Model to change count of
- * @param mixed $id The id to change count of
- * @param string $direction 'up' or 'down'
+ * @param Model 		$Model     Model to change count of
+ * @param mixed         $id        The id to change count of
+ * @param string        $direction 'up' or 'down'
  * @return null
  */
-	public function changeCommentCount(Model $model, $id = null, $direction = 'up') {
-		if ($model->hasField('comments')) {
+	public function changeCommentCount(Model $Model, $id = null, $direction = 'up') {
+		if ($Model->hasField('comments')) {
 			if ($direction == 'up') {
 				$direction = '+ 1';
 			} elseif ($direction == 'down') {
@@ -239,11 +246,11 @@ class CommentableBehavior extends ModelBehavior {
 				$direction = null;
 			}
 
-			$model->id = $id;
-			if (!is_null($direction) && $model->exists(true)) {
-				return $model->updateAll(
-					array($model->alias . '.comments' => $model->alias . '.comments ' . $direction),
-					array($model->alias . '.id' => $id));
+			$Model->id = $id;
+			if (!is_null($direction) && $Model->exists(true)) {
+				return $Model->updateAll(
+					array($Model->alias . '.comments' => $Model->alias . '.comments ' . $direction),
+					array($Model->alias . '.id' => $id));
 			}
 		}
 		return false;
@@ -252,6 +259,7 @@ class CommentableBehavior extends ModelBehavior {
 /**
  * Prepare models association to before fetch data
  *
+ * @param Model $model
  * @param array $options
  * @return boolean
  */

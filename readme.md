@@ -232,10 +232,19 @@ If you should pass some more params into CommentWidget::display method in ajax e
 		$this->element('/ajax', array('displayOptions' => array(/* ... params ...  */)));
 	?>
 
+## Supported callbacks ##
+
+* Behavior.Commentable.beforeCreateComment
+* Behavior.Commentable.afterCreateComment
+
+Both events called on save comment operation. If needed to prevent comment saving on some conidition event listener for beforeCreateComment must return false. Event afterCreateComment could used on same additional action that should performed on save comments. Event beforeCreateComment get complete comment data that will stored into database. It is possible to override it in listener and return new result. Event afterCreateComment get only comment id in data record and complete record could be readed in listener aciton.
+
+
+
 ## Requirements ##
 
 * PHP version: PHP 5.2+
-* CakePHP version: Cakephp 1.3 Stable
+* CakePHP version: Cakephp 2.3 Stable
 
 ## Support ##
 

@@ -203,9 +203,9 @@ class CommentsComponent extends Component {
 /**
  * Constructor.
  *
- * @param ComponentCollection $collcetion
- * @param array $settings
- * @return void
+ * @param ComponentCollection $collection
+ * @param array               $settings
+ * @return CommentsComponent
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
 		parent::__construct($collection, $settings); 
@@ -219,7 +219,7 @@ class CommentsComponent extends Component {
 /**
  * Initialize Callback
  *
- * @param object
+ * @param Controller $controller
  * @return void
  */
 	public function initialize(Controller $controller) {
@@ -247,7 +247,7 @@ class CommentsComponent extends Component {
 /**
  * Callback
  *
- * @param object Controller
+ * @param Controller $controller
  * @return void
  */
 	public function startup(Controller $controller) {
@@ -271,6 +271,7 @@ class CommentsComponent extends Component {
 /**
  * Callback
  *
+ * @param Controller $controller
  * @return void
  */
 	public function beforeRender(Controller $controller) {
@@ -320,6 +321,8 @@ class CommentsComponent extends Component {
  * Handle controllers action like list/add related comments
  *
  * @param string $displayType
+ * @param bool   $processActions
+ * @throws Exception
  * @return void
  */
 	public function callback_view($displayType, $processActions = true) {
@@ -349,7 +352,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Tree representaion. Paginable.
+ * Tree representation. Paginable.
  *
  * @param array $options
  * @return array
@@ -461,7 +464,8 @@ class CommentsComponent extends Component {
  *
  * @param integer $modelId
  * @param integer $commentId Parent comment id
- * @param string $displayType
+ * @param string  $displayType
+ * @param array   $data
  */
 	public function callback_add($modelId, $commentId, $displayType, $data = array()) {
 		if (!empty($this->Controller->data)) {
@@ -543,6 +547,7 @@ class CommentsComponent extends Component {
  *
  * @param string $modelId
  * @param string $commentId
+ * @throws BlackHoleException
  * @return void
  */
 	public function callback_toggleApprove($modelId, $commentId) {
@@ -642,10 +647,11 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Call action from commponent or overriden action from controller.
+ * Call action from component or overridden action from controller.
  *
  * @param string $method
- * @param array $args
+ * @param array  $args
+ * @throws BadMethodCallException
  * @return mixed
  */
 	protected function _call($method, $args = array()) {

@@ -12,29 +12,43 @@
 App::uses('Comment', 'Comments.Model');
 App::uses('ModelBehavior', 'Model');
 
+App::uses('CakeEventManager', 'Event');
+App::uses('CommentEventListener', 'Comments.Test/Lib');
+
+
 if (!class_exists('Article')) {
 	class Article extends CakeTestModel {
-	/**
-	 *
-	 */
+
+/**
+ * Callback data
+ *
+ * @param array
+ */
 		public $callbackData = array();
 
-	/**
-	 *
-	 */
+/**
+ * Behaviors
+ *
+ * @param array
+ */
 		public $actsAs = array(
 			'Comments.Commentable' => array(
 				'commentModel' => 'Comments.Comment',
 				'userModelAlias' => 'UserModel',
 				'userModel' => 'User'));
-	/**
-	 *
-	 */
+
+/**
+ * Table name
+ *
+ * @param string
+ */
 		public $useTable = 'articles';
 
-	/**
-	 *
-	 */
+/**
+ * Name
+ *
+ * @param string
+ */
 		public $name = 'Article';
 	}
 }
@@ -80,18 +94,18 @@ if (!class_exists('Article2')) {
 	 */
 		public $name = 'Article2';
 
-	/**
-	 *
-	 */
+/**
+ * Before comment callback
+ */
 		public function beforeComment(&$data) {
 			$data['Comment']['title'] = 'Changed in beforeComment!';
 			$this->callbackData['beforeComment'] = $data;
 			return true;
 		}
 
-	/**
-	 *
-	 */
+/**
+ * Before comment callback
+ */
 		public function afterComment(&$data) {
 			$data['Comment']['body'] = 'Changed in afterComment!';
 			$this->callbackData['afterComment'] = $data;
@@ -139,7 +153,7 @@ class CommentableTest extends CakeTestCase {
  *
  * @return void
  */
-	public function startTest() {
+	public function startTest($method) {
 		$this->Model = Classregistry::init('Article');
 		$this->Model->Comment->bindModel(array(
 			'belongsTo' => array(
@@ -151,7 +165,7 @@ class CommentableTest extends CakeTestCase {
  *
  * @return void
  */
-	public function endTest() {
+	public function endTest($method) {
 		unset($this->Model);
 		ClassRegistry::flush();
 	}
@@ -336,7 +350,10 @@ class CommentableTest extends CakeTestCase {
  * @return void
  */
 	public function testBeforeAndAfterCallbacks() {
-		$this->Model = Classregistry::init('Article2');
+		$listener = new CommentEventListener();
+		CakeEventManager::instance()->attach($listener);
+
+		$this->Model = Classregistry::init('Article');
 		$options = array(
 			'userId' => '47ea303a-3b2c-4251-b313-4816c0a800fa',
 			'modelId' => '1',
@@ -349,8 +366,10 @@ class CommentableTest extends CakeTestCase {
 			'permalink' => 'http://testing.something.com');
 		$this->Model->commentAdd(0, $options);
 
-		$this->assertEqual($this->Model->callbackData['beforeComment']['Comment']['title'], 'Changed in beforeComment!');
-		$this->assertEqual($this->Model->callbackData['afterComment']['Comment']['body'], 'Changed in afterComment!');
+		$commentId = $this->Model->Comment->id;
+		$comment = $this->Model->Comment->read(null, $commentId);
+		$this->assertEqual($comment['Comment']['title'], 'Changed in beforeComment!');
+		$this->assertEqual($comment['Comment']['body'], 'Changed in afterComment!');
 	}
 
 }
