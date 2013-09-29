@@ -22,7 +22,7 @@
  * @subpackage	plugins.comments.config.schema
  */
 
-class CommentsSchema extends CakeSchema {
+class CommentSchema extends CakeSchema {
 
 /**
  * Name
