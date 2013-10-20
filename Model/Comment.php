@@ -85,9 +85,10 @@ class Comment extends CommentsAppModel {
  * AfterSave
  *
  * @param boolean $created
+ * @param array   $options
  * @return boolean
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if ($created) {
 			if ($this->Behaviors->enabled('Antispamable')) {
 				$isSpam = $this->isSpam(null, array('permalink' => $this->permalink));
