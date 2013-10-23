@@ -225,6 +225,7 @@ class CommentWidgetHelper extends AppHelper {
  */
 	public function element($name, $params = array(), $extra = array()) {
 		$View = $this->__view();
+		$extra= array('plugin'=>'comments');
 		if (strpos($name, '/') === false) {
 			$name = 'comments/' . $this->globalParams['theme'] . '/' . $name;
 		}
