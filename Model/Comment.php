@@ -1,14 +1,14 @@
 <?php
 /**
- * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+App::uses('CommentsAppModel', 'Comments.Model');
 /**
  * Comment model
  *
@@ -31,14 +31,20 @@ class Comment extends CommentsAppModel {
  */
 	public $actsAs = array(
 		'Utils.Sluggable' => array('label' => 'title'),
-		'Tree');
+		'Tree'
+	);
 
 /**
  * Is spam field possible values
  *
  * @var array $isSpamValues
  */
-	public $isSpamValues = array('clean', 'spam', 'ham', 'spammanual');
+	public $isSpamValues = array(
+		'clean',
+		'spam',
+		'ham',
+		'spammanual'
+	);
 
 /**
  * hasMany associations
@@ -48,7 +54,7 @@ class Comment extends CommentsAppModel {
 	public $hasMany = array();
 
 /**
- * Permalink parameter required to pass into antispam system
+ * Permalink parameter required to pass into anti-spam system
  *
  * @var array $hasMany
  */
@@ -65,10 +71,10 @@ class Comment extends CommentsAppModel {
 /**
  * beforeSave
  *
- * @param boolean $created
+ * @param array $options
  * @return boolean
  */
-	public function beforeSave() {
+	public function beforeSave($options = array()) {
 		if (!isset($this->data[$this->alias]['language'])) {
 			$this->data[$this->alias]['language'] = Configure::read('Config.language');
 		}
@@ -79,9 +85,10 @@ class Comment extends CommentsAppModel {
  * AfterSave
  *
  * @param boolean $created
+ * @param array   $options
  * @return boolean
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if ($created) {
 			if ($this->Behaviors->enabled('Antispamable')) {
 				$isSpam = $this->isSpam(null, array('permalink' => $this->permalink));
@@ -186,7 +193,7 @@ class Comment extends CommentsAppModel {
 /**
  * Mark a comment as a spam
  *
- * @param string $id Id of the comment to mark as spam, optionnal [defaut: $this->id]
+ * @param string $id Id of the comment to mark as spam, optional [defauдt: $this->id]
  * @return boolean Success / Fail
  */
 	public function markAsSpam($id = null) {
@@ -237,9 +244,6 @@ class Comment extends CommentsAppModel {
  * Overrides AppModel::delete() method
  *
  * Automatically decrement comment count of related model
- *
- * (non-PHPdoc)
- * @see cake/libs/model/Model#delete($id, $cascade)
  */
 	public function delete($id = null, $cascade = true) {
 		$success = false;
@@ -278,7 +282,7 @@ class Comment extends CommentsAppModel {
  * Get the row related to a comment
  *
  * @param string $id Comment id
- * @return mixed False if an error occured, an array with the following keys otherwise:
+ * @return mixed False if an error occurred, an array with the following keys otherwise:
  * 	- Model: Associated model object
  *  - id: Id of the related row
  */

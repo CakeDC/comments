@@ -1,14 +1,14 @@
 <?php
 /**
- * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+App::uses('AppHelper', 'View/Helper');
 /**
  * Comment Widget Helper
  *
@@ -229,8 +229,9 @@ class CommentWidgetHelper extends AppHelper {
 			$name = 'comments/' . $this->globalParams['theme'] . '/' . $name;
 		}
 		$params = Set::merge($this->globalParams, $params);
+		$extra['ignoreMissing'] = true;
 		$response = $View->element($name, $params, $extra);
-        if (is_null($response) || strpos($response, 'Not Found:') !== false) {
+		if (is_null($response) || strpos($response, 'Not Found:') !== false) {
 			$response = $View->element('Comments.' . $name, array_merge($params));
 		}
 		return $response;
@@ -259,4 +260,3 @@ class CommentWidgetHelper extends AppHelper {
 		}
 	}
 }
-

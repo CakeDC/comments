@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -103,17 +103,17 @@ class CommentsControllerTest extends CakeTestCase {
 
 /**
  * (non-PHPdoc)
- * @see cake/tests/lib/CakeTestCase#startTest($method)
  */
 	public function startTest($method) {
 		$this->Request = new CakeRequest();
+		$this->Response = new CakeResponse();
 		$this->Request->params = array(
 			'named' => array(),
 			'pass' => array(),
 			'url' => array());
-		$this->Comments = new TestCommentsController($this->Request);
-		//$this->Comments->params = $this->Request->params;
+		$this->Comments = new TestCommentsController($this->Request, $this->Response);
 		$this->Comments->constructClasses();
+		$this->Comments->startupProcess();
 	}
 
 /**
@@ -205,7 +205,7 @@ class CommentsControllerTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testAdminSpam() {		
+	public function testAdminSpam() {
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
         $this->Comments->Session->expects($this->once())
@@ -215,20 +215,22 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 
 		$Article = ClassRegistry::init('Article');
-		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
+		$items = Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$oldCount = array_shift($items);
 
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
         $this->Comments->Session->expects($this->once())
             ->method('setFlash')
             ->with(__d('comments', 'Antispam system informed about spam message.'));
-		
+
 		$this->Comments->admin_spam(1);
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		
+
 		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 1);
 		$this->assertEqual($commentFlag['Comment']['is_spam'], 'spammanual');
-		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
-		$this->assertEqual($newCount, $oldCount - 1);		
+		$items = Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$newCount = array_shift($items);
+		$this->assertEqual($newCount, $oldCount - 1);
 	}
 
 /**
@@ -236,18 +238,19 @@ class CommentsControllerTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testAdminHam() {		
+	public function testAdminHam() {
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
         $this->Comments->Session->expects($this->once())
             ->method('setFlash')
-            ->with(__d('comments', 'Wrong comment id'));	
+            ->with(__d('comments', 'Wrong comment id'));
 		$this->Comments->admin_ham('invalid-comment');
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 
 		$Article = ClassRegistry::init('Article');
-		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));		
-		
+		$items = Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments');
+		$oldCount = array_shift($items);
+
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
         $this->Comments->Session->expects($this->any())
@@ -255,11 +258,14 @@ class CommentsControllerTest extends CakeTestCase {
             ->with(__d('comments', 'Antispam system informed about ham message.'));
 		$this->Comments->admin_ham(3);
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		
+
 		//$this->assertEqual($this->Comments->Session->read('Message.flash.message'), 'Antispam system informed about ham message.');
 		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 3);
 		$this->assertEqual($commentFlag['Comment']['is_spam'], 'ham');
-		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments'));
+
+		$items = Set::extract($Article->read(array('Article.comments'), 2), '/Article/comments');
+		$newCount = array_shift($items);
+
 		$this->assertEqual($newCount, $oldCount + 1);
 		$this->Comments->Session->delete('Message.flash.message');
 	}
@@ -274,7 +280,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
         $this->Comments->Session->expects($this->once())
             ->method('setFlash')
-            ->with(__d('comments', 'Invalid Comment.'));			
+            ->with(__d('comments', 'Invalid Comment.'));
 		$this->Comments->admin_view('invalid-comment');
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 		$this->Comments->admin_view(1);
@@ -291,24 +297,25 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
         $this->Comments->Session->expects($this->once())
             ->method('setFlash')
-            ->with(__d('comments', 'Invalid id for Comment'));		
-		
+            ->with(__d('comments', 'Invalid id for Comment'));
 		$this->Comments->admin_delete('invalid-comment');
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		
+
 		$Article = ClassRegistry::init('Article');
-		$oldCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
-		
+		$items = Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$oldCount = array_shift($items);
+
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
         $this->Comments->Session->expects($this->once())
             ->method('setFlash')
-            ->with(__d('comments', 'Comment deleted'));		
-		
+            ->with(__d('comments', 'Comment deleted'));
 		$this->Comments->admin_delete(1);
-		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));		
-		$newCount = array_shift(Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments'));
-		$this->assertEqual($newCount, $oldCount - 1);		
+		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
+		$items = Set::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$newCount = array_shift($items);
+
+		$this->assertEqual($newCount, $oldCount - 1);
 	}
 
 /**
@@ -320,7 +327,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments->requestForUser();
 		$this->assertEqual($this->Comments->cakeErrorMethod, '404');
 
-		$this->Comments->params['requested'] = array();
+		$this->Comments->request->params['requested'] = true;
 		$this->Comments->requestForUser();
 		$ids = Set::extract($this->Comments->viewVars['comments'], '/Comment/id');
 		$this->assertEqual($ids, array(1, 2));

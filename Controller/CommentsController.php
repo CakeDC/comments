@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009-2010, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('CommentsAppController', 'Comments.Controller');
@@ -17,10 +17,11 @@ App::uses('CommentsAppController', 'Comments.Controller');
  */
 
 /**
- * @property Comment Comment
- * @property PrgComponent Prg
- * @property SessionComponent  Session
- * @property RequestHandlerComponent RequestHandler
+ * @property Comment $Comment
+ * @property PrgComponent $Prg
+ * @property SessionComponent  $Session
+ * @property RequestHandlerComponent $RequestHandler
+ * @property CommentsComponent  $Comments
  */
 class CommentsController extends CommentsAppController {
 
@@ -39,7 +40,11 @@ class CommentsController extends CommentsAppController {
 	public $components = array(
 		'RequestHandler',
 		'Paginator',
-		'Session');
+		'Session',
+		'Comments.Comments' => array(
+			'active' => false,
+		),
+	);
 
 /**
  * Helpers
@@ -60,7 +65,7 @@ class CommentsController extends CommentsAppController {
  *
  * @var array
  */
-    public $presetVars = array();
+	public $presetVars = array();
 
 /**
  * Admin index action
@@ -76,7 +81,7 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->recursive = 0;
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
-				'UserModel'  => array(
+				'UserModel' => array(
 					'className' => 'Users.User',
 					'foreignKey' => 'user_id'))), false);
 		$conditions = array();
@@ -84,15 +89,15 @@ class CommentsController extends CommentsAppController {
 		if (App::import('Component', 'Search.Prg')) {
 			$this->Comment->Behaviors->load('Search.Searchable');
 			$this->Comment->filterArgs = array(
-				array('name' => 'is_spam', 'type' => 'value'),
-				array('name' => 'approved', 'type' => 'value'));
+				array('field' => 'is_spam', 'name' => 'is_spam', 'type' => 'value'),
+				array('field' => 'approved', 'name' => 'approved', 'type' => 'value'));
+			$this->presetVars = true;
 			$this->Prg = new PrgComponent($this->Components, array());
 			$this->Prg->initialize($this);
 			$this->Prg->commonProcess();
 			$conditions = $this->Comment->parseCriteria($this->passedArgs);
 			$this->set('searchEnabled', true);
 		}
-		
 
 		$this->Paginator->settings = array(
 			'Comment' => array(
@@ -108,7 +113,6 @@ class CommentsController extends CommentsAppController {
 		$this->set('comments', $this->Paginator->paginate('Comment'));
 	}
 
-
 /**
  * Processes mailbox folders
  *
@@ -116,16 +120,15 @@ class CommentsController extends CommentsAppController {
  * @return void
  */
 	public function admin_process($type = null) {
-		$addInfo = '';
 		if (!empty($this->request->data)) {
 			try {
 				$message = $this->Comment->process($this->request->data['Comment']['action'], $this->request->data);
 			} catch (Exception $ex) {
 				$message = $ex->getMessage();
 			}
-			$this->Session->setFlash($message);
+			$this->Comments->flash($message);
 		}
-		$url = array('plugin'=>'comments', 'action' => 'index', 'admin' => true);
+		$url = array('plugin' => 'comments', 'action' => 'index', 'admin' => true);
 		$url = Set::merge($url, $this->request->params['pass']);
 		$this->redirect(Set::merge($url, $this->request->params['named']));
 	}
@@ -138,11 +141,11 @@ class CommentsController extends CommentsAppController {
 	public function admin_spam($id) {
 		$this->Comment->id = $id;
 		if (!$this->Comment->exists()) {
-			$this->Session->setFlash(__d('comments', 'Wrong comment id'));
+			$this->Comments->flash(__d('comments', 'Wrong comment id'));
 		} elseif ($this->Comment->markAsSpam()) {
-			$this->Session->setFlash(__d('comments', 'Antispam system informed about spam message.'));
+			$this->Comments->flash(__d('comments', 'Antispam system informed about spam message.'));
 		} else {
-			$this->Session->setFlash(__d('comments', 'Error appear during save.'));
+			$this->Comments->flash(__d('comments', 'Error appear during save.'));
 		}
 		$this->redirect(array('action' => 'index'));
 	}
@@ -155,11 +158,11 @@ class CommentsController extends CommentsAppController {
 	public function admin_ham($id) {
 		$this->Comment->id = $id;
 		if (!$this->Comment->exists()) {
-			$this->Session->setFlash(__d('comments', 'Wrong comment id'));
+			$this->Comments->flash(__d('comments', 'Wrong comment id'));
 		} elseif ($this->Comment->markAsHam()) {
-			$this->Session->setFlash(__d('comments', 'Antispam system informed about ham message.'));
+			$this->Comments->flash(__d('comments', 'Antispam system informed about ham message.'));
 		} else {
-			$this->Session->setFlash(__d('comments', 'Error appear during save.'));
+			$this->Comments->flash(__d('comments', 'Error appear during save.'));
 		}
 		$this->redirect(array('action' => 'index'));
 	}
@@ -173,7 +176,7 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->id = $id;
 		$comment = $this->Comment->read(null, $id);
 		if (empty($comment)) {
-			$this->Session->setFlash(__d('comments', 'Invalid Comment.'));
+			$this->Comments->flash(__d('comments', 'Invalid Comment.'));
 			return $this->redirect(array('action'=>'index'));
 		}
 		$this->set('comment', $comment);
@@ -186,14 +189,15 @@ class CommentsController extends CommentsAppController {
  */
 	public function admin_delete($id = null) {
 		$this->Comment->id = $id;
-        if (!$this->Comment->exists()) {
-			$this->Session->setFlash(__d('comments', 'Invalid id for Comment'));
-		} elseif ($this->Comment->delete()) {
-			$this->Session->setFlash(__d('comments', 'Comment deleted'));
+		$this->Comment->recursive = -1;
+		if (!$this->Comment->exists()) {
+			$this->Comments->flash(__d('comments', 'Invalid id for Comment'));
+		} elseif ($this->Comment->delete($id, false)) {
+			$this->Comments->flash(__d('comments', 'Comment deleted'));
 		} else {
-			$this->Session->setFlash(__d('comments', 'Impossible to delete the Comment. Please try again.'));
+			$this->Comments->flash(__d('comments', 'Impossible to delete the Comment. Please try again.'));
 		}
-		$this->redirect(array('action'=>'index'));
+		$this->redirect(array('action' => 'index'));
 	}
 
 /**
@@ -205,8 +209,8 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->id = $id;
 		$comment = $this->Comment->read(null, $id);
 		if (empty($comment)) {
-			$this->Session->setFlash(__d('comments', 'Invalid Comment.'));
-			return $this->redirect(array('action'=>'index'));
+			$this->Comments->flash(__d('comments', 'Invalid Comment.'));
+			return $this->redirect(array('action' => 'index'));
 		}
 		$this->set('comment', $comment);
 	}
@@ -214,11 +218,12 @@ class CommentsController extends CommentsAppController {
 /**
  * Request comments
  *
- * @param string user UUID
+ * @param string $userId UUID
+ * @param int $amount
  * @return void
  */
 	public function requestForUser($userId = null, $amount = 5) {
-		if (!$this->RequestHandler->isAjax() && !$this->_isRequestedAction()) {
+		if (!$this->request->is('ajax') && !$this->request->is('requested')) {
 			return $this->cakeError('404');
 		}
 
@@ -227,12 +232,12 @@ class CommentsController extends CommentsAppController {
 			$conditions['Comment.model'] = $this->request->params['named']['model'];
 		}
 		$conditions['Comment.is_spam'] = array('ham','clean');
-		$this->paginate = array(
+		$this->Paginator->settings = array(
 			'conditions' => $conditions,
 			'order' => 'Comment.created DESC',
 			'limit' => $amount);
 
-		$this->set('comments', $this->paginate());
+		$this->set('comments', $this->Paginator->paginate());
 		$this->set('userId', $userId);
 
 		$this->viewPath = 'elements/comments';
