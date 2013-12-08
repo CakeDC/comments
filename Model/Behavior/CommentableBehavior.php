@@ -28,6 +28,7 @@ class BlackHoleException extends Exception {}
 class NoActionException extends Exception {}
 
 class CommentableBehavior extends ModelBehavior {
+
 /**
  * Settings array
  *
@@ -44,7 +45,8 @@ class CommentableBehavior extends ModelBehavior {
 		'commentModel' => 'Comments.Comment',
 		'spamField' => 'is_spam',
 		'userModelAlias' => 'UserModel',
-		'userModelClass' => 'User');
+		'userModelClass' => 'User'
+	);
 
 /**
  * Setup
@@ -56,8 +58,9 @@ class CommentableBehavior extends ModelBehavior {
 		if (!isset($this->settings[$model->alias])) {
 			$this->settings[$model->alias] = $this->defaults;
 		}
+
 		if (!is_array($settings)) {
-			$settings = (array) $settings;
+			$settings = (array)$settings;
 		}
 
 		$this->settings[$model->alias] = array_merge($this->settings[$model->alias], $settings);
@@ -176,8 +179,8 @@ class CommentableBehavior extends ModelBehavior {
 			}
 
 			if (!empty($data['Other'])) {
-				foreach($data['Other'] as $spam) {
-					if(!empty($spam)) {
+				foreach ($data['Other'] as $spam) {
+					if (!empty($spam)) {
 						return false;
 					}
 				}

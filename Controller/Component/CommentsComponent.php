@@ -329,18 +329,18 @@ class CommentsComponent extends Component {
  *
  * @param string $displayType
  * @param bool   $processActions
- * @throws Exception
+ * @throws RuntimeException
  * @return void
  */
 	public function callback_view($displayType, $processActions = true) {
 		if (!isset($this->Controller->{$this->modelName}) ||
 			(!array_key_exists($this->assocName, array_merge($this->Controller->{$this->modelName}->hasOne, $this->Controller->{$this->modelName}->hasMany)))) {
-			throw new Exception('CommentsComponent: model '.$this->modelName.' or association '.$this->assocName.' doesn\'t exist');
+			throw new RuntimeException('CommentsComponent: model ' . $this->modelName .  ' or association ' . $this->assocName . ' doesn\'t exist');
 		}
 
 		$primaryKey = $this->Controller->{$this->modelName}->primaryKey;
 		if (empty($this->Controller->viewVars[$this->viewVariable][$this->Controller->{$this->modelName}->alias][$primaryKey])) {
-			throw new Exception('CommentsComponent: missing view variable ' . $this->viewVariable . ' or value for primary key ' . $primaryKey . ' of model ' . $this->modelName);
+			throw new RuntimeException('CommentsComponent: missing view variable ' . $this->viewVariable . ' or value for primary key ' . $primaryKey . ' of model ' . $this->modelName);
 		}
 
 		$id = $this->Controller->viewVars[$this->viewVariable][$this->Controller->{$this->modelName}->alias][$primaryKey];
@@ -521,7 +521,7 @@ class CommentsComponent extends Component {
 		} else {
 			if (!empty($this->Controller->passedArgs['quote'])) {
 				if (!empty($this->Controller->passedArgs['comment'])) {
-					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));;
+					$message = $this->_call('getFormatedComment', array($this->Controller->passedArgs['comment']));
 					if (!empty($message)) {
 						$this->Controller->request->data['Comment']['body'] = $message;
 					}
@@ -662,8 +662,8 @@ class CommentsComponent extends Component {
  * @return mixed
  */
 	protected function _call($method, $args = array()) {
-		$methodName = 'callback_comments' .  Inflector::camelize(Inflector::underscore($method));
-		$localMethodName = 'callback_' .  $method;
+		$methodName = 'callback_comments' . Inflector::camelize(Inflector::underscore($method));
+		$localMethodName = 'callback_' . $method;
 		if (method_exists($this->Controller, $methodName)) {
 			return call_user_func_array(array($this->Controller, $methodName), $args);
 		} elseif (method_exists($this, $localMethodName)) {
@@ -685,7 +685,7 @@ class CommentsComponent extends Component {
 			if ($this->allowAnonymousComment || $this->Auth->user()) {
 				if (isset($this->Controller->passedArgs['comment_action'])) {
 					$commentAction = $this->Controller->passedArgs['comment_action'];
-					$isAdmin = (bool) $this->Auth->user('is_admin');
+					$isAdmin = (bool)$this->Auth->user('is_admin');
 					if (!$isAdmin) {
 						if (in_array($commentAction, array('delete'))) {
 							call_user_func(array($this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
@@ -704,7 +704,7 @@ class CommentsComponent extends Component {
 					$this->_call('add', array($id, $parent, $displayType));
 				}
 			} else {
-                $this->Controller->Session->write('Auth.redirect', $this->Controller->request['url']);
+				$this->Controller->Session->write('Auth.redirect', $this->Controller->request['url']);
 				$this->Controller->redirect($this->Controller->Auth->loginAction);
 			}
 		}

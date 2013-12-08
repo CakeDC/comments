@@ -65,7 +65,7 @@ class CommentsController extends CommentsAppController {
  *
  * @var array
  */
-    public $presetVars = array();
+	public $presetVars = array();
 
 /**
  * Admin index action
@@ -81,7 +81,7 @@ class CommentsController extends CommentsAppController {
 		$this->Comment->recursive = 0;
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
-				'UserModel'  => array(
+				'UserModel' => array(
 					'className' => 'Users.User',
 					'foreignKey' => 'user_id'))), false);
 		$conditions = array();
@@ -120,7 +120,6 @@ class CommentsController extends CommentsAppController {
  * @return void
  */
 	public function admin_process($type = null) {
-		$addInfo = '';
 		if (!empty($this->request->data)) {
 			try {
 				$message = $this->Comment->process($this->request->data['Comment']['action'], $this->request->data);
@@ -129,7 +128,7 @@ class CommentsController extends CommentsAppController {
 			}
 			$this->Comments->flash($message);
 		}
-		$url = array('plugin'=>'comments', 'action' => 'index', 'admin' => true);
+		$url = array('plugin' => 'comments', 'action' => 'index', 'admin' => true);
 		$url = Set::merge($url, $this->request->params['pass']);
 		$this->redirect(Set::merge($url, $this->request->params['named']));
 	}
@@ -191,14 +190,14 @@ class CommentsController extends CommentsAppController {
 	public function admin_delete($id = null) {
 		$this->Comment->id = $id;
 		$this->Comment->recursive = -1;
-        if (!$this->Comment->exists()) {
+		if (!$this->Comment->exists()) {
 			$this->Comments->flash(__d('comments', 'Invalid id for Comment'));
 		} elseif ($this->Comment->delete($id, false)) {
 			$this->Comments->flash(__d('comments', 'Comment deleted'));
 		} else {
 			$this->Comments->flash(__d('comments', 'Impossible to delete the Comment. Please try again.'));
 		}
-		$this->redirect(array('action'=>'index'));
+		$this->redirect(array('action' => 'index'));
 	}
 
 /**
@@ -211,7 +210,7 @@ class CommentsController extends CommentsAppController {
 		$comment = $this->Comment->read(null, $id);
 		if (empty($comment)) {
 			$this->Comments->flash(__d('comments', 'Invalid Comment.'));
-			return $this->redirect(array('action'=>'index'));
+			return $this->redirect(array('action' => 'index'));
 		}
 		$this->set('comment', $comment);
 	}
