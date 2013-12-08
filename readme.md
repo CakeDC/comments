@@ -24,26 +24,34 @@ In our example we want to use the flat type comments.
 
 First let us add the following code in the PostsController:
 
-	public $components = array('Comments.Comments' => array('userModelClass' => 'Users.User')); // Customize the User class
+```php
+public $components = array(
+	'Comments.Comments' => array(
+			'userModelClass' => 'Users.User' // Customize the User class
+		)
+	);
 
-	/**
-	 * Initializes the view type for comments widget
-	 *
-	 * @return string
-	 * @access public
-	 */
-		public function callback_commentsInitType() {
-			return 'flat'; // threaded, tree and flat supported
-		}
+/**
+ * Initializes the view type for comments widget
+ *
+ * @return string
+ * @access public
+ */
+	public function callback_commentsInitType() {
+		return 'flat'; // threaded, tree and flat supported
+	}
+```
 
 By default the component assumes that the action that will be used for comments is named 'view', but we can override it inside the beforeFilter method.
 
 Inside the view (in our case it will View/Posts/view.ctp) we will add the next lines at the end of the view file.
 
-	<div id="post-comments">
-		<?php $this->CommentWidget->options(array('allowAnonymousComment' => false));?>
-		<?php echo $this->CommentWidget->display();?>
-	</div>
+```php
+<div id="post-comments">
+	<?php $this->CommentWidget->options(array('allowAnonymousComment' => false));?>
+	<?php echo $this->CommentWidget->display();?>
+</div>
+```
 
 ## How it works ##
 
@@ -58,7 +66,9 @@ The component needs to have one important convention for any actions where it is
 
 To work properly, the component needs a specific variable to be set in every action using it. Its name should be either Inflector::variable(Controller::$modelClass) or Comments::$viewVariable should be set to other name of this view variable. That variable should contain single model record. for example you need to have next line in you view action:
 
-		$this->set('post', $this->Post->read(null, $id));
+```php
+$this->set('post', $this->Post->read(null, $id));
+```
 
 If you plan to attach comments plugin to model that stored in some plugin its highly recommended to define Model::$fullName property for your model in ClassRegistry format.
 For example for Post model of Blogs plugin set $fullName = 'Blogs.Post'.
@@ -83,25 +93,20 @@ Callbacks:
 
 Extend or override any callback without changing component code.
 
-	public function callback_commentsAdd($modelId, $commentId, $displayType, $data = array()) {
-		if (!empty($this->request->data)) {
-			...
-			///perform some validation and field manipulations here. all value need to store into the $data.
-			$data['Comment']['author_name'] = $this->Auth->user('username');
-			$data['Comment']['author_email'] = $this->Auth->user('email');
-
-			$valid = true;
-			if (empty($this->request->data['Comment']['author_name'])) {
-				$valid = false;
-			}
-			if (!$valid) {
-				$this->Session->setFlash(__('Please enter necessery information', true));
-				return;
-			}
-			...
+```php
+public function callback_commentsAdd($modelId, $commentId, $displayType, $data = array()) {
+	if (!empty($this->request->data)) {
+		/* ... */
+		// Custom model method to manipulate or validate the comment
+		if (!$this->Model->validateComment($this->request->data)) {
+			$this->Session->setFlash(__('Please enter necessery information', true));
+			return;
 		}
-		return $this->Comments->callback_add($modelId, $commentId, $displayType, $data);
+		/* ... */
 	}
+	return $this->Comments->callback_add($modelId, $commentId, $displayType, $data);
+}
+```
 
 ## Component parameters ##
 
@@ -141,27 +146,28 @@ There are two way to change settings values for component. You can change it in 
 Some times during search need to bind some addtional models into result returned in list of comments.
 Most logic way for that - overload behavior commentBeforeFind method like this on model level:
 
-	/**
-	 * Prepare models association to before fetch data
-	 *
-	 * @param array $options
-	 * @return boolean
-	 * @access public
-	 */
-		public function commentBeforeFind($options) {
-			$result = $this->Behaviors->dispatchMethod($this, 'commentBeforeFind', array($options));
+```php
+/**
+ * Prepare models association to before fetch data
+ *
+ * @param array $options
+ * @return boolean
+ * @access public
+ */
+	public function commentBeforeFind($options) {
+		$result = $this->Behaviors->dispatchMethod($this, 'commentBeforeFind', array($options));
 
-			$userModel = $this->Behaviors->Commentable->settings[$this->alias]['userModelAlias'];
-			$this->Comment->bindModel(array('belongsTo' => array(
-				'Profile' => array(
-					'className' => 'Profile',
-					'foreignKey' => false,
-					'conditions' => array('Profile.user_id = ' . $userModel . '.id')
-				)
-			)), false);
-			return $result;
-		}
-
+		$userModel = $this->Behaviors->Commentable->settings[$this->alias]['userModelAlias'];
+		$this->Comment->bindModel(array('belongsTo' => array(
+			'Profile' => array(
+				'className' => 'Profile',
+				'foreignKey' => false,
+				'conditions' => array('Profile.user_id = ' . $userModel . '.id')
+			)
+		)), false);
+		return $result;
+	}
+```
 
 ## Helper parameters and methods ##
 
@@ -197,40 +203,48 @@ The plugin was tested with jquery engine. Since cakephp js helper support many e
 
 To turn on ajax mode you need set pass two parameters to the helper:
 
-	<?php $this->CommentWidget->options(array(
-		'target' => '#comments',
-		'ajaxAction' => 'comments'));
-	?>
+```php
+<?php $this->CommentWidget->options(array(
+	'target' => '#comments',
+	'ajaxAction' => 'comments'));
+?>
+```
 
 Next important to implement in  controller special action, by default named comments:
 
-	<?php
-		public function comments($id = null) {
-			$post = $this->Post->read(null, $id);
-			$this->layout = 'ajax';
-			$this->set(compact('post', 'id'));
-		}
-	?>
+```php
+<?php
+	public function comments($id = null) {
+		$post = $this->Post->read(null, $id);
+		$this->layout = 'ajax';
+		$this->set(compact('post', 'id'));
+	}
+?>
+```
 
 It is also necessary to implement comments view, that will just contains previous block and will include ajax element from comments plugin:
 
-	<?php
-		$this->CommentWidget->options(array(
-		'target' => '#comments',
-		'ajaxAction' => 'comments'));
-		echo $this->element('/ajax');
-	?>
+```
+<?php
+	$this->CommentWidget->options(array(
+	'target' => '#comments',
+	'ajaxAction' => 'comments'));
+	echo $this->element('/ajax');
+?>
+```
 
 The comments action in controller should be same as view action, the difference only in view.
 
 If you should pass some more params into CommentWidget::display method in ajax element you can call it with addtional displayOptions parameter:
 
-	<?php
-		$this->CommentWidget->options(array(
-			'target' => '#comments',
-			'ajaxAction' => 'comments'));
-		$this->element('/ajax', array('displayOptions' => array(/* ... params ...  */)));
-	?>
+```php
+<?php
+	$this->CommentWidget->options(array(
+		'target' => '#comments',
+		'ajaxAction' => 'comments'));
+	$this->element('/ajax', array('displayOptions' => array(/* ... params ...  */)));
+?>
+```
 
 ## Supported callbacks ##
 
@@ -238,8 +252,6 @@ If you should pass some more params into CommentWidget::display method in ajax e
 * Behavior.Commentable.afterCreateComment
 
 Both events called on save comment operation. If needed to prevent comment saving on some conidition event listener for beforeCreateComment must return false. Event afterCreateComment could used on same additional action that should performed on save comments. Event beforeCreateComment get complete comment data that will stored into database. It is possible to override it in listener and return new result. Event afterCreateComment get only comment id in data record and complete record could be readed in listener aciton.
-
-
 
 ## Requirements ##
 
@@ -267,14 +279,14 @@ Please feel free to contribute to the plugin with new issues, requests, unit tes
 
 ## License ##
 
-Copyright 2009-2010, [Cake Development Corporation](http://cakedc.com)
+Copyright 2009-2013, [Cake Development Corporation](http://cakedc.com)
 
 Licensed under [The MIT License](http://www.opensource.org/licenses/mit-license.php)<br/>
 Redistributions of files must retain the above copyright notice.
 
 ## Copyright ###
 
-Copyright 2009-2011<br/>
+Copyright 2009-2013<br/>
 [Cake Development Corporation](http://cakedc.com)<br/>
 1785 E. Sahara Avenue, Suite 490-423<br/>
 Las Vegas, Nevada 89104<br/>
