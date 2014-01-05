@@ -56,7 +56,11 @@ class CommentsComponent extends Component {
  *
  * @var array $components
  */
-	public $components = array('Cookie', 'Session', 'Auth');
+	public $components = array(
+		'Cookie',
+		'Session',
+		'Auth'
+	);
 
 /**
  * Enabled
@@ -79,7 +83,9 @@ class CommentsComponent extends Component {
  *
  * @var array $actionNames
  */
-	public $actionNames = array('view', 'comments');
+	public $actionNames = array(
+		'view', 'comments'
+	);
 
 /**
  * Actions used for deleting of some model record, which doesn't use SoftDelete
@@ -198,7 +204,12 @@ class CommentsComponent extends Component {
  *
  * @var array
  */
-	protected $_supportNamedParams = array('comment', 'comment_action', 'comment_view_type', 'quote');
+	protected $_supportNamedParams = array(
+		'comment',
+		'comment_action',
+		'comment_view_type',
+		'quote'
+	);
 
 /**
  * Constructor.
@@ -208,7 +219,7 @@ class CommentsComponent extends Component {
  * @return CommentsComponent
  */
 	public function __construct(ComponentCollection $collection, $settings = array()) {
-		parent::__construct($collection, $settings); 
+		parent::__construct($collection, $settings);
 		foreach ($settings as $setting => $value) {
 			if (isset($this->{$setting})) {
 				$this->{$setting} = $value;
@@ -335,7 +346,7 @@ class CommentsComponent extends Component {
 	public function callback_view($displayType, $processActions = true) {
 		if (!isset($this->Controller->{$this->modelName}) ||
 			(!array_key_exists($this->assocName, array_merge($this->Controller->{$this->modelName}->hasOne, $this->Controller->{$this->modelName}->hasMany)))) {
-			throw new RuntimeException('CommentsComponent: model ' . $this->modelName .  ' or association ' . $this->assocName . ' doesn\'t exist');
+			throw new RuntimeException('CommentsComponent: model ' . $this->modelName . ' or association ' . $this->assocName . ' doesn\'t exist');
 		}
 
 		$primaryKey = $this->Controller->{$this->modelName}->primaryKey;
@@ -560,7 +571,7 @@ class CommentsComponent extends Component {
 	public function callback_toggleApprove($modelId, $commentId) {
         if (!isset($this->Controller->passedArgs['comment_action'])
 			|| !($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
-			 throw new BlackHoleException(__d('comments', 'Nonrestricted operation'));
+			throw new BlackHoleException(__d('comments', 'Nonrestricted operation'));
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
 			$this->flash(__d('comments', 'The Comment status has been updated.'));
@@ -713,14 +724,16 @@ class CommentsComponent extends Component {
 /**
  * Wrapping method to clean incoming html contents
  *
+ * @deprecated This is going to be removed in the near future
  * @param string $text
  * @param string $settings
  * @return string
  */
-	function cleanHtml($text, $settings = 'full') {
+	public function cleanHtml($text, $settings = 'full') {
 		App::import('Helper', 'Comments.Cleaner');
 		$cleaner = & new CleanerHelper(new View($this->Controller));
 		return $cleaner->clean($text, $settings);
 	}
+
 }
 
