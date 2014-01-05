@@ -59,7 +59,8 @@ class CommentsComponent extends Component {
 	public $components = array(
 		'Cookie',
 		'Session',
-		'Auth'
+		'Auth',
+		'Paginator'
 	);
 
 /**
