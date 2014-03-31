@@ -41,7 +41,7 @@ class CommentWidgetHelper extends AppHelper {
 		'ajaxAction' => false,
 		'displayUrlToComment' => false,
 		'urlToComment' => '',
-		'allowAnonymousComment'  => false,
+		'allowAnonymousComment' => false,
 		'url' => null,
 		'ajaxOptions' => array(),
 		'viewInstance' => null
@@ -52,7 +52,10 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @var array
  */
-	protected $__passedParams = array('displayType', 'viewComments');
+	protected $_passedParams = array(
+		'displayType',
+		'viewComments'
+	);
 
 /**
  * Global widget parameters
@@ -64,6 +67,8 @@ class CommentWidgetHelper extends AppHelper {
 /**
  * Constructor
  *
+ * @param View $View
+ * @param array $settings
  */
 	public function __construct(View $View, $settings = array()) {
 		$this->options(array());
@@ -73,6 +78,7 @@ class CommentWidgetHelper extends AppHelper {
 /**
  * Before render Callback
  *
+ * @param string $file
  * @return void
  */
 	public function beforeRender($file = null) {
@@ -81,7 +87,7 @@ class CommentWidgetHelper extends AppHelper {
 
 		$this->enabled = !empty($View->viewVars['commentParams']);
 		if ($this->enabled) {
-			foreach ($this->__passedParams as $param) {
+			foreach ($this->_passedParams as $param) {
 				if (empty($View->viewVars['commentParams'][$param])) {
 					$this->enabled = false;
 					break;
@@ -142,7 +148,7 @@ class CommentWidgetHelper extends AppHelper {
 				$theme = 'flat';
 			}
 
-			if (!is_null($this->globalParams['url'])){
+			if (!is_null($this->globalParams['url'])) {
 				$url = array();
 			} else {
 				$url = array();
@@ -209,7 +215,7 @@ class CommentWidgetHelper extends AppHelper {
 		if ($this->globalParams['target']) {
 			if (is_string($this->globalParams['ajaxAction'])) {
 				$url['action'] = $this->globalParams['ajaxAction'];
-			} elseif(is_array($this->globalParams['ajaxAction'])) {
+			} elseif (is_array($this->globalParams['ajaxAction'])) {
 				$url = array_merge($url, $this->globalParams['ajaxAction']);
 			}
 		}
