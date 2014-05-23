@@ -1,26 +1,32 @@
 <?php
-class AllCommentsPluginTest extends PHPUnit_Framework_TestSuite {
+/**
+ * Copyright (c) Cake Development Corporation (http://cakedc.com)
+ *
+ * Licensed under The MIT License
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright (c) Cake Development Corporation (http://cakedc.com)
+ * @license http://www.opensource.org/licenses/mit-license.php MIT License
+ */
 
 /**
- * Suite define the tests for this suite
+ * AllSearchPluginTest test suite
+ */
+class AllCommentsTest extends PHPUnit_Framework_TestSuite {
+
+/**
+ * Compile test suite with all tests
  *
- * @return void
+ * @return CakeTestSuite The compiled test suite.
  */
 	public static function suite() {
-		$suite = new PHPUnit_Framework_TestSuite('All Comments Plugin Tests');
-
-		$basePath = CakePlugin::path('Comments') . DS . 'Test' . DS . 'Case' . DS;
-		// controllers
-		$suite->addTestFile($basePath . 'Controller' . DS . 'CommentsControllerTest.php');
-		// controllers
-		$suite->addTestFile($basePath . 'Controller' . DS . 'Component' . DS . 'CommentsComponentTest.php');
-		// behaviors
-		$suite->addTestFile($basePath . 'Model' . DS . 'Behavior' . DS . 'CommentableBehaviorTest.php');
-		// models
-		$suite->addTestFile($basePath . 'Model' . DS . 'CommentTest.php');
-		// helpers
-		$suite->addTestFile($basePath . 'View' . DS . 'Helper' . DS . 'CommentWidgetHelperTest.php');
-		return $suite;
+		$Suite = new CakeTestSuite('All Comments Plugin tests');
+		$path = dirname(__FILE__);
+		$Suite->addTestDirectory($path . DS . 'Controller');
+		$Suite->addTestDirectory($path . DS . 'Controller' . DS . 'Component');
+		$Suite->addTestDirectory($path . DS . 'Model');
+		$Suite->addTestDirectory($path . DS . 'Model' . DS . 'Behavior');
+		return $Suite;
 	}
 
 }
