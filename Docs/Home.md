@@ -1,0 +1,21 @@
+CakeDC Comments Plugin
+======================
+
+This **Comments** plugin enables developers to quickly add comments functionality to any existing table.
+
+Requirements
+------------
+
+* CakePHP 2.5+
+* PHP 5.2.8+
+
+Documentation
+-------------
+
+* [Installation](Documentation/Installation.md)
+* [How It Works](Documentation/How-it-Works.md)
+
+Tutorials
+---------
+
+* [Quick Start](Tutorials/Quick-Start.md)
