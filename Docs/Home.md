@@ -14,6 +14,7 @@ Documentation
 
 * [Installation](Documentation/Installation.md)
 * [How It Works](Documentation/How-it-Works.md)
+* [Ajax Support](Documentation/Ajax-Support.md)
 
 Tutorials
 ---------
