@@ -10,8 +10,6 @@
  */
 App::uses('AppModel', 'Model');
 
-CakePlugin::load('Utils');
- 
 /**
  * Comments AppModel
  *
