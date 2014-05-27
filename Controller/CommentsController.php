@@ -142,8 +142,8 @@ class CommentsController extends CommentsAppController {
 			$this->Comments->flash($message);
 		}
 		$url = array('plugin' => 'comments', 'action' => 'index', 'admin' => true);
-		$url = Set::merge($url, $this->request->params['pass']);
-		$this->redirect(Set::merge($url, $this->request->params['named']));
+		$url = Hash::merge($url, $this->request->params['pass']);
+		$this->redirect(Hash::merge($url, $this->request->params['named']));
 	}
 
 /**
