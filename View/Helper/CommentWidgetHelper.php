@@ -138,7 +138,7 @@ class CommentWidgetHelper extends AppHelper {
 		if ($this->enabled) {
 			$View = $this->__view();
 
-			$params = Set::merge($View->viewVars['commentParams'], $params);
+			$params = Hash::merge($View->viewVars['commentParams'], $params);
 			if (isset($params['displayType'])) {
 				$theme = $params['displayType'];
 				if (isset($params['subtheme'])) {
@@ -183,7 +183,7 @@ class CommentWidgetHelper extends AppHelper {
 			$allowAddByAuth = ($this->globalParams['allowAnonymousComment'] || !empty($View->viewVars['isAuthorized']));
 
 			$params = array_merge($params, compact('url', 'allowAddByAuth', 'allowAddByModel', 'adminRoute', 'isAddMode', 'viewRecord', 'viewRecordFull', 'theme'));
-			$this->globalParams = Set::merge($this->globalParams, $params);
+			$this->globalParams = Hash::merge($this->globalParams, $params);
 			$result = $this->element('main');
 		}
 		return $result;
@@ -234,7 +234,7 @@ class CommentWidgetHelper extends AppHelper {
 		if (strpos($name, '/') === false) {
 			$name = 'comments/' . $this->globalParams['theme'] . '/' . $name;
 		}
-		$params = Set::merge($this->globalParams, $params);
+		$params = Hash::merge($this->globalParams, $params);
 		$extra['ignoreMissing'] = true;
 		$response = $View->element($name, $params, $extra);
 		if (is_null($response) || strpos($response, 'Not Found:') !== false) {
