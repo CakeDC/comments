@@ -68,7 +68,6 @@ class Comment extends CommentsAppModel {
  */
     public $filterArgs = array();
 
-
 /**
  * beforeSave
  *

@@ -78,11 +78,6 @@ class CommentsController extends CommentsAppController {
  * @return void
  */
 	public function admin_index($type = '') {
-		$this->presetVars = array(
-			array('field' => 'approved', 'type' => 'value'),
-			array('field' => 'is_spam', 'type' => 'value')
-		);
-
 		$this->Comment->recursive = 0;
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
@@ -92,21 +87,8 @@ class CommentsController extends CommentsAppController {
 				)
 			)
 		), false);
-		$conditions = array();
 
-		if (class_exists('PrgComponent')) {
-			$this->Comment->Behaviors->load('Search.Searchable');
-			$this->Comment->filterArgs = array(
-				array('field' => 'is_spam', 'name' => 'is_spam', 'type' => 'value'),
-				array('field' => 'approved', 'name' => 'approved', 'type' => 'value')
-			);
-			$this->presetVars = true;
-			$this->Prg = new PrgComponent($this->Components, array());
-			$this->Prg->initialize($this);
-			$this->Prg->commonProcess();
-			$conditions = $this->Comment->parseCriteria($this->passedArgs);
-			$this->set('searchEnabled', true);
-		}
+		$conditions = $this->_adminIndexSearch();
 
 		$this->Paginator->settings = array(
 			'Comment' => array(
@@ -117,6 +99,7 @@ class CommentsController extends CommentsAppController {
 				'order' => 'Comment.created DESC'
 			)
 		);
+
 		if ($type == 'spam') {
 			$this->Paginator->settings['Comment']['conditions'] = array('Comment.is_spam' => array('spam', 'spammanual'));
 		} elseif ($type == 'clean') {
@@ -124,6 +107,30 @@ class CommentsController extends CommentsAppController {
 		}
 
 		$this->set('comments', $this->Paginator->paginate('Comment'));
+	}
+
+/**
+ * Checks if the CakeDC Search plugin is present and if yes loads the PRG component
+ *
+ * @return array Conditions for the pagination
+ */
+	protected function _adminIndexSearch() {
+		$conditions = array();
+		if (class_exists('PrgComponent')) {
+			$this->Comment->Behaviors->load('Search.Searchable');
+			$this->Comment->filterArgs = array(
+				array('field' => 'is_spam', 'name' => 'is_spam', 'type' => 'value'),
+				array('field' => 'approved', 'name' => 'approved', 'type' => 'value')
+			);
+
+			$this->presetVars = true;
+			$this->Prg = new PrgComponent($this->Components, array());
+			$this->Prg->initialize($this);
+			$this->Prg->commonProcess();
+			$conditions = $this->Comment->parseCriteria($this->passedArgs);
+			$this->set('searchEnabled', true);
+		}
+		return $conditions;
 	}
 
 /**
@@ -136,8 +143,8 @@ class CommentsController extends CommentsAppController {
 		if (!empty($this->request->data)) {
 			try {
 				$message = $this->Comment->process($this->request->data['Comment']['action'], $this->request->data);
-			} catch (Exception $ex) {
-				$message = $ex->getMessage();
+			} catch (Exception $e) {
+				$message = $e->getMessage();
 			}
 			$this->Comments->flash($message);
 		}

@@ -253,7 +253,6 @@ class CommentsComponent extends Component {
 		$this->modelAlias = $controller->{$this->modelName}->alias;
 		$this->viewVariable = Inflector::variable($this->modelName);
 		$controller->helpers = array_merge($controller->helpers, array('Comments.CommentWidget', 'Time', 'Comments.Cleaner', 'Comments.Tree'));
-
 		if (!$controller->{$this->modelName}->Behaviors->attached('Commentable')) {
 			$controller->{$this->modelName}->Behaviors->attach('Comments.Commentable', array('userModelAlias' => $this->userModel, 'userModelClass' => $this->userModelClass));
 		}
