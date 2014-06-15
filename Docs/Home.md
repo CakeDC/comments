@@ -13,7 +13,9 @@ Documentation
 -------------
 
 * [Installation](Documentation/Installation.md)
-* [How It Works](Documentation/How-it-Works.md)
+* [The Comments Component](Documentation/The-Comments-Component.md)
+* [The Commentable Behavior](Documentation/The-Commentable-Behavior.md)
+* [The Comment Widget Helper](Documentation/The-Comment-Widget-Helper.md)
 * [Ajax Support](Documentation/Ajax-Support.md)
 
 Tutorials

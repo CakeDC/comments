@@ -1,25 +1,11 @@
-Setup
------
-
-First created the needed tables in database. This plugin comes with two mechanisms to get your database tables setup:
-
-1. You can use the default CakePHP schema method from the console: ```cake schema create --plugin Comments```
-2. You can use the CakeDC migrations plugin to import your database tables: `cake migrations.migration all --plugin Comments`
-
-If you choose the second method, please ensure you have first installed the [CakeDC migrations plugin](http://github.com/CakeDC/migrations) first.
-
-Finally, you need to have some sort of `users` or `logins` table that keeps member information. This table should contain a slug field, as it is used by the comments plugin.
-We recommended to use [CakeDC users plugin](http://github.com/CakeDC/users) that allow all needed for plugin features.
-
-How it Works
-------------
-
-During page rendering the comments component checks if some of the passed named url parameters are filled.
-If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
+The Comments Component
+======================
+During page rendering the comments component checks if some of the passed named url parameters are filled. If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
 Sometimes you want to know how much comments your user did. In this case all you need to do - add additional field with name "comments" into the table that keep all users information in you systems. It can be any table like users or profiles.
 
-## Component conventions ##
+Component conventions
+---------------------
 
 The component needs to have one important convention for any actions where it is enabled:
 
@@ -109,70 +95,3 @@ public $components = array(
 		)
 	);
 ```
-
-Behavior overloading and configuration
---------------------------------------
-
-Some times you need to additional associated data returned with the comments. Most easy way for that is to overload the behaviors `commentBeforeFind` method on model level:
-
-```php
-/**
- * Prepare models association to before fetch data
- *
- * @param array $options
- * @return boolean
- * @access public
- */
-	public function commentBeforeFind($options) {
-		$result = $this->Behaviors->dispatchMethod($this, 'commentBeforeFind', array($options));
-
-		$userModel = $this->Behaviors->Commentable->settings[$this->alias]['userModelAlias'];
-		$this->Comment->bindModel(array('belongsTo' => array(
-			'Profile' => array(
-				'className' => 'Profile',
-				'foreignKey' => false,
-				'conditions' => array(
-					'Profile.user_id = ' . $userModel . '.id'
-				)
-			)
-		)), false);
-		return $result;
-	}
-```
-
-Supported callbacks
--------------------
-
-* Behavior.Commentable.beforeCreateComment
-* Behavior.Commentable.afterCreateComment
-
-Both events called on save comment operation. If you need to prevent the comment saving on some condition, the event listener for `beforeCreateComment` must return false. Event afterCreateComment could used on same additional action that should performed on save comments. Event beforeCreateComment get complete comment data that will stored into database. It is possible to override it in listener and return new result. Event `afterCreateComment` gets only the comment id in the data record and the complete record could be read in the listener action.
-
-Helper Parameters and Methods
------------------------------
-
- * **target:** Used in ajax mode to specify block where comment widget stored.
- * **ajaxAction:** Array that specify route to the action or string containing action name. Used in ajax mode.
- * **displayUrlToComment:** Used if you want to have separate pages for each comment. By default false.
- * **urlToComment:** Used if you want to have separate pages for each comment. Contain url to view comment.
- * **allowAnonymousComment:** boolean var, that show if anonymous comments allowed.
- * **viewInstance:** View instance class, that used to generated the page.
- * **subtheme:** Parameter that allow to have several set of templates for one view type. So if you want to have two different representation of 'flat' type for posts and images you just used two subthemes 'posts' and 'images' like 'flat\_posts' and 'flat\_images'.
-
-Template System Structure
--------------------------
-
-The template system consists of several elements stored in comments plugin.
-
-It is 'form', 'item', 'paginator' and 'main'.
-
- * Main element is rendered and use all other to render all parts of comments system.
- * Item element is a just one comment block.
- * Paginator is supposed to used by 'flat' and 'tree' themes. Threaded type theme is not allowed to paginate comments.
- * Form element contains form markup to add comment or reply.
-
-All elements are stored in the structure views/elements/comments/...type..., where ...type... is one of view types: 'flat', 'tree', 'threaded'. It is possible to define any of this elements in any of your plugins or app using this comments system.
-
-Sometimes we need to have several sets of templates for one view type. For example, if we want to have two different representation of 'flat' type for posts and images views we just used two subthemes for 'flat'.
-
-So in elements/comments we need to create folders 'flat\_posts' and 'flat\_images' and copy elements from '/elements/comments/flat' here and modify them.

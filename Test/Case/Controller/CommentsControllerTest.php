@@ -27,6 +27,13 @@ if (!class_exists('User')) {
 class TestCommentsController extends CommentsController {
 
 /**
+ * Name
+ *
+ * @var string
+ */
+	public $name = 'Comments';
+
+/**
  * Auto render
  * @var boolean
  */
@@ -114,6 +121,8 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments->constructClasses();
 		$this->Comments->startupProcess();
 		$this->Comments->Comments->initialize($this->Comments);
+		$this->Comments->Comment = ClassRegistry::init('Comments.Comment');
+		debug(ClassRegistry::init('Comments.Comment'));
 	}
 
 /**
