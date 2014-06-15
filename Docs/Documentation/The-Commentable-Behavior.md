@@ -4,7 +4,7 @@ The Commentable Behavior
 Behavior overloading and configuration
 --------------------------------------
 
-Some times you need to additional associated data returned with the comments. Most easy way for that is to overload the behaviors `commentBeforeFind` method on model level:
+Some times you need to additional associated data returned with the comments. Most easy way for that is to overload the behaviors ```commentBeforeFind``` method on model level:
 
 ```php
 /**
@@ -37,4 +37,4 @@ Supported callbacks
 * Behavior.Commentable.beforeCreateComment
 * Behavior.Commentable.afterCreateComment
 
-Both events called on save comment operation. If you need to prevent the comment saving on some condition, the event listener for `beforeCreateComment` must return false. Event afterCreateComment could used on same additional action that should performed on save comments. Event beforeCreateComment get complete comment data that will stored into database. It is possible to override it in listener and return new result. Event `afterCreateComment` gets only the comment id in the data record and the complete record could be read in the listener action.
+Both events called on save comment operation. If you need to prevent the comment saving on some condition, the event listener for ```beforeCreateComment``` must return false. Event ```afterCreateComment``` could used on same additional action that should performed on save comments. Event beforeCreateComment get complete comment data that will stored into database. It is possible to override it in listener and return new result. Event ```afterCreateComment``` gets only the comment id in the data record and the complete record could be read in the listener action.

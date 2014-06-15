@@ -1,5 +1,6 @@
 The Comments Component
 ======================
+
 During page rendering the comments component checks if some of the passed named url parameters are filled. If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
 Sometimes you want to know how much comments your user did. In this case all you need to do - add additional field with name "comments" into the table that keep all users information in you systems. It can be any table like users or profiles.
@@ -23,8 +24,8 @@ This required by most antispam systems if you plan to use it.
 Component Callbacks
 -------------------
 
-It is possible to override or extend the most comments component methods in the controller.
-To do this we need to create method with prefix callback_comments
+It is possible to override or extend the most comments component methods in the controller. To do this we need to create a method with prefix callback_comments.
+
 Examples:
 
 * callback\_add will named as callback_commentsAdd in controller,
@@ -33,7 +34,6 @@ Examples:
 Callbacks:
 
 * **like:**
-
 * **add:** Add new comment action. Sometimes useful to override, to add some additional preprocessing. See example bellow.
 * **initType:** Method that set comment template system type based on vars.
 * **delete:** Delete action. Can be overloaded.
