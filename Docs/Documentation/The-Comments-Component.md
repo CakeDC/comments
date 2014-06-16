@@ -27,8 +27,8 @@ It is possible to override or extend the most comments component methods in the 
 
 Examples:
 
-* ```callback\_add``` has to be named as ```callback_commentsAdd``` in the controlle.
-* ```callback\_fetchData``` has to be named as ```callback_commentsFetchData``` the in controller.
+* ```callback_add``` has to be named as ```callback_commentsAdd``` in the controller.
+* ```callback_fetchData``` has to be named as ```callback_commentsFetchData``` the in controller.
 
 Callbacks:
 
@@ -79,10 +79,10 @@ Component settings
 
 All components parameters should be overwritten in beforeFilter method.
 
- * **actionNames:** Name of actions comments component should use. By default it ```view``` and ```comments'. So if you want to have comments on ```display``` action you need to set it in beforeFilter method.
- * **modelName:** Name of 'commentable' model. By default it is default controller's model name (```Controller::$modelClass```)
- * **assocName:** Name of association for comments.
- * **userModel:** Name of user model associated to comment. By default it is ```UserModel```. It is important to have a different name than the User model name.
+ * **actionNames:** Name of actions comments component should use. By default it ```view``` and ```comments```. So if you want to have comments on ```display``` action you need to set it in beforeFilter method.
+ * **modelName:** Name of the commentable model. By default it is default controller's model name (```Controller::$modelClass```)
+ * **assocName:** Name of the association for comments.
+ * **userModel:** Name of the user model associated to comment. By default it is ```UserModel```.
  * **userModelClass:** Class name for the user model. By default it is ```User```. If you use another model for identity purpose you need to setup it here.
  * **unbindAssoc:** Enabled if this component should permanently unbind the association to the Comment model in order to not query the model for unnecessary data in the ```Controller::view()``` action.
  * **commentParams:** Parameters passed to view.
