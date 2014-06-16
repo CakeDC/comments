@@ -34,7 +34,7 @@ echo $this->element('/ajax');
 
 The comments action in the controller should be the same as the view action, the difference is only in the view.
 
-If you should pass some more params into CommentWidget::display method in ajax element you can call it with the additional ```displayOptions``` parameter:
+If you should pass some more params into ```CommentWidget::display()``` method in ajax element you can call it with the additional ```displayOptions``` parameter:
 
 ```php
 $this->CommentWidget->options(array(
