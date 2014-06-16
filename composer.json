@@ -2,7 +2,7 @@
 	"name": "cakedc/comments",
 	"description": "Comments Plugin for CakePHP",
 	"type": "cakephp-plugin",
-	"keywords": ["cakephp", "comments", "prg", "post-redirect-get", "filter"],
+	"keywords": ["cakephp", "comments", "comment", "discussion"],
 	"homepage": "http://github.com/CakeDC/comments",
 	"license": "MIT",
 	"authors": [
