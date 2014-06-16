@@ -336,7 +336,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Handle controllers action like list/add related comments
+ * Handles controllers actions like list/add related comments
  *
  * @param string $displayType
  * @param bool   $processActions
@@ -370,7 +370,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Tree representation. Paginable.
+ * Paginateable tree representation of the comment data.
  *
  * @param array $options
  * @return array
@@ -395,7 +395,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Flat representaion. Paginable
+ * Flat representation of the comment data.
  *
  * @param array $options
  * @return array
@@ -409,7 +409,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Threaded method - non paginable, whole data is fetched
+ * Threaded comment data, one-paginateable, the whole data is fetched.
  *
  * @param array $options
  * @return array
@@ -436,7 +436,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Default method. Flat method called.
+ * Default method, calls callback_fetchData
  *
  * @param array $options
  * @return array
@@ -460,7 +460,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Prepare passed parameters
+ * Prepare passed parameters.
  *
  * @return void
  */
@@ -542,7 +542,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Fetch and format comment message
+ * Fetch and format a comment message.
  *
  * @param string $commentId
  * @return string
@@ -561,7 +561,7 @@ class CommentsComponent extends Component {
 	}
 
 /**
- * Handle approval of comments
+ * Handles approval of comments.
  *
  * @param string $modelId
  * @param string $commentId
