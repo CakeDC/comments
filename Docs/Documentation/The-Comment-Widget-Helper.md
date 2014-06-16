@@ -26,9 +26,11 @@ It is ```form```, ```item```, ```paginator``` and ```main```.
 
 All elements are stored in the structure
 
-```views/elements/comments/<type>```,
+```
+views/elements/comments/<type>
+```
 
-where <type> is one of view types, ```flat', ```tree``` or ```threaded```. It is possible to define any of this elements in any of your plugins or app using this comments system.
+where ```<type>``` is one of view types, ```flat```, ```tree``` or ```threaded```. It is possible to define any of this elements in any of your plugins or app using this comments system.
 
 Sometimes we need to have several sets of templates for one view type. For example, if we want to have two different representation of ```flat``` type for posts and images views we just used two subthemes for ```flat```.
 
