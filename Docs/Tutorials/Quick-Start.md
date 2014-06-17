@@ -16,15 +16,6 @@ class PostsController extends AppControlle {
 			'userModelClass' => 'Users.User' // Customize the User class
 		)
 	);
-
-/**
- * Initializes the view type for comments widget
- *
- * @return string
- */
-	public function callback_commentsInitType() {
-		return 'flat'; // threaded, tree and flat supported
-	}
 }
 ```
 
