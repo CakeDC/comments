@@ -16,4 +16,5 @@ https://github.com/CakeDC/comments/tree/1.3.0
 * [b5e394b](https://github.com/CakeDC/comments/commit/b5e394b) Some CS corrections
 * [75a10e1](https://github.com/CakeDC/comments/commit/75a10e1) Fixing a strict error and documentation
 * [7fb35be](https://github.com/CakeDC/comments/commit/7fb35be) Refs https://github.com/CakeDC/comments/issues/59, improving the model association configuration for the CommentableBehavior.
-* [55cf360](https://github.com/CakeDC/comments/commit/55cf360) Fixes https://github.com/CakeDC/comments/issues/61, adding the paginator component to the components array of CommentsComponent1b6ca8c Fixes https://github.com/CakeDC/comments/issues/61
+* [55cf360](https://github.com/CakeDC/comments/commit/55cf360) Fixes https://github.com/CakeDC/comments/issues/61, adding the paginator component to the components array of CommentsComponent
+* [1b6ca8c](https://github.com/CakeDC/comments/commit/1b6ca8c) Fixes https://github.com/CakeDC/comments/issues/61
