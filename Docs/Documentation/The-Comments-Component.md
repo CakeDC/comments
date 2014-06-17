@@ -96,8 +96,7 @@ There are two way to change settings values for component. You can change it in 
 ```php
 public $components = array(
 	'Comments.Comments' => array(
-		'userModelClass' =>
-			'Users.User'
-		)
-	);
+		'userModelClass' => 'Users.User'
+	)
+);
 ```
