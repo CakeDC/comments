@@ -9,6 +9,7 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('CommentsAppModel', 'Comments.Model');
+
 /**
  * Comment model
  *
@@ -66,7 +67,6 @@ class Comment extends CommentsAppModel {
  * @var array
  */
     public $filterArgs = array();
-
 
 /**
  * beforeSave

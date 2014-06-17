@@ -83,7 +83,7 @@ msgstr "Ocurrió un error durante la eliminación del comentario, intente de nue
 
 #: /models/comment.php:132;173
 msgid "Some errors appear during execution."
-msgstr "Algunos errors aparecieron durante la ejecución"
+msgstr "Algunos errores aparecieron durante la ejecución"
 
 #: /models/comment.php:136
 msgid "Comments removed."
@@ -394,7 +394,7 @@ msgstr "Publicar"
 #: /views/elements/comments/threaded/item.ctp:24
 #: /views/elements/comments/tree/item.ctp:24
 msgid "Unpublish"
-msgstr "No Puplicar"
+msgstr "No Publicar"
 
 #: /views/elements/comments/flat/item.ctp:37
 #: /views/elements/comments/threaded/item.ctp:37
