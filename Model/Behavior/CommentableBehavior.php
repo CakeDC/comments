@@ -45,7 +45,8 @@ class CommentableBehavior extends ModelBehavior {
 		'commentModel' => 'Comments.Comment',
 		'spamField' => 'is_spam',
 		'userModelAlias' => 'UserModel',
-		'userModelClass' => 'User'
+		'userModelClass' => 'User',
+		'userModel' => null,
 	);
 
 /**
@@ -64,39 +65,90 @@ class CommentableBehavior extends ModelBehavior {
 		}
 
 		$this->settings[$model->alias] = array_merge($this->settings[$model->alias], $settings);
+		$this->bindCommentModels($model);
+	}
 
-		$cfg = $this->settings[$model->alias];
-		$model->bindModel(array('hasMany' => array(
-			'Comment' => array(
-				'className' => $cfg['commentModel'],
-				'foreignKey' => 'foreign_key',
-				'unique' => true,
-				'conditions' => '',
-				'fields' => '',
-				'dependent' => true,
-				'order' => '',
-				'limit' => '',
-				'offset' => '',
-				'exclusive' => '',
-				'finderQuery' => '',
-				'counterQuery' => ''))), false);
-		$model->Comment->bindModel(array('belongsTo' => array(
-			$model->alias => array(
-				'className' => $model->name,
-				'foreignKey' => 'foreign_key',
-				'unique' => true,
-				'conditions' => '',
-				'fields' => '',
-				'counterCache' => true,
-				'dependent' => false))), false);
-		$model->Comment->bindModel(array('belongsTo' => array(
-			$cfg['userModelAlias'] => array(
-				'className' => $cfg['userModelClass'],
-				'foreignKey' => 'user_id',
-				'conditions' => '',
-				'fields' => '',
-				'counterCache' => true,
-				'order' => ''))), false);
+/**
+ * Binds the commend and user model and the current model to the comments model
+ *
+ * @param Model $model
+ * @return void
+ */
+	public function bindCommentModels(Model $model) {
+		$config = $this->settings[$model->alias];
+
+		if (!empty($config['commentModel']) && is_array($config['commentModel'])) {
+			$model->bindModel(
+				array(
+					'hasMany' => array(
+						'Comment' => $config['commentModel']
+					)
+				),
+				false
+			);
+		} else {
+			$model->bindModel(
+				array(
+					'hasMany' => array(
+						'Comment' => array(
+							'className' => $config['commentModel'],
+							'foreignKey' => 'foreign_key',
+							'unique' => true,
+							'conditions' => '',
+							'fields' => '',
+							'dependent' => true,
+							'order' => '',
+							'limit' => '',
+							'offset' => '',
+							'exclusive' => '',
+							'finderQuery' => '',
+							'counterQuery' => ''
+						)
+					)
+				),
+				false
+			);
+		}
+
+		$model->Comment->bindModel(array(
+			'belongsTo' => array(
+				$model->alias => array(
+					'className' => $model->name,
+					'foreignKey' => 'foreign_key',
+					'unique' => true,
+					'conditions' => '',
+					'fields' => '',
+					'counterCache' => true,
+					'dependent' => false)
+				)
+			),
+			false
+		);
+
+		if (!empty($config['userModel']) && is_array($config['userModel'])) {
+			$model->bindModel(
+				array(
+					'belongsTo' => array(
+						$config['userModelAlias'] => $config['userModel']
+					)
+				),
+				false
+			);
+		} else {
+			$model->Comment->bindModel(array(
+				'belongsTo' => array(
+					$config['userModelAlias'] => array(
+						'className' => $config['userModelClass'],
+						'foreignKey' => 'user_id',
+						'conditions' => '',
+						'fields' => '',
+						'counterCache' => true,
+						'order' => '')
+					)
+				),
+				false
+			);
+		}
 	}
 
 /**
