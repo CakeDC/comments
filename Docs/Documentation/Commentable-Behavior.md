@@ -1,5 +1,5 @@
-The Commentable Behavior
-========================
+Commentable Behavior
+====================
 
 Behavior overloading and configuration
 --------------------------------------
