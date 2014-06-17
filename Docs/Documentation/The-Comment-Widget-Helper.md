@@ -17,7 +17,7 @@ Template System Structure
 
 The template system consists of several elements stored in comments plugin.
 
-It is ```form```, ```item```, ```paginator``` and ```main```.
+These are ```form```, ```item```, ```paginator``` and ```main```.
 
  * Main element is rendered and use all other to render all parts of comments system.
  * Item element is a just one comment block.
