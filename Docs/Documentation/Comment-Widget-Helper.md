@@ -1,5 +1,5 @@
-The Comment Widget Helper
-=========================
+Comment Widget Helper
+=====================
 
 Helper Parameters and Methods
 -----------------------------

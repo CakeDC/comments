@@ -13,9 +13,9 @@ Documentation
 -------------
 
 * [Installation](Documentation/Installation.md)
-* [The Comments Component](Documentation/The-Comments-Component.md)
-* [The Commentable Behavior](Documentation/The-Commentable-Behavior.md)
-* [The Comment Widget Helper](Documentation/The-Comment-Widget-Helper.md)
+* [Comments Component](Documentation/Comments-Component.md)
+* [Commentable Behavior](Documentation/Commentable-Behavior.md)
+* [Comment Widget Helper](Documentation/Comment-Widget-Helper.md)
 * [Ajax Support](Documentation/Ajax-Support.md)
 
 Tutorials

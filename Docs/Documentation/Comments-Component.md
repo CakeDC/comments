@@ -1,5 +1,5 @@
-The Comments Component
-======================
+Comments Component
+==================
 
 During page rendering the comments component checks if some of the passed named url parameters are filled. If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
