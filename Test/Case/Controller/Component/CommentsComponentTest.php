@@ -383,11 +383,13 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Controller->Comments->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));
 
-		$this->Controller->Comments->Auth->staticExpects($this->at(0))
+
+			$this->Controller->Comments->Auth->staticExpects($this->at(0))
 			->method('user')
 			->with('id')
 			->will($this->returnValue('47ea303a-3b2c-4251-b313-4816c0a800fa'));
 
+			
 		$this->Controller->Article->id = 1;
 		$oldCount = $this->Controller->Article->field('comments');
 

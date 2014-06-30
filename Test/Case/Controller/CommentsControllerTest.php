@@ -122,7 +122,6 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->Comments->startupProcess();
 		$this->Comments->Comments->initialize($this->Comments);
 		$this->Comments->Comment = ClassRegistry::init('Comments.Comment');
-		debug(ClassRegistry::init('Comments.Comment'));
 	}
 
 /**
@@ -233,7 +232,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 
 		$Article = ClassRegistry::init('Article');
-		$items = Hash::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$items = Hash::extract($Article->read(array('Article.comments'), 1), 'Article.comments');
 		$oldCount = array_shift($items);
 
 		$this->Comments->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Collection));
@@ -246,7 +245,7 @@ class CommentsControllerTest extends CakeTestCase {
 
 		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 1);
 		$this->assertEqual($commentFlag['Comment']['is_spam'], 'spammanual');
-		$items = Hash::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$items = Hash::extract($Article->read(array('Article.comments'), 1), 'Article.comments');
 		$newCount = array_shift($items);
 		$this->assertEqual($newCount, $oldCount - 1);
 	}
@@ -266,7 +265,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 
 		$Article = ClassRegistry::init('Article');
-		$items = Hash::extract($Article->read(array('Article.comments'), 2), '/Article/comments');
+		$items = Hash::extract($Article->read(array('Article.comments'), 2), 'Article.comments');
 		$oldCount = array_shift($items);
 
 		$this->Collection = $this->getMock('ComponentCollection');
@@ -281,7 +280,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$commentFlag = $this->Comments->Comment->read(array('Comment.is_spam'), 3);
 		$this->assertEqual($commentFlag['Comment']['is_spam'], 'ham');
 
-		$items = Hash::extract($Article->read(array('Article.comments'), 2), '/Article/comments');
+		$items = Hash::extract($Article->read(array('Article.comments'), 2), 'Article.comments');
 		$newCount = array_shift($items);
 
 		$this->assertEqual($newCount, $oldCount + 1);
@@ -320,7 +319,7 @@ class CommentsControllerTest extends CakeTestCase {
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
 
 		$Article = ClassRegistry::init('Article');
-		$items = Hash::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$items = Hash::extract($Article->read(array('Article.comments'), 1), 'Article.comments');
 		$oldCount = array_shift($items);
 
 		$this->Collection = $this->getMock('ComponentCollection');
@@ -330,7 +329,7 @@ class CommentsControllerTest extends CakeTestCase {
 			->with(__d('comments', 'Comment deleted'));
 		$this->Comments->admin_delete(1);
 		$this->assertEqual($this->Comments->redirectUrl, array('action' => 'index'));
-		$items = Hash::extract($Article->read(array('Article.comments'), 1), '/Article/comments');
+		$items = Hash::extract($Article->read(array('Article.comments'), 1), 'Article.comments');
 		$newCount = array_shift($items);
 
 		$this->assertEqual($newCount, $oldCount - 1);
@@ -347,16 +346,16 @@ class CommentsControllerTest extends CakeTestCase {
 
 		$this->Comments->request->params['requested'] = true;
 		$this->Comments->requestForUser();
-		$ids = Hash::extract($this->Comments->viewVars['comments'], '/Comment/id');
+		$ids = Hash::extract($this->Comments->viewVars['comments'], '{n}.Comment.id');
 		$this->assertEqual($ids, array(1, 2));
 		$this->assertEqual($this->Comments->renderedView, 'comment');
 
 		$this->Comments->requestForUser(null, 1);
-		$ids = Hash::extract($this->Comments->viewVars['comments'], '/Comment/id');
+		$ids = Hash::extract($this->Comments->viewVars['comments'], '{n}.Comment.id');
 		$this->assertEqual($ids, array(1));
 
 		$this->Comments->requestForUser('47ea303a-3b2c-4251-b313-4816c0a800fa');
-		$ids = Hash::extract($this->Comments->viewVars['comments'], '/Comment/id');
+		$ids = Hash::extract($this->Comments->viewVars['comments'], '{n}.Comment.id');
 		$this->assertEqual($ids, array(4));
 		$this->assertEqual($this->Comments->viewVars['userId'], '47ea303a-3b2c-4251-b313-4816c0a800fa');
 
