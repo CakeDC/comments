@@ -24,8 +24,12 @@ App::uses('ModelBehavior', 'Model');
 
 CakePlugin::load('Utils');
 
-class BlackHoleException extends Exception {}
-class NoActionException extends Exception {}
+if (!class_exists('BlackHoleException')) {
+	class BlackHoleException extends Exception {}
+}
+if (!class_exists('NoActionException')) {
+	class NoActionException extends Exception {}
+}
 
 class CommentableBehavior extends ModelBehavior {
 
