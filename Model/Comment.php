@@ -31,7 +31,6 @@ class Comment extends CommentsAppModel {
  * @var string $name
  */
 	public $actsAs = array(
-		'Utils.Sluggable' => array('label' => 'title'),
 		'Tree'
 	);
 
@@ -66,7 +65,35 @@ class Comment extends CommentsAppModel {
  *
  * @var array
  */
-    public $filterArgs = array();
+	public $filterArgs = array();
+
+/**
+ * Constructor
+ *
+ * @param bool|string $id ID
+ * @param string $table Table
+ * @param string $ds Datasource
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		$this->_setupBehaviors();
+	}
+
+/**
+ * Setup available plugins
+ *
+ * This checks for the existence of certain plugins, and if available, uses them.
+ *
+ * @return void
+ * @link https://github.com/CakeDC/utils
+ */
+	protected function _setupBehaviors() {
+		if (CakePlugin::loaded('Utils') && class_exists('SluggableBehavior') && !$this->Behaviors->loaded('Sluggable')) {
+			$this->Behaviors->load('Utils.Sluggable', array(
+				'label' => 'title'
+			));
+		}
+	}
 
 /**
  * beforeSave
@@ -108,14 +135,14 @@ class Comment extends CommentsAppModel {
  * @return boolean Success / Fail
  */
 	public function process($action, $data) {
-		$message = $addInfo = 	'';
+		$message = $addInfo = '';
 		if (!empty($action) && $action == 'delete') {
 			$keys = array_keys($data['Comment']);
 			foreach ($keys as $id) {
 				$value = $data['Comment'][$id];
 				if ((is_string($id) && strlen($id) == 36 || is_numeric($id)) && $value) {
 					$result = $this->delete($id);
-					if(!$result) {
+					if (!$result) {
 						$addInfo = __d('comments', 'Some errors appear during execution.');
 					}
 				}
@@ -184,7 +211,7 @@ class Comment extends CommentsAppModel {
 			$sign = ($direction == 'up') ? '+' : '-';
 			$associated['Model']->recursive = -1;
 			$success = $associated['Model']->updateAll(
-				array('comments' => $associated['Model']->alias.".comments $sign 1"),
+				array('comments' => $associated['Model']->alias . ".comments $sign 1"),
 				array($associated['Model']->alias . '.id' => $associated['id']));
 		}
 		return $success;
