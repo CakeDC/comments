@@ -203,7 +203,7 @@ class Comment extends CommentsAppModel {
  */
 	public function changeCount($id, $direction) {
 		$success = false;
-		$associated = $this->__getCommentedRow($id);
+		$associated = $this->_getCommentedRow($id);
 		if ($associated !== false) {
 			if (!$associated['Model']->hasField('comments')) {
 				return true;
@@ -230,7 +230,7 @@ class Comment extends CommentsAppModel {
 		}
 
 		if ($this->changeCount($id, 'down')) {
-			if ($this->__updateSpamType($id, 'spammanual')) {
+			if ($this->_updateSpamType($id, 'spammanual')) {
 				if ($this->Behaviors->enabled('Antispamable')) {
 					$this->setSpam(null, array('permalink' => $this->permalink));
 				}
@@ -255,7 +255,7 @@ class Comment extends CommentsAppModel {
 		}
 
 		if ($this->changeCount($id, 'up')) {
-			if ($this->__updateSpamType($id, 'ham')) {
+			if ($this->_updateSpamType($id, 'ham')) {
 				if ($this->Behaviors->enabled('Antispamable')) {
 					$this->setHam(null, array('permalink' => $this->permalink));
 				}
@@ -295,7 +295,7 @@ class Comment extends CommentsAppModel {
  * @param string $newType New spam type for the comment (valid values: cf $isSpamValues)
  * @return boolean Success of the update
  */
-	private function __updateSpamType($id, $newType) {
+	protected function _updateSpamType($id, $newType) {
 		$success = false;
 		if (in_array($newType, $this->isSpamValues)) {
 			$success = $this->updateAll(
@@ -313,7 +313,7 @@ class Comment extends CommentsAppModel {
  * 	- Model: Associated model object
  *  - id: Id of the related row
  */
-	private function __getCommentedRow($id) {
+	protected function _getCommentedRow($id) {
 		$result = false;
 		$comment = $this->find('first', array(
 			'recursive' => -1,
