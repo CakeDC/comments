@@ -293,17 +293,12 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function beforeRender(Controller $controller) {
-		try {
-			if ($this->active && in_array($this->Controller->request->action, $this->actionNames)) {
-				$type = $this->_call('initType');
-				$this->commentParams = array_merge($this->commentParams, array('displayType' => $type));
-				$this->_call('view', array($type));
-				$this->_call('prepareParams');
-				$this->Controller->set('commentParams', $this->commentParams);
-			}
-		} catch (BlackHoleException $exception) {
-			return $this->Controller->blackHole($exception->getMessage());
-		} catch (NoActionException $exception) {
+		if ($this->active && in_array($this->Controller->request->action, $this->actionNames)) {
+			$type = $this->_call('initType');
+			$this->commentParams = array_merge($this->commentParams, array('displayType' => $type));
+			$this->_call('view', array($type));
+			$this->_call('prepareParams');
+			$this->Controller->set('commentParams', $this->commentParams);
 		}
 	}
 
