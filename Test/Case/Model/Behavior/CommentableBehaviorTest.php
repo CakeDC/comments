@@ -193,15 +193,6 @@ class CommentableTest extends CakeTestCase {
 		$expected = false;
 		$this->assertEqual($expected, $this->Model->commentAdd(0, array()));
 
-		try {
-			$this->Model->commentAdd(1);
-			$this->assertFalse(true); 
-			// @todo refactor $this->fail();
-		} catch (BlackHoleException $e) {
-			$this->assertTrue(true); 
-			// @todo refactor $this->pass();
-		}
-
 		// If it's successfull, commentAdd returns the id of the newly created comment
 		$options = array(
 			'userId' => '47ea303a-3b2c-4251-b313-4816c0a800fa',

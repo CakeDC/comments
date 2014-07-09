@@ -24,13 +24,6 @@ App::uses('ModelBehavior', 'Model');
 
 CakePlugin::load('Utils');
 
-if (!class_exists('BlackHoleException')) {
-	class BlackHoleException extends Exception {}
-}
-if (!class_exists('NoActionException')) {
-	class NoActionException extends Exception {}
-}
-
 class CommentableBehavior extends ModelBehavior {
 
 /**
@@ -200,7 +193,7 @@ class CommentableBehavior extends ModelBehavior {
  * @param Model $Model     Object of the related model class
  * @param mixed $commentId parent comment id, 0 for none
  * @param array $options   extra information and comment statistics
- * @throws BlackHoleException
+ * @throws RuntimeException
  * @return boolean
  */
 	public function commentAdd(Model $Model, $commentId = null, $options = array()) {
@@ -217,7 +210,7 @@ class CommentableBehavior extends ModelBehavior {
 				'Comment.id' => $commentId,
 				'Comment.approved' => true,
 				'Comment.foreign_key' => $modelId)))) {
-				throw new BlackHoleException(__d('comments', 'Unallowed comment id', true));
+				throw new RuntimeException(__d('comments', 'Not allowed comment id', true));
 			}
 		}
 

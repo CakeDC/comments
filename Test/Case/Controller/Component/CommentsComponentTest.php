@@ -435,21 +435,6 @@ class CommentsComponentTest extends CakeTestCase {
 		$this->Controller->Article->id = 1;
 		$oldCount = $this->Controller->Article->field('comments');
 
-		try {
-			$this->Controller->Comments->callback_toggleApprove(1, 1);
-			$this->fail();
-		} catch (BlackHoleException $e) {
-			//$this->pass();
-		}
-
-		$this->Controller->passedArgs['comment_action'] = 'toggle_approve';
-		try {
-			$this->Controller->Comments->callback_toggleApprove(1, 1);
-			$this->fail();
-		} catch (BlackHoleException $e) {
-			//$this->pass();
-		}
-
 		$this->Collection = $this->getMock('ComponentCollection');
 		$this->Controller->Auth = $this->getMock('AuthComponent', array('user'), array($this->Collection));
 		$this->Controller->Auth->staticExpects($this->at(0))
