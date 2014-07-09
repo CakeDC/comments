@@ -560,13 +560,13 @@ class CommentsComponent extends Component {
  *
  * @param string $modelId
  * @param string $commentId
- * @throws BlackHoleException
  * @return void
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-        if (!isset($this->Controller->passedArgs['comment_action'])
+		if (!isset($this->Controller->passedArgs['comment_action'])
 			|| !($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
-			throw new BlackHoleException(__d('comments', 'Nonrestricted operation'));
+			$this->Controller->blackHole(__d('comments', 'Nonrestricted operation'));
+			return;
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
 			$this->flash(__d('comments', 'The Comment status has been updated.'));
