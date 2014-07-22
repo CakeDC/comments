@@ -167,7 +167,7 @@ class CommentsControllerTest extends CakeTestCase {
  * @return void
  */
 	public function testAdminProcessDelete() {
-		$this->Comments->data['Comment'] = array(
+		$this->Comments->request->data['Comment'] = array(
 			'1' => 1,
 			'2' => 0,
 			'3' => 0,
