@@ -1,6 +1,8 @@
 Comments Component
 ==================
 
+You need to have the [Auth component](http://book.cakephp.org/2.0/en/core-libraries/components/authentication.html#authentication) activated, Comments won't work right without the Auth component.
+
 During page rendering the comments component checks if some of the passed named url parameters are filled. If it is filled we perform operations like add/delete comment. The component works in background of code performed during controller action and needs just one find from controller.
 
 Sometimes you want to know how much comments your user did. In this case all you need to do - add additional field with name "comments" into the table that keep all users information in you systems. It can be any table like users or profiles.
