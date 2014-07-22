@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('CommentsAppModel', 'Comments.Model');
@@ -31,7 +31,6 @@ class Comment extends CommentsAppModel {
  * @var string $name
  */
 	public $actsAs = array(
-		'Utils.Sluggable' => array('label' => 'title'),
 		'Tree'
 	);
 
@@ -66,7 +65,35 @@ class Comment extends CommentsAppModel {
  *
  * @var array
  */
-    public $filterArgs = array();
+	public $filterArgs = array();
+
+/**
+ * Constructor
+ *
+ * @param bool|string $id ID
+ * @param string $table Table
+ * @param string $ds Datasource
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		$this->_setupBehaviors();
+	}
+
+/**
+ * Setup available plugins
+ *
+ * This checks for the existence of certain plugins, and if available, uses them.
+ *
+ * @return void
+ * @link https://github.com/CakeDC/utils
+ */
+	protected function _setupBehaviors() {
+		if (CakePlugin::loaded('Utils') && class_exists('SluggableBehavior') && !$this->Behaviors->loaded('Sluggable')) {
+			$this->Behaviors->load('Utils.Sluggable', array(
+				'label' => 'title'
+			));
+		}
+	}
 
 /**
  * beforeSave
@@ -108,14 +135,14 @@ class Comment extends CommentsAppModel {
  * @return boolean Success / Fail
  */
 	public function process($action, $data) {
-		$message = $addInfo = 	'';
+		$message = $addInfo = '';
 		if (!empty($action) && $action == 'delete') {
 			$keys = array_keys($data['Comment']);
 			foreach ($keys as $id) {
 				$value = $data['Comment'][$id];
 				if ((is_string($id) && strlen($id) == 36 || is_numeric($id)) && $value) {
 					$result = $this->delete($id);
-					if(!$result) {
+					if (!$result) {
 						$addInfo = __d('comments', 'Some errors appear during execution.');
 					}
 				}
@@ -176,7 +203,7 @@ class Comment extends CommentsAppModel {
  */
 	public function changeCount($id, $direction) {
 		$success = false;
-		$associated = $this->__getCommentedRow($id);
+		$associated = $this->_getCommentedRow($id);
 		if ($associated !== false) {
 			if (!$associated['Model']->hasField('comments')) {
 				return true;
@@ -184,7 +211,7 @@ class Comment extends CommentsAppModel {
 			$sign = ($direction == 'up') ? '+' : '-';
 			$associated['Model']->recursive = -1;
 			$success = $associated['Model']->updateAll(
-				array('comments' => $associated['Model']->alias.".comments $sign 1"),
+				array('comments' => $associated['Model']->alias . ".comments $sign 1"),
 				array($associated['Model']->alias . '.id' => $associated['id']));
 		}
 		return $success;
@@ -203,7 +230,7 @@ class Comment extends CommentsAppModel {
 		}
 
 		if ($this->changeCount($id, 'down')) {
-			if ($this->__updateSpamType($id, 'spammanual')) {
+			if ($this->_updateSpamType($id, 'spammanual')) {
 				if ($this->Behaviors->enabled('Antispamable')) {
 					$this->setSpam(null, array('permalink' => $this->permalink));
 				}
@@ -228,7 +255,7 @@ class Comment extends CommentsAppModel {
 		}
 
 		if ($this->changeCount($id, 'up')) {
-			if ($this->__updateSpamType($id, 'ham')) {
+			if ($this->_updateSpamType($id, 'ham')) {
 				if ($this->Behaviors->enabled('Antispamable')) {
 					$this->setHam(null, array('permalink' => $this->permalink));
 				}
@@ -268,7 +295,7 @@ class Comment extends CommentsAppModel {
  * @param string $newType New spam type for the comment (valid values: cf $isSpamValues)
  * @return boolean Success of the update
  */
-	private function __updateSpamType($id, $newType) {
+	protected function _updateSpamType($id, $newType) {
 		$success = false;
 		if (in_array($newType, $this->isSpamValues)) {
 			$success = $this->updateAll(
@@ -286,7 +313,7 @@ class Comment extends CommentsAppModel {
  * 	- Model: Associated model object
  *  - id: Id of the related row
  */
-	private function __getCommentedRow($id) {
+	protected function _getCommentedRow($id) {
 		$result = false;
 		$comment = $this->find('first', array(
 			'recursive' => -1,

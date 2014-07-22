@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -60,7 +60,8 @@ class CommentsComponent extends Component {
 		'Cookie',
 		'Session',
 		'Auth',
-		'Paginator'
+		'Paginator',
+		'Security'
 	);
 
 /**
@@ -293,17 +294,12 @@ class CommentsComponent extends Component {
  * @return void
  */
 	public function beforeRender(Controller $controller) {
-		try {
-			if ($this->active && in_array($this->Controller->request->action, $this->actionNames)) {
-				$type = $this->_call('initType');
-				$this->commentParams = array_merge($this->commentParams, array('displayType' => $type));
-				$this->_call('view', array($type));
-				$this->_call('prepareParams');
-				$this->Controller->set('commentParams', $this->commentParams);
-			}
-		} catch (BlackHoleException $exception) {
-			return $this->Controller->blackHole($exception->getMessage());
-		} catch (NoActionException $exception) {
+		if ($this->active && in_array($this->Controller->request->action, $this->actionNames)) {
+			$type = $this->_call('initType');
+			$this->commentParams = array_merge($this->commentParams, array('displayType' => $type));
+			$this->_call('view', array($type));
+			$this->_call('prepareParams');
+			$this->Controller->set('commentParams', $this->commentParams);
 		}
 	}
 
@@ -565,13 +561,13 @@ class CommentsComponent extends Component {
  *
  * @param string $modelId
  * @param string $commentId
- * @throws BlackHoleException
  * @return void
  */
 	public function callback_toggleApprove($modelId, $commentId) {
-        if (!isset($this->Controller->passedArgs['comment_action'])
+		if (!isset($this->Controller->passedArgs['comment_action'])
 			|| !($this->Controller->passedArgs['comment_action'] == 'toggle_approve' && $this->Controller->Auth->user('is_admin') == true)) {
-			throw new BlackHoleException(__d('comments', 'Nonrestricted operation'));
+			$this->Security->blackHole($this->Controller, __d('comments', 'Nonrestricted operation'));
+			return;
 		}
 		if ($this->Controller->{$this->modelName}->commentToggleApprove($commentId)) {
 			$this->flash(__d('comments', 'The Comment status has been updated.'));
@@ -702,11 +698,11 @@ class CommentsComponent extends Component {
 							call_user_func(array($this, '_' . Inflector::variable($commentAction)), $id, $this->Controller->passedArgs['comment']);
 							return;
 						} else {
-							return $this->Controller->blackHole("CommentsComponent: comment_Action '$commentAction' is for admins only");
+							return $this->Security->blackHole($this->Controller, "CommentsComponent: comment_Action '$commentAction' is for admins only");
 						}
 					}
 					if (!in_array($commentAction, array('toggle_approve', 'delete'))) {
-						return $this->Controller->blackHole("CommentsComponent: unsupported comment_Action '$commentAction'");
+						return $this->Security->blackHole($this->Controller, "CommentsComponent: unsupported comment_Action '$commentAction'");
 					}
 					$this->_call(Inflector::variable($commentAction), array($id, $this->Controller->passedArgs['comment']));
 				} else {

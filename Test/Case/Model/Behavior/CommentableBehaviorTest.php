@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -187,20 +187,11 @@ class CommentableTest extends CakeTestCase {
 	public function testCommentAdd(){
 		//No data
 		$expected = null;
-		$this->assertEqual($expected, $this->Model->commentAdd(0));
+		$this->assertEquals($expected, $this->Model->commentAdd(0));
 
 		//Empty Data
 		$expected = false;
-		$this->assertEqual($expected, $this->Model->commentAdd(0, array()));
-
-		try {
-			$this->Model->commentAdd(1);
-			$this->assertFalse(true); 
-			// @todo refactor $this->fail();
-		} catch (BlackHoleException $e) {
-			$this->assertTrue(true); 
-			// @todo refactor $this->pass();
-		}
+		$this->assertEquals($expected, $this->Model->commentAdd(0, array()));
 
 		// If it's successfull, commentAdd returns the id of the newly created comment
 		$options = array(
@@ -217,7 +208,7 @@ class CommentableTest extends CakeTestCase {
 		$this->assertFalse(empty($result));
 		$this->assertTrue(is_string($result));
 		$this->Model->Comment->id = $result;
-		$this->assertEqual($this->Model->Comment->field('title'), $options['defaultTitle']);
+		$this->assertEquals($this->Model->Comment->field('title'), $options['defaultTitle']);
 
 		$this->Model->id = $options['modelId'];
 		$oldCount = $this->Model->field('comments');
@@ -228,15 +219,15 @@ class CommentableTest extends CakeTestCase {
 		$result = $this->Model->commentAdd(0, $options);
 		$this->assertTrue(is_string($result));
 		$this->Model->Comment->id = $result;
-		$this->assertEqual($this->Model->Comment->field('title'), $options['data']['Comment']['title']);
-		$this->assertEqual($this->Model->field('comments'), ++$oldCount);
+		$this->assertEquals($this->Model->Comment->field('title'), $options['data']['Comment']['title']);
+		$this->assertEquals($this->Model->field('comments'), ++$oldCount);
 
 		// Test adding non approved comment
 		$options['data']['Comment']['approved'] = 0;
 		$result = $this->Model->commentAdd(0, $options);
 		$this->assertTrue(is_string($result));
 		$this->Model->id = $options['modelId'];
-		$this->assertEqual($this->Model->field('comments'), $oldCount);
+		$this->assertEquals($this->Model->field('comments'), $oldCount);
 
 		// Test adding spam comment
 		$options['data'] = array_merge($options['data'], array(
@@ -252,13 +243,13 @@ class CommentableTest extends CakeTestCase {
  */
 	public function testCommentToggleApprove() {
 		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
-		$this->assertEqual($comment['Comment']['approved'], true);
+		$this->assertEquals($comment['Comment']['approved'], true);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
 		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
-		$this->assertEqual($comment['Comment']['approved'], false);
+		$this->assertEquals($comment['Comment']['approved'], false);
 		$this->assertTrue($this->Model->commentToggleApprove($comment['Comment']['id']));
 		$comment = $this->Model->Comment->find('first', array('conditions' => array('Comment.id' => '1')));
-		$this->assertEqual($comment['Comment']['approved'], true);
+		$this->assertEquals($comment['Comment']['approved'], true);
 
 		$this->assertFalse($this->Model->commentToggleApprove(21415));
 	}
@@ -275,8 +266,8 @@ class CommentableTest extends CakeTestCase {
 			'Comments' => $this->Model->Comment->find('count'));
 
 		$this->assertTrue($this->Model->commentDelete(1));
-		$this->assertEqual($this->Model->field('comments'), $initCounts['Model'] - 1);
-		$this->assertEqual($this->Model->Comment->find('count'), $initCounts['Comments'] - 1);
+		$this->assertEquals($this->Model->field('comments'), $initCounts['Model'] - 1);
+		$this->assertEquals($this->Model->Comment->find('count'), $initCounts['Comments'] - 1);
 
 		$this->assertFalse($this->Model->commentDelete('does-not-exist'));
 	}
@@ -289,13 +280,13 @@ class CommentableTest extends CakeTestCase {
 	public function testChangeCommentCount() {
 		$this->assertTrue($this->Model->changeCommentCount('1', 'up'));
 		$article = $this->Model->findById(1);
-		$this->assertEqual($article['Article']['comments'], 3);
+		$this->assertEquals($article['Article']['comments'], 3);
 		$this->assertTrue($this->Model->changeCommentCount('1', 'down'));
 		$article = $this->Model->findById(1);
-		$this->assertEqual($article['Article']['comments'], 2);
+		$this->assertEquals($article['Article']['comments'], 2);
 
 		$this->assertFalse($this->Model->changeCommentCount('1', 'invalid'));
-        //Invalid comment returns true because of update all statement
+		//Invalid comment returns true because of update all statement
 		$this->assertTrue($this->Model->changeCommentCount('invalid!', 'up'));
 	}
 
@@ -311,7 +302,7 @@ class CommentableTest extends CakeTestCase {
 			'conditions' => array(
 				'Comment.approved' => 1,
 				'Comment.is_spam' => array('clean', 'ham')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 
 		$options = array_merge($options, array(
 			'isAdmin' => true,
@@ -324,7 +315,7 @@ class CommentableTest extends CakeTestCase {
 				'Comment.model' => 'Article',
 				'Article.id' => 1,
 			'Comment.is_spam' => array('clean', 'ham')));
-		$this->assertEqual($result, $expected);
+		$this->assertEquals($result, $expected);
 		$this->assertTrue($this->Model->Behaviors->enabled('Containable'));
 		$this->assertTrue($this->Model->Comment->Behaviors->enabled('Containable'));
 	}
@@ -368,8 +359,8 @@ class CommentableTest extends CakeTestCase {
 
 		$commentId = $this->Model->Comment->id;
 		$comment = $this->Model->Comment->read(null, $commentId);
-		$this->assertEqual($comment['Comment']['title'], 'Changed in beforeComment!');
-		$this->assertEqual($comment['Comment']['body'], 'Changed in afterComment!');
+		$this->assertEquals($comment['Comment']['title'], 'Changed in beforeComment!');
+		$this->assertEquals($comment['Comment']['body'], 'Changed in afterComment!');
 	}
 
 }
