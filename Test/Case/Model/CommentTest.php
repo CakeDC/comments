@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright 2009 - 2013, Cake Development Corporation (http://cakedc.com)
+ * @copyright Copyright 2009 - 2014, Cake Development Corporation (http://cakedc.com)
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
@@ -35,20 +35,25 @@ class CommentTestCase extends CakeTestCase {
 	public $fixtures = array(
 		'plugin.Comments.comment',
 		'plugin.Comments.user',
-		'plugin.Comments.article');
+		'plugin.Comments.article'
+	);
 
 /**
  * startTest
  *
  * @return void
  */
-	public function startTest($method) {
+	public function setUp() {
 		$this->Comment = ClassRegistry::init('Comments.Comment');
 		$this->Comment->bindModel(array(
 			'belongsTo' => array(
 				'Article' => array(
-					'foreignKey' => 'foreign_key'))), false);
-		$this->getMock('AntispamableBehavior', array('isSpam', 'setSpam', 'setHam', 'setup'));
+					'foreignKey' => 'foreign_key'
+				)
+			)
+		), false);
+
+		//$this->getMock('AntispamableBehavior', array('isSpam', 'setSpam', 'setHam', 'setup'));
 	}
 
 /**
@@ -56,10 +61,9 @@ class CommentTestCase extends CakeTestCase {
  *
  * @return void
  */
-	public function endTest($method) {
-		parent::tearDown();
+	public function tearDown() {
 		unset($this->Comment);
-		ClassRegistry::flush(); 
+		ClassRegistry::flush();
 	}
 
 /**
@@ -81,20 +85,20 @@ class CommentTestCase extends CakeTestCase {
 		$results = $this->Comment->find('first');
 		$this->assertTrue(!empty($results));
 		$expected = array('Comment' => array(
-			'id'  => '1',
-			'user_id'  => null,
-			'model'  => 'Article',
-			'foreign_key'  => '1',
-			'parent_id'  => '0',
-			'approved'  => true,
-			'name'  => null,
-			'title'  => '-',
-			'slug'  => '_',
-			'body'  => 'This is a comment',
-			'lft'  => '1',
-			'rght'  => '2',
-			'modified'  => '2008-12-22 16:39:19',
-			'created'  => '2008-12-22 16:39:19',
+			'id' => '1',
+			'user_id' => null,
+			'model' => 'Article',
+			'foreign_key' => '1',
+			'parent_id' => '0',
+			'approved' => true,
+			'name' => null,
+			'title' => '-',
+			'slug' => '_',
+			'body' => 'This is a comment',
+			'lft' => '1',
+			'rght' => '2',
+			'modified' => '2008-12-22 16:39:19',
+			'created' => '2008-12-22 16:39:19',
 			'author_name' => 'mark story',
 			'author_email' => 'example@example.com',
 			'author_url' => 'http://example.com',
@@ -112,7 +116,7 @@ class CommentTestCase extends CakeTestCase {
 	public function testBeforeSave() {
 		Configure::write('Config.language', 'eng');
 		$this->assertTrue($this->Comment->beforeSave());
-		$this->assertEqual($this->Comment->data['Comment']['language'], 'eng');
+		$this->assertEquals($this->Comment->data['Comment']['language'], 'eng');
 	}
 
 /**
@@ -120,25 +124,27 @@ class CommentTestCase extends CakeTestCase {
  *
  * @return void
  */
-	public function _testAfterSave() {
+/*
+	public function testAfterSave() {
 		$this->Comment->Behaviors->load('Antispamable');
 		$Antispamable = $this->Comment->Behaviors->Antispamable;
 		$isSpamCallCount = 0;
-		
+
 		$this->Comment->id = 1;
 		$Antispamable->setReturnValueAt($isSpamCallCount++, 'isSpam', true);
 		$this->Comment->afterSave(true);
-		$this->assertEqual($this->Comment->field('is_spam'), 'spam');
+		$this->assertEquals($this->Comment->field('is_spam'), 'spam');
 		$this->Comment->Article->id = 1;
-		$this->assertEqual($this->Comment->Article->field('comments'), '1');
-		
+		$this->assertEquals($this->Comment->Article->field('comments'), '1');
+
 		$Antispamable->setReturnValueAt($isSpamCallCount++, 'isSpam', false);
 		$this->Comment->afterSave(true);
-		$this->assertEqual($this->Comment->field('is_spam'), 'clean');
-		$this->assertEqual($this->Comment->Article->field('comments'), '1');
-		
+		$this->assertEquals($this->Comment->field('is_spam'), 'clean');
+		$this->assertEquals($this->Comment->Article->field('comments'), '1');
+
 		$Antispamable->expectCallCount('isSpam', $isSpamCallCount);
 	}
+*/
 
 /**
  * testChangeCount
@@ -146,58 +152,60 @@ class CommentTestCase extends CakeTestCase {
  * @return void
  */
 	public function testChangeCount() {
-		$before = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));;
-		
+		$before = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));
+
 		$this->assertTrue($this->Comment->changeCount(1, 'up'));
-		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));;
-		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] + 1);
+		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));
+		$this->assertEquals($after['Article']['comments'], $before['Article']['comments'] + 1);
 		$this->assertFalse($this->Comment->changeCount(0, 'up'));
-		
+
 		$this->assertTrue($this->Comment->changeCount(1, 'down'));
-		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));;
-		$this->assertEqual($after['Article']['comments'], $before['Article']['comments']);
+		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));
+		$this->assertEquals($after['Article']['comments'], $before['Article']['comments']);
 	}
-	
+
 /**
  * Test markAsSpam method
  * 
  * @return void
  */
-	public function _testMarkAsSpam() {
+/*
+	public function testMarkAsSpam() {
 		$this->Comment->Behaviors->load('Antispamable');
 		$Antispamable = $this->Comment->Behaviors->Antispamable;
-		
+
 		$this->assertFalse($this->Comment->markAsSpam('invalid'));
-		
-		$before = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));;
+
+		$before = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));
 		$this->Comment->id = 1;
 		$this->assertTrue($this->Comment->markAsSpam());
-		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));;
-		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] - 1);
-		$this->assertEqual($this->Comment->field('is_spam'), 'spammanual');
+		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 1)));
+		$this->assertEquals($after['Article']['comments'], $before['Article']['comments'] - 1);
+		$this->assertEquals($this->Comment->field('is_spam'), 'spammanual');
 		$Antispamable->expectOnce('setSpam');
 	}
-	
+*/
 /**
  * Test markAsSpam method
  * 
  * @return void
  */
-	public function _testMarkAsHam() {
+/*
+	public function testMarkAsHam() {
 		$this->Comment->Behaviors->attach('Antispamable');
 		$Antispamable = $this->Comment->Behaviors->Antispamable;
-		
+
 		$this->assertFalse($this->Comment->markAsHam('invalid'));
-		
-		$before = $this->Comment->Article->find('first', array('conditions' => array('id' => 2)));;
+
+		$before = $this->Comment->Article->find('first', array('conditions' => array('id' => 2)));
 		$this->Comment->id = 3;
 		$this->assertTrue($this->Comment->markAsHam());
-		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 2)));;
-		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] + 1);
-		$this->assertEqual($this->Comment->field('is_spam'), 'ham');
+		$after = $this->Comment->Article->find('first', array('conditions' => array('id' => 2)));
+		$this->assertEquals($after['Article']['comments'], $before['Article']['comments'] + 1);
+		$this->assertEquals($this->Comment->field('is_spam'), 'ham');
 		$Antispamable->expectOnce('setHam');
 	}
-	
+*/
 /**
  * Test delete method
  * 
@@ -205,12 +213,12 @@ class CommentTestCase extends CakeTestCase {
  */
 	public function testDelete() {
 		$this->assertFalse($this->Comment->delete('invalid'));
-		
+
 		$before = $this->Comment->Article->find('first', array('conditions' => array('Article.id' => 1)));
 		$this->Comment->id = 1;
 		$this->assertTrue($this->Comment->delete());
-		$after = $this->Comment->Article->find('first', array('conditions' => array('Article.id' => 1)));;
-		$this->assertEqual($after['Article']['comments'], $before['Article']['comments'] - 1);
+		$after = $this->Comment->Article->find('first', array('conditions' => array('Article.id' => 1)));
+		$this->assertEquals($after['Article']['comments'], $before['Article']['comments'] - 1);
 		$this->assertFalse($this->Comment->exists(true));
 	}
 
@@ -223,7 +231,8 @@ class CommentTestCase extends CakeTestCase {
 		$data['Comment'] = array(
 			'1' => 1,
 			'2' => 0,
-			'3' => 0);
+			'3' => 0
+		);
 		$this->Comment->process('delete', $data);
 		$comment1 = $this->Comment->find('first', array('conditions' => array('Comment.id' => 1)));
 		$this->assertEmpty($comment1);
@@ -239,10 +248,11 @@ class CommentTestCase extends CakeTestCase {
 	public function testProcessHam() {
 		$data['Comment'] = array(
 			'1' => 1,
-			'2' => 0);
+			'2' => 0
+		);
 		$this->Comment->process('ham', $data);
 		$comment1 = $this->Comment->find('first', array('conditions' => array('Comment.id' => 1)));
-		$this->assertEqual($comment1['Comment']['is_spam'], 'ham');
+		$this->assertEquals($comment1['Comment']['is_spam'], 'ham');
 	}
 
 /**
@@ -253,10 +263,11 @@ class CommentTestCase extends CakeTestCase {
 	public function testProcessSpam() {
 		$data['Comment'] = array(
 			'1' => 1,
-			'2' => 0);
+			'2' => 0
+		);
 		$this->Comment->process('spam', $data);
 		$comment1 = $this->Comment->find('first', array('conditions' => array('Comment.id' => 1)));
-		$this->assertEqual($comment1['Comment']['is_spam'], 'spammanual');
+		$this->assertEquals($comment1['Comment']['is_spam'], 'spammanual');
 	}
 
 /**
@@ -270,7 +281,7 @@ class CommentTestCase extends CakeTestCase {
 			'3' => 1);
 		$this->Comment->process('approve', $data);
 		$comment = $this->Comment->find('first', array('conditions' => array('Comment.id' => 3)));
-		$this->assertEqual($comment['Comment']['approved'], true);
+		$this->assertEquals($comment['Comment']['approved'], true);
 	}
 
 /**
@@ -284,6 +295,6 @@ class CommentTestCase extends CakeTestCase {
 			'2' => 0);
 		$this->Comment->process('disapprove', $data);
 		$comment = $this->Comment->find('first', array('conditions' => array('Comment.id' => 1)));
-		$this->assertEqual($comment['Comment']['approved'], false);
+		$this->assertEquals($comment['Comment']['approved'], false);
 	}
 }
