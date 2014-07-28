@@ -22,8 +22,6 @@ App::uses('ModelBehavior', 'Model');
  * @subpackage	models.behaviors
  */
 
-CakePlugin::load('Utils');
-
 class CommentableBehavior extends ModelBehavior {
 
 /**
