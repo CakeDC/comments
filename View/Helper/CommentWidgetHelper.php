@@ -22,7 +22,12 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @var array
  */
-	public $helpers = array('Html', 'Js' => array('Jquery'));
+	public $helpers = array(
+		'Html',
+		'Js' => array(
+			'Jquery'
+		)
+	);
 
 /**
  * Flag if this widget is properly configured
@@ -83,7 +88,7 @@ class CommentWidgetHelper extends AppHelper {
  */
 	public function beforeRender($file = null) {
 		parent::beforeRender($file);
-		$View = $this->__view();
+		$View = $this->_view();
 
 		$this->enabled = !empty($View->viewVars['commentParams']);
 		if ($this->enabled) {
@@ -94,6 +99,35 @@ class CommentWidgetHelper extends AppHelper {
 				}
 			}
 		}
+	}
+
+/**
+ * Builds the comment URL
+ *
+ * @param array $url
+ * @return array
+ */
+	public function buildUrl($url) {
+		$url = array_merge($url, array(
+			'controller' => $this->_view()->request->params['controller'],
+			'action' => $this->_view()->request->params['action']
+		));
+		if (isset($url['action'])) {
+			$prefixes = (array)Configure::read('Routing.prefixes');
+			foreach ($prefixes as $prefix) {
+				$length = strlen($prefix);
+				if (substr($url['action'], 0, $length) === $prefix) {
+					$url['action'] = substr($url['action'], $length + 1);
+					break;
+				}
+			}
+		}
+		foreach (array('page', 'order', 'sort', 'direction') as $named) {
+			if (isset($this->_view()->passedArgs[$named])) {
+				$url[$named] = $this->_view()->passedArgs[$named];
+			}
+		}
+		return $url;
 	}
 
 /**
@@ -136,7 +170,7 @@ class CommentWidgetHelper extends AppHelper {
 	public function display($params = array()) {
 		$result = '';
 		if ($this->enabled) {
-			$View = $this->__view();
+			$View = $this->_view();
 
 			$params = Hash::merge($View->viewVars['commentParams'], $params);
 			if (isset($params['displayType'])) {
@@ -227,10 +261,11 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @param string $name
  * @param array $params
+ * @param array $extra
  * @return string, rendered element
  */
 	public function element($name, $params = array(), $extra = array()) {
-		$View = $this->__view();
+		$View = $this->_view();
 		if (strpos($name, '/') === false) {
 			$name = 'comments/' . $this->globalParams['theme'] . '/' . $name;
 		}
@@ -250,7 +285,10 @@ class CommentWidgetHelper extends AppHelper {
  * @return string
  */
 	public function treeCallback($data) {
-		return $this->element('item', array('comment' => $data['data'], 'data' => $data));
+		return $this->element('item', array(
+			'comment' => $data['data'],
+			'data' => $data
+		));
 	}
 
 /**
@@ -258,7 +296,7 @@ class CommentWidgetHelper extends AppHelper {
  *
  * @return object, View class
  */
-	private function __view() {
+	protected function _view() {
 		if (!empty($this->globalParams['viewInstance'])) {
 			return $this->globalParams['viewInstance'];
 		} else {

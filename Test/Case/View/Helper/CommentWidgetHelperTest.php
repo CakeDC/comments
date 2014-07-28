@@ -350,6 +350,28 @@ class CommentWidgetHelperTest extends CakeTestCase {
 	}
 
 /**
+ * testBuildLink
+ *
+ * @return void
+ */
+	public function testBuildLink() {
+		$routingPrefixes = Configure::read('Routing.prefixes');
+		Configure::write('Routing.prefixes', array('admin'));
+		$this->View->request->params = array(
+			'prefix' => 'admin',
+			'controller' => 'products',
+			'action' => 'admin_view',
+		);
+		$expected = array(
+			'controller' => 'products',
+			'action' => 'view'
+		);
+		$result = $this->CommentWidget->buildUrl(array());
+		$this->assertEquals($result, $expected);
+		Configure::write('Routing.prefixes', $routingPrefixes);
+	}
+
+/**
  * Test prepareUrl method
  * 
  * @return void

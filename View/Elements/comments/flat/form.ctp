@@ -9,12 +9,7 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-$_url = array_merge($url, array('controller' => $this->request->params['controller'], 'action' => str_replace(Configure::read('Routing.admin') . '_', '', $this->request->action)));
-foreach (array('page', 'order', 'sort', 'direction') as $named) {
-	if (isset($this->passedArgs[$named])) {
-		$_url[$named] = $this->passedArgs[$named];
-	}
-}
+$_url = $this->CommentWidget->buildUrl($url);
 if ($target) {
 	$_url['action'] = str_replace(Configure::read('Routing.admin') . '_', '', 'comments');
 	$options = array_merge($_url, array('comment' => $comment, '#' => 'comment' . $comment));
