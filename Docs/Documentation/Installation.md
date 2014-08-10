@@ -15,7 +15,7 @@ Git Submodule
 If you're using git for version control, you may want to add the **Comments** plugin as a submodule on your repository. To do so, run the following command from the base of your repository:
 
 ```
-git submodule add git@github.com:CakeDC/search.git app/Plugin/Comments
+git submodule add git@github.com:CakeDC/comments.git app/Plugin/Comments
 ```
 
 After doing so, you will see the submodule in your changes pending, plus the file ```.gitmodules```. Simply commit and push to your repository.
