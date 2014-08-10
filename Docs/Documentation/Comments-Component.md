@@ -10,7 +10,7 @@ Sometimes you want to know how much comments your user did. In this case all you
 Component conventions
 ---------------------
 
-The component needs to have one important convention for any actions where it is enabled:
+The component needs to have one important convention for any action where it is enabled:
 
 To work properly, the component needs a specific variable to be set in every action using it. Its name should be either ```Inflector::variable(Controller::$modelClass)``` or ```Comments::$viewVariable``` should be set to other name of this view variable. That variable should contain single model record. for example you need to have next line in you view action:
 
