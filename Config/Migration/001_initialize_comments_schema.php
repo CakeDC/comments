@@ -48,7 +48,6 @@ class M4a9bc72d1ac4476fbccb00e4beba7b47 extends CakeMigration {
 					'rght' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
 					'model' => array('type' => 'string', 'null' => false, 'default' => null),
 					'approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
-					'is_spam' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 					'title' => array('type' => 'string', 'null' => true, 'default' => null),
 					'slug' => array('type' => 'string', 'null' => true, 'default' => null),
 					'body' => array('type' => 'text', 'null' => true, 'default' => null),
