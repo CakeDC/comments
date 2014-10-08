@@ -483,10 +483,11 @@ class CommentsComponent extends Component {
  */
 	public function callback_add($modelId, $commentId, $displayType, $data = array()) {
 		if (!empty($this->Controller->data)) {
-			if (!empty($this->Controller->data['Comment']['title'])) {
-				$data['Comment']['title'] = $this->cleanHtml($this->Controller->data['Comment']['title']);
+			$data = $this->Controller->data;
+			if (!empty($data['Comment']['title'])) {
+				$data['Comment']['title'] = $this->cleanHtml($data['Comment']['title']);
 			}
-			$data['Comment']['body'] = $this->cleanHtml($this->Controller->data['Comment']['body']);
+			$data['Comment']['body'] = $this->cleanHtml($data['Comment']['body']);
 			$modelName = $this->Controller->{$this->modelName}->alias;
 			if (!empty($this->Controller->{$this->modelName}->fullName)) {
 				$modelName = $this->Controller->{$this->modelName}->fullName;
