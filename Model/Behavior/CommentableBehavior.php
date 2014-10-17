@@ -264,7 +264,7 @@ class CommentableBehavior extends ModelBehavior {
 					$this->changeCommentCount($Model, $modelId);
 				}
 
-				$event = new CakeEvent('Behavior.Commentable.afterCreateComment', $Model, $Model->Comment->data);
+				$event = new CakeEvent('Behavior.Commentable.afterCreateComment', $Model, $data);
 				CakeEventManager::instance()->dispatch($event);
 				if ($event->isStopped() && !$event->result) {
 					return false;
