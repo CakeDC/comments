@@ -65,7 +65,6 @@ class CommentSchema extends CakeSchema {
 		'rght' => array('type'=>'integer', 'null' => false, 'default' => NULL, 'length' => 10),
 		'model' => array('type'=>'string', 'null' => false, 'default' => NULL),
 		'approved' => array('type'=>'boolean', 'null' => false, 'default' => '1'),
-		'is_spam' => array('type'=>'boolean', 'null' => false, 'default' => '0'),
 		'title' => array('type'=>'string', 'null' => true, 'default' => NULL),
 		'slug' => array('type'=>'string', 'null' => true, 'default' => NULL),
 		'body' => array('type'=>'text', 'null' => true, 'default' => NULL),
